@@ -9,8 +9,8 @@ RUN npm install
 
 COPY . .
 
-#RUN npm run build
-CMD ["npm", "run", "dev"]
+RUN npm run build
+#CMD ["npm", "run", "dev"]
 
 # Production Stage 
 FROM nginx:stable-alpine AS production
