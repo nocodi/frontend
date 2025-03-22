@@ -1,11 +1,16 @@
 @import "tailwindcss";
 
-
 @theme {
-    --color-primary: #e8dbc4;
-    --color-primary-light: #f9f2de;
-    --color-secondary: #668f84;
-    --color-secondary-light: #8cb69b;
-    --color-overlay: #01211e;
-    --color-overlay-light: #024f48;
+  --color-primary: #e8dbc4;
+  --color-primary-light: #f9f2de;
+  --color-secondary: #668f84;
+  --color-secondary-light: #8cb69b;
+  --color-overlay: #01211e;
+  --color-overlay-light: #024f48;
+}
+
+@layer {
+  .react-flow__attribution {
+    display: none;
+  }
 }
