@@ -5,10 +5,10 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
 
   return (
     <div className="cursor-pointer flex flex-col gap-1 group items-center">
-      <div className="flex flex-row justify-end gap-1 w-10 h-3 invisible group-hover:visible group-hover:opacity-100 opacity-0 transition-opacity ease-in duration-300">
+      <div className="flex flex-row justify-end gap-0.5 w-10 h-3 invisible group-hover:visible group-hover:opacity-100 opacity-0 transition-opacity ease-in duration-300">
         <svg
           onClick={() => instance.deleteElements({ nodes: [{ id: id }] })}
-          className="w-3 h-3 text-gray-800 dark:text-white hover:text-red-400"
+          className="w-3 h-3 text-white hover:text-secondary"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -24,7 +24,7 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
         </svg>
 
         <svg
-          className="w-3 h-3 text-gray-800 dark:text-white hover:text-red-400"
+          className="w-3 h-3 text-gray-800 dark:text-white hover:text-secondary"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -40,23 +40,30 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
           />
         </svg>
       </div>
-      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-blue-500 bg-blue-100">
+      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-secondary bg-gray-400">
         <div>
           {["input", "input-output"].indexOf(data.type) > -1 && (
             <Handle
               type="source"
-              position={Position.Bottom}
+              position={Position.Right}
               isConnectable={isConnectable}
-              style={{ width: 7, height: 7 }}
-            />
+              style={{
+                width: 7,
+                height: 7,
+              }}
+            ></Handle>
           )}
           {["output", "input-output"].indexOf(data.type) > -1 && (
             <Handle
               type="target"
-              position={Position.Top}
+              position={Position.Left}
               isConnectable={isConnectable}
               isConnectableStart={false}
-              style={{ width: 7, height: 7 }}
+              style={{
+                width: 1,
+                height: 8,
+                borderRadius: 1,
+              }}
             />
           )}
         </div>
