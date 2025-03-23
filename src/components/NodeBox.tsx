@@ -8,7 +8,7 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
       <div className="flex flex-row justify-end gap-0.5 w-10 h-3 invisible group-hover:visible group-hover:opacity-100 opacity-0 transition-opacity ease-in duration-300">
         <svg
           onClick={() => instance.deleteElements({ nodes: [{ id: id }] })}
-          className="w-3 h-3 text-white hover:text-secondary"
+          className="w-3 h-3 text-white hover:text-accent"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -24,7 +24,7 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
         </svg>
 
         <svg
-          className="w-3 h-3 text-gray-800 dark:text-white hover:text-secondary"
+          className="w-3 h-3 dark:text-white hover:text-accent"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -40,7 +40,7 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
           />
         </svg>
       </div>
-      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-secondary bg-gray-400">
+      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-primary-content bg-accent">
         <div>
           {["input", "input-output"].indexOf(data.type) > -1 && (
             <Handle

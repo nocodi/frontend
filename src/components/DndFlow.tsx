@@ -102,13 +102,13 @@ function Flow() {
 
   return (
     <div className="w-full h-full">
-      <div className="w-full h-full bg-accent-content relative">
+      <div className="w-full h-full bg-royalblue-900 relative">
         <div
           onClick={() => setIsPanelOpen(true)}
-          className="flex absolute z-1 right-0 items-center justify-center cursor-pointer w-12 h-10 border-2 rounded-xl mr-5 mt-5 hover:border-secondary group"
+          className="flex btn btn-outline text-white absolute z-1 right-0 items-center justify-center w-12 h-10 border-2 rounded-xl mr-5 mt-5 hover:border-accent group"
         >
           <svg
-            className="w-6 h-6 text-gray-800 dark:text-white group-hover:text-secondary"
+            className="w-6 h-6 group-hover:text-accent"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -120,7 +120,7 @@ function Flow() {
               stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="2"
+              strokeWidth="5"
               d="M5 12h14m-7 7V5"
             />
           </svg>

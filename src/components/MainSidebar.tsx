@@ -39,15 +39,15 @@ function SidePanel() {
       >
         <div className="flex h-full flex-col gap-20 items-center">
           <div className="flex flex-col gap-10">
-            <div className="bg-secondary w-5 h-5"></div>
-            <div className="bg-secondary w-5 h-5"></div>
-            <div className="bg-secondary w-5 h-5"></div>
-            <div className="bg-secondary w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
           </div>
           <div className="w-full h-full ml-4 z-1">
             <button
               onClick={handleExpand}
-              className="cursor-pointer w-4 h-4 bg-gray-600 rounded-full float-right border-1 border-gray-400"
+              className="cursor-pointer w-4 h-4 bg-royalblue-800 rounded-full float-right border-1 border-primary-content hover:border-secondary"
             >
               <div className="text-white hover:text-secondary w-full h-full content-center">
                 <svg
@@ -69,10 +69,10 @@ function SidePanel() {
             </button>
           </div>
           <div className="flex flex-col gap-10">
-            <div className="bg-secondary w-5 h-5"></div>
-            <div className="bg-secondary w-5 h-5"></div>
-            <div className="bg-secondary w-5 h-5"></div>
-            <div className="bg-secondary w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
+            <div className="bg-primary-content w-5 h-5"></div>
           </div>
         </div>
       </div>
