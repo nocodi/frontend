@@ -1,13 +1,17 @@
 import { useState } from "react";
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
+    const [errors, setError] = useState({ email: "", password: "", confirmPassword: "" });
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
     const handleSignup = async (e) => {
         e.preventDefault();
@@ -16,12 +20,15 @@ export default function Signup() {
         
 
         try {
-            const response = await axios.post("http://api.nocodi.ir/iam/signup", {
+            const response = await axios.post("http://api.nocodi.ir/iam/signup/", {
                 email,
                 password,
             });
             if (response.status == 201){
                 console.log(response.status);
+                console.log(response.data);
+                localStorage.setItem("request_id", response.data.request_id);
+                navigate("/verification");
             }
             else{
                 console.log(response.status);
@@ -35,35 +42,40 @@ export default function Signup() {
 
     return (
         <AuthLayout title="ثبت نام">
-            <form onSubmit={handleSignup}>
+            <form onSubmit={handleSignup} className="bg-patina-50 p-6 rounded-xl shadow-md">
                 <div className="form-control">
-                    <label className="label">ایمیل</label>
+                    <label className="label text-patina-700">ایمیل</label>
                     <input
                         type="email"
                         placeholder="ایمیل خود را وارد کنید"
-                        className="input input-bordered bg-gray w-full"
+                        className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.email ? 'border-red-500' : 'border-patina-500'}`}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
                     />
+                    {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
                 </div>
+                
                 <div className="form-control mt-4">
-                    <label className="label">رمز عبور</label>
+                    <label className="label text-patina-700">رمز عبور</label>
                     <input
                         type="password"
                         placeholder="رمز عبور خود را وارد کنید"
-                        className="input input-bordered bg-gray w-full"
+                        className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.password ? 'border-red-500' : 'border-patina-500'}`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
                     />
+                    {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
                 </div>
-                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                <button className="btn btn-primary w-full mt-6" disabled={loading}>
+                
+                
+                {errors.api && <p className="text-red-500 text-sm mt-2">{errors.api}</p>}
+                
+                <button className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
                     {loading ? "در حال ثبت نام..." : "ثبت نام"}
                 </button>
-                <p className="text-center mt-4 text-sm">
-                    حساب کاربری دارید؟ <a href="/" className="text-white-500">ورود</a>
+                
+                <p className="text-center mt-4 text-sm text-patina-700">
+                    حساب کاربری دارید؟ <a href="/" className="text-patina-500 hover:text-patina-700">ورود</a>
                 </p>
             </form>
         </AuthLayout>

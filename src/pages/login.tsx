@@ -6,6 +6,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     let validationErrors = {};
@@ -20,13 +21,13 @@ export default function Login() {
 
   return (
     <AuthLayout title="ورود">
-      <form onSubmit={handleSubmit} className="bg-cream-50 p-6 rounded-xl shadow-md">
+      <form onSubmit={handleSubmit} className="bg-patina-50 p-6 rounded-xl shadow-md">
         <div className="form-control">
-          <label className="label text-cream-700">ایمیل</label>
+          <label className="label text-patina-700">ایمیل</label>
           <input 
             type="email" 
             placeholder="ایمیل خود را وارد کنید" 
-            className={`input input-bordered w-full bg-cream-400 ${errors.email ? 'border-red-500' : 'border-patina-500'}`}
+            className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-1 focus:ring-patina-400 ${errors.email ? 'border-red-500' : 'border-patina-500'}`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -38,14 +39,14 @@ export default function Login() {
           <input 
             type="password" 
             placeholder="رمز عبور خود را وارد کنید" 
-            className={`input input-bordered w-full mb-4 bg-patina-300 ${errors.password ? 'border-red-500' : 'border-patina-500'}`}
+            className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.password ? 'border-red-500' : 'border-patina-500'}`}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
         </div>
         
-        <button className="btn btn-cream w-full mt-6 bg-patina-500 text-patina-content hover:bg-patina-1000" type="submit">
+        <button className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" type="submit">
           ورود
         </button>
         
