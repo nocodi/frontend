@@ -57,6 +57,7 @@ jobs:
           message="$message\n📝 Commit Message: ${{ github.event.workflow_run.head_commit.message }}"
           message="$message\n🔍 Commit Hash: ${{ github.event.workflow_run.head_commit.id }}"
 
+          echo ${#TGBOT_TOKEN} ${#TGCHAT_ID} ${#TGMESSAGE_THREAD_ID} ${#message}
           curl -s https://api.telegram.org/bot${{ secrets.TGBOT_TOKEN }}/sendMessage \
-          -d '{\"chat_id\":\"${{ secrets.TGCHAT_ID }}\", \"message_thread_id\": \"${{ secrets.TGMESSAGE_THREAD_ID }}\", \"text\": \"$message\"}' \
+          -d "{\"chat_id\":\"${{ secrets.TGCHAT_ID }}\", \"message_thread_id\": \"${{ secrets.TGMESSAGE_THREAD_ID }}\", \"text\": \"$message\"}" \
               -H 'Content-Type: Application/Json'
