@@ -12,7 +12,7 @@ function NodeListSidebar({
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeType: string
+    nodeType: string,
   ) => {
     setType(nodeType);
     event.dataTransfer.effectAllowed = "move";

@@ -66,7 +66,7 @@ function Flow() {
   const onConnect = useCallback(
     (connection: Edge | Connection) =>
       setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
+    [setEdges],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -97,7 +97,7 @@ function Flow() {
       console.log("hi");
       setNodes((nds) => nds.concat(newNode));
     },
-    [screenToFlowPosition, type, setNodes]
+    [screenToFlowPosition, type, setNodes],
   );
 
   return (

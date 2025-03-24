@@ -1,6 +1,6 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
 
-function NodeBox({ id, data, isConnectable}: NodeProps) {
+function NodeBox({ id, data, isConnectable }: NodeProps) {
   const instance = useReactFlow();
 
   return (
