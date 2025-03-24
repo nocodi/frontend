@@ -2,12 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 export default function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [errors, setError] = useState({ email: "", password: ""});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -28,13 +29,25 @@ export default function Signup() {
                 console.log(response.status);
                 console.log(response.data);
                 localStorage.setItem("request_id", response.data.request_id);
+                toast.success("ثبت نام موفقیت آمیز بود", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
                 navigate("/verification");
             }
             else{
                 console.log(response.status);
+                toast.error("ثبت نام ناموفق بود", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
             }
         } catch (err) {
-            setError(err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید.");
+            // setError(err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید.");
+            toast.error("خطایی رخ داد. لطفاً دوباره امتحان کنید.", {
+                position: "top-right",
+                autoClose: 3000,
+            });
         } finally {
             setLoading(false);
         }
