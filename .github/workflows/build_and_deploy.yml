@@ -2,7 +2,7 @@ name: build_and_deploy
 
 on:
   push:
-    branches: [ "deploy/frontend-v1.0" ]
+    branches: [ "main" ]
 
   workflow_dispatch:
 
@@ -58,5 +58,5 @@ jobs:
           message="$message\n🔍 Commit Hash: ${{ github.event.workflow_run.head_commit.id }}"
 
           curl -s https://api.telegram.org/bot${{ secrets.TGBOT_TOKEN }}/sendMessage \
-          -d "{\"chat_id\":\"${{ secrets.TGCHAT_ID }}\", \"message_thread_id\": \"${{ secrets.TGMESSAGE_THREAD_ID }}\", \"text\": \"$message\"}" \
+          -d '{\"chat_id\":\"${{ secrets.TGCHAT_ID }}\", \"message_thread_id\": \"${{ secrets.TGMESSAGE_THREAD_ID }}\", \"text\": \"$message\"}' \
               -H 'Content-Type: Application/Json'
