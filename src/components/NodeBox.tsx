@@ -40,7 +40,7 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
           />
         </svg>
       </div>
-      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-primary-content bg-accent">
+      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-patina-400 bg-patina-200">
         <div>
           {["input", "input-output"].indexOf(data.type) > -1 && (
             <Handle
@@ -67,7 +67,7 @@ function NodeBox({ id, data, isConnectable, selected }: NodeProps) {
             />
           )}
         </div>
-        <div className="text-sm text-black">{data.label}</div>
+        <div className="text-sm">{data.label}</div>
       </div>
     </div>
   );

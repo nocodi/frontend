@@ -35,46 +35,33 @@ function SidePanel() {
   return (
     <div className="h-screen">
       <div
-        className={`h-full bg-primary shrink-0 transition-all ease-in-out duration-300 ${panelStates[panelState]}`}
+        className={`relative h-full bg-patina-300 shrink-0 transition-all ease-in-out duration-300 ${panelStates[panelState]}`}
       >
-        <div className="flex h-full flex-col gap-20 items-center">
-          <div className="flex flex-col gap-10">
-            <div className="bg-primary-content w-5 h-5"></div>
-            <div className="bg-primary-content w-5 h-5"></div>
-            <div className="bg-primary-content w-5 h-5"></div>
-            <div className="bg-primary-content w-5 h-5"></div>
-          </div>
-          <div className="w-full h-full ml-4 z-1">
-            <button
-              onClick={handleExpand}
-              className="cursor-pointer w-4 h-4 bg-royalblue-800 rounded-full float-right border-1 border-primary-content hover:border-secondary"
-            >
-              <div className="text-white hover:text-secondary w-full h-full content-center">
-                <svg
-                  className={`w-3 h-3 float-right align-middle ${arrowStates[panelState]}`}
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 16"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M7 1 1.3 6.326a.91.91 0 0 0 0 1.348L7 13"
-                  />
-                </svg>
-              </div>
-            </button>
-          </div>
-          <div className="flex flex-col gap-10">
-            <div className="bg-primary-content w-5 h-5"></div>
-            <div className="bg-primary-content w-5 h-5"></div>
-            <div className="bg-primary-content w-5 h-5"></div>
-            <div className="bg-primary-content w-5 h-5"></div>
-          </div>
+        <div className="absolute -right-2 top-80 z-1">
+          <button
+            onClick={handleExpand}
+            className="cursor-pointer w-4 h-4 bg-patina-500 rounded-full float-right border-1 border-primary-content hover:border-accent"
+          >
+            <div className="text-white hover:text-accent w-full h-full content-center">
+              <svg
+                className={`w-3 h-3 float-right align-middle ${arrowStates[panelState]}`}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 16"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M7 1 1.3 6.326a.91.91 0 0 0 0 1.348L7 13"
+                />
+              </svg>
+            </div>
+          </button>
         </div>
+        <div className="flex h-full flex-col gap-20 items-center"></div>
       </div>
     </div>
   );

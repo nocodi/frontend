@@ -102,7 +102,7 @@ function Flow() {
 
   return (
     <div className="w-full h-full">
-      <div className="w-full h-full bg-royalblue-900 relative">
+      <div className="w-full h-full bg-patina-900 relative">
         <div
           onClick={() => setIsPanelOpen(true)}
           className="flex btn btn-outline text-white absolute z-1 right-0 items-center justify-center w-12 h-10 border-2 rounded-xl mr-5 mt-5 hover:border-accent group"
