@@ -2,6 +2,9 @@ import { useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,13 +29,25 @@ export default function Login() {
         console.log(response.status);
         console.log(response.data);
         localStorage.setItem("token", response.data.access_token);
-        navigate("/forgetPassword");
+        // navigate("/forgetPassword");
+        toast.success("ورود موفقیت آمیز بود", {
+          position: "top-right",
+          autoClose: 3000,
+      });
       }
       else{
         console.log(response.status);
+        toast.error("ورود ناموفق بود", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید.");
+      // setError(err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید.");
+      toast.error("خطایی رخ داد. لطفاً دوباره امتحان کنید.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
     finally {
       setLoading(false);
@@ -50,6 +65,7 @@ export default function Login() {
 
   return (
     <AuthLayout title="ورود">
+      <ToastContainer />
       <form onSubmit={handleSubmit} className="bg-patina-50 p-6 rounded-xl shadow-md">
         <div className="form-control">
           <label className="label text-patina-700">ایمیل</label>
