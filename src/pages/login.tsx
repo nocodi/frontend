@@ -26,7 +26,7 @@ export default function Login() {
         console.log(response.status);
         console.log(response.data);
         localStorage.setItem("token", response.data.access_token);
-        navigate("/forgetPassword");
+        // navigate("/forgetPassword");
       }
       else{
         console.log(response.status);
@@ -44,7 +44,7 @@ export default function Login() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Form submitted", { email, password });
+      console.log("successfull", { email, password });
     }
   };
 
