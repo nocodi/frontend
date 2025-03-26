@@ -53,19 +53,19 @@ export default function Signup() {
     <AuthLayout title="ثبت نام">
       <form
         onSubmit={handleSignup}
-        className="bg-patina-50 p-6 rounded-xl shadow-md"
+        className="rounded-xl bg-patina-50 p-6 shadow-md"
       >
         <div className="form-control">
           <label className="label text-patina-700">ایمیل</label>
           <input
             type="email"
             placeholder="ایمیل خود را وارد کنید"
-            className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.email ? "border-red-500" : "border-patina-500"}`}
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${errors.email ? "border-red-500" : "border-patina-500"}`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email}</span>
+            <span className="text-sm text-red-500">{errors.email}</span>
           )}
         </div>
 
@@ -74,27 +74,27 @@ export default function Signup() {
           <input
             type="password"
             placeholder="رمز عبور خود را وارد کنید"
-            className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.password ? "border-red-500" : "border-patina-500"}`}
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${errors.password ? "border-red-500" : "border-patina-500"}`}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           {errors.password && (
-            <span className="text-red-500 text-sm">{errors.password}</span>
+            <span className="text-sm text-red-500">{errors.password}</span>
           )}
         </div>
 
         {errors.api && (
-          <p className="text-red-500 text-sm mt-2">{errors.api}</p>
+          <p className="mt-2 text-sm text-red-500">{errors.api}</p>
         )}
 
         <button
-          className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold"
+          className="btn-patina btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-patina-100 transition-all hover:bg-patina-700"
           disabled={loading}
         >
           {loading ? "در حال ثبت نام..." : "ثبت نام"}
         </button>
 
-        <p className="text-center mt-4 text-sm text-patina-700">
+        <p className="mt-4 text-center text-sm text-patina-700">
           حساب کاربری دارید؟{" "}
           <a href="/" className="text-patina-500 hover:text-patina-700">
             ورود

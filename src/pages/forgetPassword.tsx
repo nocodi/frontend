@@ -43,20 +43,20 @@ export default function ForgetPassword() {
     <AuthLayout title="ورود بدون رمز عبور">
       <form
         onSubmit={handleForgetPassword}
-        className="bg-patina-50 p-6 rounded-xl shadow-md"
+        className="rounded-xl bg-patina-50 p-6 shadow-md"
       >
         <div className="form-control">
           <label className="label text-patina-700">ایمیل</label>
           <input
             type="email"
             placeholder="ایمیل خود را وارد کنید"
-            className="input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400"
+            className="input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
           />
         </div>
         <button
-          className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold"
+          className="btn-patina btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-patina-100 transition-all hover:bg-patina-700"
           type="submit"
           disabled={loading}
         >

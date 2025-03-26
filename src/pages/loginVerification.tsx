@@ -55,23 +55,23 @@ export default function LoginVerification() {
     <AuthLayout title="تایید ایمیل">
       <form
         onSubmit={handleVerification}
-        className="bg-patina-50 p-6 rounded-xl shadow-md"
+        className="rounded-xl bg-patina-50 p-6 shadow-md"
       >
         <div className="form-control">
-          <label className="label text-patina-700 text-lg font-medium">
+          <label className="label text-lg font-medium text-patina-700">
             کد تایید
           </label>
           <input
             type="text"
             placeholder="کد تایید را وارد کنید"
-            className="input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 text-center text-sm tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400"
+            className="input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 text-center text-sm tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400"
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          {errors.code && <p className="text-red-500 text-sm">{errors.code}</p>}
+          {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
         </div>
         <button
-          className="btn w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold"
+          className="btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-patina-100 transition-all hover:bg-patina-700"
           disabled={loading}
         >
           {loading ? "در حال تایید..." : "تایید"}

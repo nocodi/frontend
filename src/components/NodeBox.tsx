@@ -4,11 +4,11 @@ function NodeBox({ id, data, isConnectable }: NodeProps) {
   const instance = useReactFlow();
 
   return (
-    <div className="cursor-pointer flex flex-col gap-1 group items-center">
-      <div className="flex flex-row justify-end gap-0.5 w-10 h-3 invisible group-hover:visible group-hover:opacity-100 opacity-0 transition-opacity ease-in duration-300">
+    <div className="group flex cursor-pointer flex-col items-center gap-1">
+      <div className="invisible flex h-3 w-10 flex-row justify-end gap-0.5 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
         <svg
           onClick={() => instance.deleteElements({ nodes: [{ id: id }] })}
-          className="w-3 h-3 text-white hover:text-accent"
+          className="h-3 w-3 text-white hover:text-accent"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -24,7 +24,7 @@ function NodeBox({ id, data, isConnectable }: NodeProps) {
         </svg>
 
         <svg
-          className="w-3 h-3 dark:text-white hover:text-accent"
+          className="h-3 w-3 hover:text-accent dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -40,7 +40,7 @@ function NodeBox({ id, data, isConnectable }: NodeProps) {
           />
         </svg>
       </div>
-      <div className="relative w-13 h-9 border-2 text-center rounded-lg shadow-lg border-patina-400 bg-patina-200">
+      <div className="relative h-9 w-13 rounded-lg border-2 border-patina-400 bg-patina-200 text-center shadow-lg">
         <div>
           {["input", "input-output"].indexOf(data.type) > -1 && (
             <Handle

@@ -1,11 +1,11 @@
 export default function AuthLayout({ children, title }) {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-patina-50">
+    <div className="flex min-h-screen items-center justify-center bg-patina-50">
       <div
-        className="card w-96 bg-patina-100 shadow-lg p-6 rounded-xl"
+        className="card w-96 rounded-xl bg-patina-100 p-6 shadow-lg"
         dir="rtl"
       >
-        <h2 className="text-2xl font-bold text-center mb-4 text-patina-600">
+        <h2 className="mb-4 text-center text-2xl font-bold text-patina-600">
           {title}
         </h2>
         {children}

@@ -35,16 +35,16 @@ function SidePanel() {
   return (
     <div className="h-screen">
       <div
-        className={`relative h-full bg-patina-300 shrink-0 transition-all ease-in-out duration-300 ${panelStates[panelState]}`}
+        className={`relative h-full shrink-0 bg-patina-300 transition-all duration-300 ease-in-out ${panelStates[panelState]}`}
       >
-        <div className="absolute -right-2 top-80 z-1">
+        <div className="absolute top-80 -right-2 z-1">
           <button
             onClick={handleExpand}
-            className="cursor-pointer w-4 h-4 bg-patina-500 rounded-full float-right border-1 border-primary-content hover:border-accent"
+            className="float-right h-4 w-4 cursor-pointer rounded-full border-1 border-primary-content bg-patina-500 hover:border-accent"
           >
-            <div className="text-white hover:text-accent w-full h-full content-center">
+            <div className="h-full w-full content-center text-white hover:text-accent">
               <svg
-                className={`w-3 h-3 float-right align-middle ${arrowStates[panelState]}`}
+                className={`float-right h-3 w-3 align-middle ${arrowStates[panelState]}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -61,7 +61,7 @@ function SidePanel() {
             </div>
           </button>
         </div>
-        <div className="flex h-full flex-col gap-20 items-center"></div>
+        <div className="flex h-full flex-col items-center gap-20"></div>
       </div>
     </div>
   );

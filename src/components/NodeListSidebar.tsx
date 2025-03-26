@@ -20,19 +20,19 @@ function NodeListSidebar({
 
   return (
     <div
-      className={`flex absolute right-0 z-1 h-screen w-64 bg-patina-300 transition-transform duration-400 ${
+      className={`absolute right-0 z-1 flex h-screen w-64 bg-patina-300 transition-transform duration-400 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
-      <div className="h-full overflow-y-auto w-full flex flex-col gap-2">
+      <div className="flex h-full w-full flex-col gap-2 overflow-y-auto">
         <div className="flex flex-row">
-          <div className="h-fit w-10 my-auto">
+          <div className="my-auto h-fit w-10">
             <button
               onClick={onClose}
-              className="rounded float-right cursor-pointer group"
+              className="group float-right cursor-pointer rounded"
             >
               <svg
-                className="w-6 h-6 group-hover:text-accent"
+                className="h-6 w-6 group-hover:text-accent"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -50,11 +50,11 @@ function NodeListSidebar({
               </svg>
             </button>
           </div>
-          <h1 className="font-bold p-4 text-center w-full">
+          <h1 className="w-full p-4 text-center font-bold">
             Drag and Drop Nodes
           </h1>
         </div>
-        <label className="input h-10 bg-patina-300 border-2 border-patina-700 w-60 mx-2 mb-2">
+        <label className="input mx-2 mb-2 h-10 w-60 border-2 border-patina-700 bg-patina-300">
           <svg
             className="h-[1em] opacity-50"
             xmlns="http://www.w3.org/2000/svg"
@@ -75,21 +75,21 @@ function NodeListSidebar({
         </label>
         <div className="flex flex-col gap-3">
           <div
-            className="h-15 w-full border-l-4 content-center border-patina-200 hover:border-accent hover:bg-patina-200 tansition-all duration-300"
+            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
             onDragStart={(event) => onDragStart(event, "input")}
             draggable
           >
             <div className="ml-5 text-sm">Input Node</div>
           </div>
           <div
-            className="h-15 w-full border-l-4 content-center border-patina-200 hover:border-accent hover:bg-patina-200 tansition-all duration-300"
+            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
             onDragStart={(event) => onDragStart(event, "input-output")}
             draggable
           >
             <div className="ml-5 text-sm">Def Node</div>
           </div>
           <div
-            className="h-15 w-full border-l-4 content-center border-patina-200 hover:border-accent hover:bg-patina-200 tansition-all duration-300"
+            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
             onDragStart={(event) => onDragStart(event, "output")}
             draggable
           >
