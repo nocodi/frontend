@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "pretty": "prettier --write --ignore-unknown",
     "preview": "vite preview",
     "prepare": "husky install"
   },
@@ -29,6 +31,7 @@
     "autoprefixer": "^10.4.20",
     "daisyui": "^5.0.4",
     "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
@@ -36,12 +39,16 @@
     "lint-staged": "^15.5.0",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.0.14",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.1"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
+    "**/*": [
+      "npm run lint",
+      "npm run pretty"
+    ]
   }
 }
