@@ -1,4 +1,11 @@
-export default function AuthLayout({ children, title }) {
+import { ReactNode } from "react";
+
+interface AuthLayoutProps {
+  children: ReactNode;
+  title: string;
+}
+
+export default function AuthLayout({ children, title }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-patina-50">
       <div

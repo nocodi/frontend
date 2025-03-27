@@ -1,7 +1,6 @@
 import { useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,11 +9,10 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrors("");
+    setErrors({ email: "", password: "" });
     setLoading(true);
 
     try {
@@ -42,8 +40,19 @@ export default function Login() {
         });
       }
     } catch (err) {
-      // setError(err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید.");
-      toast.error("خطایی رخ داد. لطفاً دوباره امتحان کنید.", {
+      let error: string = "خطای ناشناخته‌ای رخ داد.";
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data;
+        console.log(apiError);
+        if (apiError?.detail) {
+          if (apiError?.detail == "Invalid credentials") {
+            error = "ایمیل یا پسورد استباه است.";
+          } else {
+            error = apiError?.detail;
+          }
+        }
+      }
+      toast.error(error, {
         position: "top-right",
         autoClose: 3000,
       });
@@ -51,7 +60,7 @@ export default function Login() {
       setLoading(false);
     }
 
-    let validationErrors = {};
+    const validationErrors = { email: "", password: "" };
     if (!email) validationErrors.email = "ایمیل را وارد کنید";
     if (!password) validationErrors.password = "رمز عبور را وارد کنید";
     setErrors(validationErrors);

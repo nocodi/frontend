@@ -6,7 +6,7 @@ export default function LoginVerification() {
   const [code, setCode] = useState("");
   const [errors, setErrors] = useState({ code: "" });
   const [loading, setLoading] = useState(false);
-  const [requestId, setRequestId] = useState(null);
+  const [requestId, setRequestId] = useState("");
 
   useEffect(() => {
     const reqID = localStorage.getItem("request_id");
@@ -15,7 +15,7 @@ export default function LoginVerification() {
     }
   }, []);
 
-  const handleVerification = async (e) => {
+  const handleVerification = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({ code: "" });
     setLoading(true);
@@ -41,11 +41,19 @@ export default function LoginVerification() {
         console.log(response.status);
       }
     } catch (err) {
-      setErrors({
-        code:
-          err.response?.data?.message ||
-          "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
-      });
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data;
+        console.log(err.response?.data?.message);
+        if (apiError?.message?.detail) {
+          setErrors({ code: apiError.detail });
+        } else if (apiError?.code) {
+          setErrors({ code: apiError.code[0] });
+        } else {
+          setErrors({ code: "خطایی رخ داد. لطفاً دوباره امتحان کنید." });
+        }
+      } else {
+        setErrors({ code: "خطای ناشناخته‌ای رخ داد." });
+      }
     } finally {
       setLoading(false);
     }

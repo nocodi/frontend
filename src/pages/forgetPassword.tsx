@@ -7,9 +7,9 @@ export default function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [_, setError] = useState("");
 
-  const handleForgetPassword = async (e) => {
+  const handleForgetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -30,10 +30,20 @@ export default function ForgetPassword() {
         console.log(response.status);
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "خطایی رخ داد. لطفاً دوباره امتحان کنید.",
-      );
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data;
+        if (apiError?.message) {
+          setError(apiError.message);
+        } else if (apiError?.detail) {
+          setError(apiError.detail);
+        } else if (apiError?.code) {
+          setError(apiError.code[0]);
+        } else {
+          setError("خطایی رخ داد. لطفاً دوباره امتحان کنید.");
+        }
+      } else {
+        setError("خطای ناشناخته‌ای رخ داد.");
+      }
     } finally {
       setLoading(false);
     }
