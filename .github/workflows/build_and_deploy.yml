@@ -2,7 +2,7 @@ name: build_and_deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
   workflow_dispatch:
 
@@ -37,7 +37,6 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push "ghcr.io/${{ github.repository }}:latest"
-
 
       - name: deploy
         uses: appleboy/ssh-action@v1.0.3

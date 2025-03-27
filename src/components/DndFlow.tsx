@@ -66,7 +66,7 @@ function Flow() {
   const onConnect = useCallback(
     (connection: Edge | Connection) =>
       setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
+    [setEdges],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -97,18 +97,18 @@ function Flow() {
       console.log("hi");
       setNodes((nds) => nds.concat(newNode));
     },
-    [screenToFlowPosition, type, setNodes]
+    [screenToFlowPosition, type, setNodes],
   );
 
   return (
-    <div className="w-full h-full">
-      <div className="w-full h-full bg-patina-900 relative">
+    <div className="h-full w-full">
+      <div className="relative h-full w-full bg-patina-900">
         <div
           onClick={() => setIsPanelOpen(true)}
-          className="flex btn btn-outline text-white absolute z-1 right-0 items-center justify-center w-12 h-10 border-2 rounded-xl mr-5 mt-5 hover:border-accent group"
+          className="group btn absolute right-0 z-1 mt-5 mr-5 flex h-10 w-12 items-center justify-center rounded-xl border-2 text-white btn-outline hover:border-accent"
         >
           <svg
-            className="w-6 h-6 group-hover:text-accent"
+            className="h-6 w-6 group-hover:text-accent"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -132,7 +132,7 @@ function Flow() {
           />
         </div>
         <div
-          className="w-full h-full border border-gray-700 rounded-lg"
+          className="h-full w-full rounded-lg border border-gray-700"
           ref={reactFlowWrapper}
         >
           <ReactFlow
