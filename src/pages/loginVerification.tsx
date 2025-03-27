@@ -63,10 +63,10 @@ export default function LoginVerification() {
     <AuthLayout title="تایید ایمیل">
       <form
         onSubmit={handleVerification}
-        className="rounded-xl bg-patina-50 p-6 shadow-md"
+        className="mt-5 rounded-xl bg-patina-50 p-6 shadow-md"
       >
         <div className="form-control">
-          <label className="label text-lg font-medium text-patina-700">
+          <label className="label mb-1.5 text-lg font-medium text-patina-700">
             کد تایید
           </label>
           <input

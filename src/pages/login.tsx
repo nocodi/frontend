@@ -75,10 +75,10 @@ export default function Login() {
       <ToastContainer />
       <form
         onSubmit={handleSubmit}
-        className="rounded-xl bg-patina-50 p-6 shadow-md"
+        className="mt-5 rounded-xl bg-patina-50 p-8 shadow-md"
       >
         <div className="form-control">
-          <label className="label text-patina-700">ایمیل</label>
+          <label className="label mb-1.5 text-patina-700">ایمیل</label>
           <input
             type="email"
             placeholder="ایمیل خود را وارد کنید"
@@ -92,7 +92,7 @@ export default function Login() {
         </div>
 
         <div className="form-control mt-4">
-          <label className="label text-patina-700">رمز عبور</label>
+          <label className="label mb-1.5 text-patina-700">رمز عبور</label>
           <input
             type="password"
             placeholder="رمز عبور خود را وارد کنید"
@@ -106,19 +106,19 @@ export default function Login() {
         </div>
 
         <button
-          className="btn-patina btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-patina-100 transition-all hover:bg-patina-700"
+          className="btn-patina btn mt-8 w-full rounded-xl bg-patina-500 text-lg font-semibold text-patina-100 transition-all hover:bg-patina-700"
           type="submit"
           disabled={loading}
         >
           {loading ? "در حال ورود..." : "ورود"}
         </button>
 
-        <p className="mt-4 text-center text-sm text-patina-700">
+        <div className="mt-3 text-center text-sm text-patina-700">
           حساب کاربری ندارید؟{" "}
           <a href="/signup" className="text-patina-500 hover:text-patina-700">
             ثبت نام
           </a>
-        </p>
+        </div>
         <p className="mt-4 text-center text-sm text-patina-700">
           ورود بدون رمز عبور؟{" "}
           <a
