@@ -25,7 +25,7 @@ export default function ForgetPassword() {
         console.log(response.status);
         console.log(response.data);
         localStorage.setItem("request_id", response.data.request_id);
-        navigate("/loginVerification");
+        await navigate("/loginVerification");
       } else {
         console.log(response.status);
       }

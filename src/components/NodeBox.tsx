@@ -1,6 +1,11 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
 
-function NodeBox({ id, data, isConnectable }: NodeProps) {
+type NodeDataType = {
+  label: string;
+  type: string;
+};
+
+function NodeBox({ id, data, isConnectable }: NodeProps<NodeDataType>) {
   const instance = useReactFlow();
 
   return (

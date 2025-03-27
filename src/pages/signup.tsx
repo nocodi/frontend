@@ -30,7 +30,7 @@ export default function Signup() {
           position: "top-right",
           autoClose: 3000,
         });
-        navigate("/verification");
+        await navigate("/verification");
       } else {
         console.log(response.status);
         toast.error("ثبت نام ناموفق بود", {
