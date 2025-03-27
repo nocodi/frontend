@@ -2,21 +2,21 @@ import { useState } from "react";
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
 export default function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errors, setError] = useState({ email: "", password: ""});
+    const [errors, setError] = useState({ email: "", password: "", api: ""});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
 
-    const handleSignup = async (e) => {
+    const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError("");
+        setError({ email: "", password: "", api: ""});
         setLoading(true);
         
 
