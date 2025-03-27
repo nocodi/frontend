@@ -53,10 +53,10 @@ export default function ForgetPassword() {
     <AuthLayout title="ورود بدون رمز عبور">
       <form
         onSubmit={handleForgetPassword}
-        className="rounded-xl bg-patina-50 p-6 shadow-md"
+        className="mt-5 rounded-xl bg-patina-50 p-6 shadow-md"
       >
         <div className="form-control">
-          <label className="label text-patina-700">ایمیل</label>
+          <label className="label mb-1.5 text-patina-700">ایمیل</label>
           <input
             type="email"
             placeholder="ایمیل خود را وارد کنید"
