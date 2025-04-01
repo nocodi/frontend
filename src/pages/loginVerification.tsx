@@ -61,7 +61,7 @@ export default function LoginVerification() {
                     />
                     {errors.code && <p className="text-red-500 text-sm">{errors.code}</p>}
                 </div>
-                <button className="btn w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
+                <button className="btn w-full mt-6 bg-patina-500 text-white hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
                     {loading ? "Verifying..." : "Verify"}
                 </button>
             </form>

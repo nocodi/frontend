@@ -108,7 +108,7 @@ export default function Signup() {
                 
                 {errors.api && <p className="text-red-500 text-sm mt-2">{errors.api}</p>}
                 
-                <button className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
+                <button className="btn btn-patina w-full mt-6 bg-patina-500 text-white hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
                     {loading ? "Registering..." : "Register"}
                 </button>
                 

@@ -90,7 +90,7 @@ export default function Login() {
           {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
         </div>
         
-        <button className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" type="submit" disabled={loading}>
+        <button className="btn btn-patina w-full mt-6 bg-patina-500 text-white hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" type="submit" disabled={loading}>
           {loading ? "logging in.." : "Login"}
         </button>
         
