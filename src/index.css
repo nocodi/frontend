@@ -56,3 +56,9 @@
   --color-accent: var(--color-royalblue-400);
   --color-accent-content: var(--color-royalblue-900);
 }
+
+@layer {
+  .react-flow__attribution {
+    display: none;
+  }
+}
