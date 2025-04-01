@@ -1,7 +1,7 @@
 import React from "react";
 import { useDnD } from "./DnDContext";
 
-function NodeListSidebar({
+function ComponentList({
   isOpen,
   onClose,
 }: {
@@ -20,7 +20,7 @@ function NodeListSidebar({
 
   return (
     <div
-      className={`absolute right-0 z-1 flex h-screen w-64 bg-patina-300 transition-transform duration-400 ${
+      className={`absolute right-0 z-1 flex h-screen w-67 bg-patina-300 transition-transform duration-400 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -74,27 +74,27 @@ function NodeListSidebar({
           <input type="search" className="grow" placeholder="Search" />
         </label>
         <div className="flex flex-col gap-3">
-          <div
-            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
-            onDragStart={(event) => onDragStart(event, "input")}
-            draggable
-          >
-            <div className="ml-5 text-sm">Input Node</div>
-          </div>
-          <div
-            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
-            onDragStart={(event) => onDragStart(event, "input-output")}
-            draggable
-          >
-            <div className="ml-5 text-sm">Def Node</div>
-          </div>
-          <div
-            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
-            onDragStart={(event) => onDragStart(event, "output")}
-            draggable
-          >
-            <div className="ml-5 text-sm">Output Node</div>
-          </div>
+          {[
+            "input",
+            "output",
+            "input-output",
+            "input",
+            "output",
+            "input",
+            "input-output",
+            "input",
+            "input",
+            "input",
+          ].map((item) => (
+            <div
+              className="tansition-all h-15 w-full cursor-pointer content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
+              onDragStart={(event) => onDragStart(event, item)}
+              draggable
+            >
+              <div className="ml-5 text-sm">{item}</div>
+            </div>
+          ))}
+
           <div className="h-15"></div>
         </div>
       </div>
@@ -102,4 +102,4 @@ function NodeListSidebar({
   );
 }
 
-export default NodeListSidebar;
+export default ComponentList;

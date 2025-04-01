@@ -5,15 +5,15 @@ type NodeDataType = {
   type: string;
 };
 
-function NodeBox({ id, data, isConnectable }: NodeProps<NodeDataType>) {
+function Component({ id, data, isConnectable }: NodeProps<NodeDataType>) {
   const instance = useReactFlow();
 
   return (
-    <div className="group flex cursor-pointer flex-col items-center gap-1">
+    <div className="group flex flex-col items-center gap-1">
       <div className="invisible flex h-3 w-10 flex-row justify-end gap-0.5 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
         <svg
           onClick={() => instance.deleteElements({ nodes: [{ id: id }] })}
-          className="h-3 w-3 text-white hover:text-accent"
+          className="h-3 w-3 cursor-pointer text-white hover:text-accent"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -29,7 +29,7 @@ function NodeBox({ id, data, isConnectable }: NodeProps<NodeDataType>) {
         </svg>
 
         <svg
-          className="h-3 w-3 hover:text-accent dark:text-white"
+          className="h-3 w-3 cursor-pointer hover:text-accent dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -45,7 +45,7 @@ function NodeBox({ id, data, isConnectable }: NodeProps<NodeDataType>) {
           />
         </svg>
       </div>
-      <div className="relative h-9 w-13 rounded-lg border-2 border-patina-400 bg-patina-200 text-center shadow-lg">
+      <div className="relative h-9 w-13 cursor-pointer rounded-lg border-2 border-patina-400 bg-patina-200 text-center shadow-lg">
         <div>
           {["input", "input-output"].indexOf(data.type) > -1 && (
             <Handle
@@ -78,4 +78,4 @@ function NodeBox({ id, data, isConnectable }: NodeProps<NodeDataType>) {
   );
 }
 
-export default NodeBox;
+export default Component;

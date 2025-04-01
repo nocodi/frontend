@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 
-import NodeBox from "../components/NodeBox";
+import Component from "./Component";
 
 import ReactFlow, {
   useReactFlow,
@@ -18,7 +18,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { DnDProvider, useDnD } from "../components/DnDContext";
-import NodeListSidebar from "../components/NodeListSidebar";
+import ComponentList from "./ComponentList";
 
 const initialNodes = [
   {
@@ -49,7 +49,7 @@ const getId = () => `${id++}`;
 
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
-const nodeTypes = { customNode: NodeBox };
+const nodeTypes = { customNode: Component };
 
 function Flow() {
   // Node Panel
@@ -126,7 +126,7 @@ function Flow() {
           </svg>
         </div>
         <div className="relative">
-          <NodeListSidebar
+          <ComponentList
             isOpen={isPanelOpen}
             onClose={() => setIsPanelOpen(false)}
           />
