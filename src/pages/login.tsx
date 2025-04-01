@@ -5,103 +5,104 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
 
+    if (!value) {
+      setErrors((prev) => ({ ...prev, email: "Enter Email" }));
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setErrors((prev) => ({ ...prev, email: "Email is invalid" }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (!value) {
+      setErrors((prev) => ({ ...prev, password: "Enter Password" }));
+    // }
+    //  else if (value.length < 6) {
+    //   setErrors((prev) => ({ ...prev, password: "رمز عبور باید حداقل ۶ کاراکتر باشد" }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors("");
-    setLoading(true);
+    if (!email || !password) return;
 
-    try{
-      const response = await axios.post("http://api.nocodi.ir/iam/login/pasword/", {
-        email: email,
-        password: password
+    setLoading(true);
+    try {
+      const response = await axios.post("http://api.nocodi.ir/iam/login/password/", {
+        email,
+        password
       });
-      if(response.status == 200){
-        console.log(response.status);
-        console.log(response.data);
+      
+      if (response.status === 200) {
         localStorage.setItem("token", response.data.access_token);
-        // navigate("/forgetPassword");
-        toast.success("ورود موفقیت آمیز بود", {
-          position: "top-right",
-          autoClose: 3000,
-      });
-      }
-      else{
-        console.log(response.status);
-        toast.error("ورود ناموفق بود", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        toast.success("You are successfully logged in", { position: "top-right", autoClose: 3000 });
+        navigate("/");
       }
     } catch (err) {
-      // setError(err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید.");
-      toast.error("خطایی رخ داد. لطفاً دوباره امتحان کنید.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    }
-    finally {
+      const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
+      toast.error(errorMessage, { position: "top-right", autoClose: 3000 });
+    } finally {
       setLoading(false);
-    }
-  
-    let validationErrors = {};
-    if (!email) validationErrors.email = "ایمیل را وارد کنید";
-    if (!password) validationErrors.password = "رمز عبور را وارد کنید";
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length === 0) {
-      console.log("Form submitted", { email, password });
     }
   };
 
   return (
-    <AuthLayout title="ورود">
+    <AuthLayout title="Login">
       <ToastContainer />
-      <form onSubmit={handleSubmit} className="bg-patina-50 p-6 rounded-xl shadow-md">
+      <form onSubmit={handleSubmit} className="bg-patina-50 p-12 rounded-xl shadow-md w-1/2 relative overflow-hidden">
         <div className="form-control">
-          <label className="label text-patina-700">ایمیل</label>
+          <label className="label text-patina-700">Email</label>
           <input 
             type="email" 
-            placeholder="ایمیل خود را وارد کنید" 
+            placeholder="Enter your email" 
             className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-1 focus:ring-patina-400 ${errors.email ? 'border-red-500' : 'border-patina-500'}`}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
           />
           {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
         </div>
         
         <div className="form-control mt-4">
-          <label className="label text-patina-700">رمز عبور</label>
+          <label className="label text-patina-700">Password</label>
           <input 
             type="password" 
-            placeholder="رمز عبور خود را وارد کنید" 
+            placeholder="Enter your password" 
             className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.password ? 'border-red-500' : 'border-patina-500'}`}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
           />
           {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
         </div>
         
         <button className="btn btn-patina w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" type="submit" disabled={loading}>
-          {loading ? "در حال ورود..." : "ورود"}
+          {loading ? "logging in.." : "Login"}
         </button>
         
         <p className="text-center mt-4 text-sm text-patina-700">
-          حساب کاربری ندارید؟ <a href="/signup" className="text-patina-500 hover:text-patina-700">ثبت نام</a>
+          Don't you have an account?<a href="/signup" className="text-patina-500 hover:text-patina-700">Signup</a>
         </p>
         <p className="text-center mt-4 text-sm text-patina-700">
-          ورود بدون رمز عبور؟ <a href="/forgetPassword" className="text-patina-500 hover:text-patina-700">ورود</a>
+          Login without password?<a href="/forgetPassword" className="text-patina-500 hover:text-patina-700">Enter</a>
         </p>
       </form>
+      <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>
+
     </AuthLayout>
   );
 }

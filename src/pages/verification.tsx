@@ -13,7 +13,7 @@ export default function Verification() {
         if (storedRequestId) {
             setRequestId(storedRequestId);
         } else {
-            setErrors({ code: "لطفاً ابتدا ثبت نام کنید." });
+            setErrors({ code: "Please register first." });
         }
     }, []);
 
@@ -23,7 +23,7 @@ export default function Verification() {
         setLoading(true);
 
         if (!requestId) {
-            setErrors({ code: "کد درخواست یافت نشد. لطفاً دوباره ثبت‌نام کنید." });
+            setErrors({ code: "Request code not found. Please register again." });
             setLoading(false);
             return;
         }
@@ -40,22 +40,22 @@ export default function Verification() {
                 console.log(response.status);
             }
         } catch (err) {
-            setErrors({ code: err.response?.data?.message || "خطایی رخ داد. لطفاً دوباره امتحان کنید." });
+            setErrors({ code: err.response?.data?.message || "An error occurred. Please try again." });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <AuthLayout title="تایید ایمیل">
-            <form onSubmit={handleVerification} className="bg-patina-50 p-6 rounded-xl shadow-md">
+        <AuthLayout title="Email Verification">
+            <form onSubmit={handleVerification} className="bg-patina-50 p-12 rounded-xl shadow-md w-1/2 relative overflow-hidden" dir="ltr">
                 <div className="form-control">
                     <label className="label text-patina-700 text-lg font-medium">
                         کد تایید
                     </label>
                     <input
                         type="text"
-                        placeholder="کد تایید را وارد کنید"
+                        placeholder="Enter verification code"
                         className="input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 text-center text-sm tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400"
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
@@ -63,9 +63,11 @@ export default function Verification() {
                     {errors.code && <p className="text-red-500 text-sm">{errors.code}</p>}
                 </div>
                 <button className="btn w-full mt-6 bg-patina-500 text-patina-100 hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
-                    {loading ? "در حال تایید..." : "تایید"}
+                    {loading ? "Verifying..." : "Verify"}
                 </button>
             </form>
+            <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>
+
         </AuthLayout>
     );
 }
