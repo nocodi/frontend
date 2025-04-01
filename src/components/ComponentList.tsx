@@ -1,26 +1,48 @@
 import React from "react";
 import { useDnD } from "./DnDContext";
+import ComponentType from "../types/Component";
 
-function NodeListSidebar({
+function ComponentList({
   isOpen,
   onClose,
+  addSelectedComponent,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  addSelectedComponent: (component: ComponentType) => void;
 }) {
-  const setType = useDnD()[1];
+  const setComponent = useDnD()[1];
+
+  const components: ComponentType[] = [
+    {
+      id: 0,
+      name: "abcd",
+      description: "anfonafjnaojfnasojfnonsa",
+      path: "input",
+      type: "input-output",
+      schema: {
+        prop1: "",
+        prop2: "",
+      },
+    },
+  ];
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeType: string,
+    component: ComponentType,
   ) => {
-    setType(nodeType);
+    setComponent(component);
     event.dataTransfer.effectAllowed = "move";
+  };
+
+  const clickedOnComponent = (component: ComponentType) => {
+    addSelectedComponent(component);
+    onClose();
   };
 
   return (
     <div
-      className={`absolute right-0 z-1 flex h-screen w-64 bg-patina-300 transition-transform duration-400 ${
+      className={`absolute right-0 z-1 flex h-screen w-67 bg-patina-300 transition-transform duration-400 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -51,7 +73,7 @@ function NodeListSidebar({
             </button>
           </div>
           <h1 className="w-full p-4 text-center font-bold">
-            Drag and Drop Nodes
+            Drag and Drop Components
           </h1>
         </div>
         <label className="input mx-2 mb-2 h-10 w-60 border-2 border-patina-700 bg-patina-300">
@@ -74,27 +96,17 @@ function NodeListSidebar({
           <input type="search" className="grow" placeholder="Search" />
         </label>
         <div className="flex flex-col gap-3">
-          <div
-            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
-            onDragStart={(event) => onDragStart(event, "input")}
-            draggable
-          >
-            <div className="ml-5 text-sm">Input Node</div>
-          </div>
-          <div
-            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
-            onDragStart={(event) => onDragStart(event, "input-output")}
-            draggable
-          >
-            <div className="ml-5 text-sm">Def Node</div>
-          </div>
-          <div
-            className="tansition-all h-15 w-full content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
-            onDragStart={(event) => onDragStart(event, "output")}
-            draggable
-          >
-            <div className="ml-5 text-sm">Output Node</div>
-          </div>
+          {components.map((item) => (
+            <div
+              onClick={() => clickedOnComponent(item)}
+              className="tansition-all h-15 w-full cursor-pointer content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
+              onDragStart={(event) => onDragStart(event, item)}
+              draggable
+            >
+              <div className="ml-5 text-sm">{item.name}</div>
+            </div>
+          ))}
+
           <div className="h-15"></div>
         </div>
       </div>
@@ -102,4 +114,4 @@ function NodeListSidebar({
   );
 }
 
-export default NodeListSidebar;
+export default ComponentList;
