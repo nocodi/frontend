@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 
 import Component from "./Component";
+import ComponentType from "../types/Component";
 
 import ReactFlow, {
   useReactFlow,
@@ -20,53 +21,49 @@ import "reactflow/dist/style.css";
 import { DnDProvider, useDnD } from "../components/DnDContext";
 import ComponentList from "./ComponentList";
 
-const initialNodes = [
-  {
-    id: "1",
-    type: "customNode",
-    position: { x: 0, y: 0 },
-    selected: false,
-    data: { label: "Hi", type: "input" },
-  },
-  {
-    id: "2",
-    type: "customNode",
-    position: { x: 150, y: 150 },
-    selected: false,
-    data: { label: "Middle", type: "input-output" },
-  },
-  {
-    id: "3",
-    type: "customNode",
-    position: { x: 300, y: 300 },
-    selected: false,
-    data: { label: "Bye", type: "output" },
-  },
-];
-
-let id: number = initialNodes.length + 1;
+let id: number = 1;
 const getId = () => `${id++}`;
 
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+// const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
 const nodeTypes = { customNode: Component };
 
 function Flow() {
-  // Node Panel
+  // Component Panel
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   // Edges and Nodes
-  const [nodes, setNodes, onNodeChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodeChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const reactFlowWrapper = useRef(null);
   const { screenToFlowPosition } = useReactFlow();
-  const [type] = useDnD();
+  const [component] = useDnD();
 
   const onConnect = useCallback(
     (connection: Edge | Connection) =>
       setEdges((eds) => addEdge(connection, eds)),
     [setEdges],
+  );
+
+  const makeNewComponent = useCallback(
+    (component: ComponentType, x?: number, y?: number) => {
+      const position = screenToFlowPosition({
+        x: x ? x : window.innerWidth / 2,
+        y: y ? y : window.innerHeight / 2,
+      });
+
+      const newComponent = {
+        id: `${component.id}${getId()}`,
+        type: "customNode",
+        position: position,
+        selected: false,
+        data: component,
+      };
+
+      setNodes((nds) => nds.concat(newComponent));
+    },
+    [setNodes, screenToFlowPosition],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -79,26 +76,18 @@ function Flow() {
       event.preventDefault();
 
       // check if the dropped element is valid
-      if (!type) {
+      if (!component) {
         return;
       }
 
-      const position = screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-      const newNode = {
-        id: getId(),
-        type: "customNode",
-        position,
-        selected: false,
-        data: { label: `node ${id}`, type: type },
-      };
-      console.log("hi");
-      setNodes((nds) => nds.concat(newNode));
+      makeNewComponent(component, event.clientX, event.clientY);
     },
-    [screenToFlowPosition, type, setNodes],
+    [component, makeNewComponent],
   );
+
+  const addSelectedComponent = (component: ComponentType) => {
+    makeNewComponent(component);
+  };
 
   return (
     <div className="h-full w-full">
@@ -129,6 +118,7 @@ function Flow() {
           <ComponentList
             isOpen={isPanelOpen}
             onClose={() => setIsPanelOpen(false)}
+            addSelectedComponent={addSelectedComponent}
           />
         </div>
         <div

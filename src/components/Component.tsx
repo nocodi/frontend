@@ -1,11 +1,7 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
+import ComponentType from "../types/Component";
 
-type NodeDataType = {
-  label: string;
-  type: string;
-};
-
-function Component({ id, data, isConnectable }: NodeProps<NodeDataType>) {
+function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const instance = useReactFlow();
 
   return (
@@ -72,7 +68,7 @@ function Component({ id, data, isConnectable }: NodeProps<NodeDataType>) {
             />
           )}
         </div>
-        <div className="text-sm">{data.label}</div>
+        <div className="text-sm">{data.name}</div>
       </div>
     </div>
   );

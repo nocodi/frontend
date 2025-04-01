@@ -1,21 +1,43 @@
 import React from "react";
 import { useDnD } from "./DnDContext";
+import ComponentType from "../types/Component";
 
 function ComponentList({
   isOpen,
   onClose,
+  addSelectedComponent,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  addSelectedComponent: (component: ComponentType) => void;
 }) {
-  const setType = useDnD()[1];
+  const setComponent = useDnD()[1];
+
+  const components: ComponentType[] = [
+    {
+      id: 0,
+      name: "abcd",
+      description: "anfonafjnaojfnasojfnonsa",
+      path: "input",
+      type: "input-output",
+      schema: {
+        prop1: "",
+        prop2: "",
+      },
+    },
+  ];
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    nodeType: string,
+    component: ComponentType,
   ) => {
-    setType(nodeType);
+    setComponent(component);
     event.dataTransfer.effectAllowed = "move";
+  };
+
+  const clickedOnComponent = (component: ComponentType) => {
+    addSelectedComponent(component);
+    onClose();
   };
 
   return (
@@ -51,7 +73,7 @@ function ComponentList({
             </button>
           </div>
           <h1 className="w-full p-4 text-center font-bold">
-            Drag and Drop Nodes
+            Drag and Drop Components
           </h1>
         </div>
         <label className="input mx-2 mb-2 h-10 w-60 border-2 border-patina-700 bg-patina-300">
@@ -74,24 +96,14 @@ function ComponentList({
           <input type="search" className="grow" placeholder="Search" />
         </label>
         <div className="flex flex-col gap-3">
-          {[
-            "input",
-            "output",
-            "input-output",
-            "input",
-            "output",
-            "input",
-            "input-output",
-            "input",
-            "input",
-            "input",
-          ].map((item) => (
+          {components.map((item) => (
             <div
+              onClick={() => clickedOnComponent(item)}
               className="tansition-all h-15 w-full cursor-pointer content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
               onDragStart={(event) => onDragStart(event, item)}
               draggable
             >
-              <div className="ml-5 text-sm">{item}</div>
+              <div className="ml-5 text-sm">{item.name}</div>
             </div>
           ))}
 
