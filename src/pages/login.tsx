@@ -51,12 +51,12 @@ export default function Login() {
       
       if (response.status === 200) {
         localStorage.setItem("token", response.data.access_token);
-        toast.success("You are successfully logged in", { position: "top-right", autoClose: 3000 });
+        toast.success("You are successfully logged in", { position: "top-left", autoClose: 3000 });
         navigate("/");
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
-      toast.error(errorMessage, { position: "top-right", autoClose: 3000 });
+      toast.error(errorMessage, { position: "top-left", autoClose: 3000 });
     } finally {
       setLoading(false);
     }
@@ -98,7 +98,7 @@ export default function Login() {
           Don't you have an account?<a href="/signup" className="text-patina-500 hover:text-patina-700">Signup</a>
         </p>
         <p className="text-center mt-4 text-sm text-patina-700">
-          Login without password?<a href="/forgetPassword" className="text-patina-500 hover:text-patina-700">Enter</a>
+          Login without password?<a href="/passwordlessLogin" className="text-patina-500 hover:text-patina-700">Enter</a>
         </p>
       </form>
       <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>

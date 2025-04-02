@@ -1,6 +1,7 @@
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function LoginVerification() {
     const [code, setCode] = useState("");
@@ -35,22 +36,26 @@ export default function LoginVerification() {
 
             if (response.status === 201) {
                 console.log(response.data);
+                toast.success("You are successfully logged in", {position: "top-left", autoClose: 3000})
             } else {
                 console.log(response.status);
             }
         } catch (err) {
-            setErrors({ code: err.response?.data?.message || "An error occurred. Please try again." });
+            const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
+            // setErrors({ code: err.response?.data?.message || "An error occurred. Please try again." });
+            toast.error(errorMessage, {position: "top-left", autoClose: 3000})
         } finally {
-            setLoading(false);
+            setLoading(false);  
         }
     };
 
     return (
         <AuthLayout title="Email Verification">
+            <ToastContainer />
             <form onSubmit={handleVerification} className="bg-patina-50 p-12 w-1/2 rounded-xl shadow-md relative overflow-hidden" dir="ltr">
                 <div className="form-control">
                     <label className="label text-patina-700 text-lg font-medium">
-                        کد تایید
+                        Verification Code 
                     </label>
                     <input
                         type="text"

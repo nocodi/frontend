@@ -55,7 +55,7 @@ export default function Signup() {
                 console.log(response.data);
                 localStorage.setItem("request_id", response.data.request_id);
                 toast.success("Registration was successful", {
-                    position: "top-right",
+                    position: "top-left",
                     autoClose: 3000,
                 });
                 navigate("/verification");
@@ -63,7 +63,7 @@ export default function Signup() {
             else{
                 console.log(response.status);
                 toast.error("Registration failed", {
-                    position: "top-right",
+                    position: "top-left",
                     autoClose: 3000,
                 });
             }
@@ -78,6 +78,7 @@ export default function Signup() {
     };
     return (
         <AuthLayout title="SignUp">
+            <ToastContainer />
             <form onSubmit={handleSignup} className="bg-patina-50 p-16 rounded-xl shadow-md w-1/2 relative overflow-hidden" dir="ltr">
                 <div className="form-control">
                     <label className="label text-patina-700">

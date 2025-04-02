@@ -2,6 +2,7 @@ import AuthLayout from "../components/authLayout";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 
 export default function ForgetPassword() {
@@ -38,12 +39,15 @@ export default function ForgetPassword() {
                 console.log(response.data);
                 localStorage.setItem("request_id", response.data.request_id);
                 navigate("/loginVerification");
+                toast.success("You are successfully logged in", {position: "top-left", autoClose: 3000})
             } else {
                 console.log(response.status);
             }
         }
         catch (err) {
-            setErrors(err.response?.data?.message || "An error occurred. Please try again.");
+            const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
+            // setErrors(err.response?.data?.message || "An error occurred. Please try again.");
+            toast.error(errorMessage, {position: "top-left", autoClose: 3000})
         }
         finally {
             setLoading(false);
@@ -52,6 +56,7 @@ export default function ForgetPassword() {
 
     return(
     <AuthLayout title="Passwordless Login">
+        <ToastContainer />
         <form onSubmit={handleForgetPassword} className="bg-patina-50 p-15 w-1/2 rounded-xl shadow-md relative overflow-hidden" dir="ltr">
             <div className="form-control">
                 <label className="label text-patina-700">Email</label>
