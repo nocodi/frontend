@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function LoginVerification() {
+
     const [code, setCode] = useState("");
     const [errors, setErrors] = useState({ code: "" });
     const [loading, setLoading] = useState(false);
@@ -17,10 +18,12 @@ export default function LoginVerification() {
         }
     }, []);
 
-    const handleVerification = async (e) => {
-        e.preventDefault();
-        setErrors({ code: "" });
-        setLoading(true);
+
+  const handleVerification = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrors({ code: "" });
+    setLoading(true);
+
 
         if (!requestId) {
             setErrors({ code: "Request code not found. Please register again." });
@@ -28,11 +31,15 @@ export default function LoginVerification() {
             return;
         }
 
-        try {
-            const response = await axios.post("http://api.nocodi.ir/iam/login/otp/verify/", { 
-                otp: code,
-                request_id: requestId,
-            });
+
+    try {
+      const response = await axios.post(
+        "http://api.nocodi.ir/iam/login/otp/verify/",
+        {
+          otp: code,
+          request_id: requestId,
+        },
+      );
 
             if (response.status === 201) {
                 console.log(response.data);
@@ -47,7 +54,7 @@ export default function LoginVerification() {
         } finally {
             setLoading(false);  
         }
-    };
+  };
 
     return (
         <AuthLayout title="Email Verification">

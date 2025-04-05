@@ -1,7 +1,6 @@
 import { useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
@@ -60,11 +60,22 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  }
+
+    const validationErrors = { email: "", password: "" };
+    if (!email) validationErrors.email = "ایمیل را وارد کنید";
+    if (!password) validationErrors.password = "رمز عبور را وارد کنید";
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+      console.log("Form submitted", { email, password });
+    }
   };
 
   return (
     <AuthLayout title="Login">
       <ToastContainer />
+
       <form onSubmit={handleSubmit} className="bg-patina-50 p-12 rounded-xl shadow-md w-1/2 relative overflow-hidden">
         <div className="form-control">
           <label className="label text-patina-700">Email</label>
@@ -75,10 +86,13 @@ export default function Login() {
             value={email}
             onChange={handleEmailChange}
           />
-          {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
+          {errors.email && (
+            <span className="text-sm text-red-500">{errors.email}</span>
+          )}
         </div>
-        
+
         <div className="form-control mt-4">
+
           <label className="label text-patina-700">Password</label>
           <input 
             type="password" 
@@ -87,9 +101,10 @@ export default function Login() {
             value={password}
             onChange={handlePasswordChange}
           />
-          {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
+          {errors.password && (
+            <span className="text-sm text-red-500">{errors.password}</span>
+          )}
         </div>
-        
         <button className="btn btn-patina w-full mt-6 bg-patina-500 text-white hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" type="submit" disabled={loading}>
           {loading ? "logging in.." : "Login"}
         </button>

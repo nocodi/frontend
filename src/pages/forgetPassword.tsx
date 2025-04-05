@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
-
 export default function ForgetPassword() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
@@ -48,11 +47,10 @@ export default function ForgetPassword() {
             const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
             // setErrors(err.response?.data?.message || "An error occurred. Please try again.");
             toast.error(errorMessage, {position: "top-left", autoClose: 3000})
-        }
-        finally {
-            setLoading(false);
-        }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return(
     <AuthLayout title="Passwordless Login">
@@ -74,8 +72,6 @@ export default function ForgetPassword() {
             </button>
         </form>
         <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>
-
-
     </AuthLayout>
-    );
+  );
 }

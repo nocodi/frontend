@@ -1,4 +1,11 @@
-export default function AuthLayout({ children, title }) {
+import { ReactNode } from "react";
+
+interface AuthLayoutProps {
+  children: ReactNode;
+  title: string;
+}
+
+export default function AuthLayout({ children, title }: AuthLayoutProps) {
   return (
     <div className="flex justify-center items-center min-h-screen bg-patina-50">
       <div className="card w-200 bg-patina-100 shadow-lg p-6 rounded-xl">
