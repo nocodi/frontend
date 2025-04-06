@@ -7,7 +7,7 @@ const arrowStates: readonly string[] = [
   "",
 ];
 
-function SidePanel() {
+function MainSidebar() {
   const [panelState, setPanelState] = useState(0);
   // side panel functions-------------
   function handleExpand(): void {
@@ -67,4 +67,4 @@ function SidePanel() {
   );
 }
 
-export default SidePanel;
+export default MainSidebar;
