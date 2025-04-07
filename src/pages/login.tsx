@@ -39,7 +39,6 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const validationErrors = {};
     if (!email) validationErrors.email = "Enter Email";
     if (!password) validationErrors.password = "Enter Password";
