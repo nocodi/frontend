@@ -61,7 +61,7 @@ export default function Verification() {
             <form onSubmit={handleVerification} className="bg-patina-50 p-12 rounded-xl shadow-md w-1/2 relative overflow-hidden" dir="ltr">
                 <div className="form-control">
                     <label className="label text-patina-700 text-lg font-medium">
-                        کد تایید
+                        Verification Code 
                     </label>
                     <input
                         type="text"
