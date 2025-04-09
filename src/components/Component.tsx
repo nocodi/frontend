@@ -1,5 +1,5 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
-import ComponentType from "../types/Component";
+import { ComponentType } from "../types/Component";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const instance = useReactFlow();
@@ -43,32 +43,30 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       </div>
       <div className="relative h-9 w-13 cursor-pointer rounded-lg border-2 border-patina-400 bg-patina-200 text-center shadow-lg">
         <div>
-          {["input", "input-output"].indexOf(data.type) > -1 && (
-            <Handle
-              type="source"
-              position={Position.Right}
-              isConnectable={isConnectable}
-              style={{
-                width: 7,
-                height: 7,
-              }}
-            ></Handle>
-          )}
-          {["output", "input-output"].indexOf(data.type) > -1 && (
-            <Handle
-              type="target"
-              position={Position.Left}
-              isConnectable={isConnectable}
-              isConnectableStart={false}
-              style={{
-                width: 1,
-                height: 8,
-                borderRadius: 1,
-              }}
-            />
-          )}
+          <Handle
+            type="source"
+            position={Position.Right}
+            isConnectable={isConnectable}
+            style={{
+              width: 7,
+              height: 7,
+            }}
+            s
+          ></Handle>
+
+          <Handle
+            type="target"
+            position={Position.Left}
+            isConnectable={isConnectable}
+            isConnectableStart={false}
+            style={{
+              width: 1,
+              height: 8,
+              borderRadius: 1,
+            }}
+          />
         </div>
-        <div className="text-sm">{data.name}</div>
+        <div className="inline-block align-middle text-[2px]">{data.name}</div>
       </div>
     </div>
   );
