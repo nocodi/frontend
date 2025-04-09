@@ -21,9 +21,6 @@ import "reactflow/dist/style.css";
 
 import { DnDProvider, useDnD } from "../components/DnDContext";
 
-let id: number = 1;
-const getId = () => `${id++}`;
-
 // const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
 const nodeTypes = { customNode: Component };
@@ -54,7 +51,7 @@ function Flow() {
       });
 
       const newComponent = {
-        id: `${component.id}${getId()}`,
+        id: `${component.id}`,
         type: "customNode",
         position: position,
         selected: false,
@@ -122,7 +119,6 @@ function Flow() {
           >
             {isPanelOpen && (
               <ComponentList
-                isOpen={isPanelOpen}
                 onClose={() => setIsPanelOpen(false)}
                 addSelectedComponent={addSelectedComponent}
               />
