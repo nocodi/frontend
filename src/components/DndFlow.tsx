@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState } from "react";
 
 import Component from "./Component";
-import ComponentType from "../types/Component";
+import { ComponentType } from "../types/Component";
+import ComponentList from "./ComponentList";
 
 import ReactFlow, {
   useReactFlow,
@@ -19,7 +20,6 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import { DnDProvider, useDnD } from "../components/DnDContext";
-import ComponentList from "./ComponentList";
 
 let id: number = 1;
 const getId = () => `${id++}`;
@@ -115,12 +115,21 @@ function Flow() {
           </svg>
         </div>
         <div className="relative">
-          <ComponentList
-            isOpen={isPanelOpen}
-            onClose={() => setIsPanelOpen(false)}
-            addSelectedComponent={addSelectedComponent}
-          />
+          <div
+            className={`absolute right-0 z-1 flex h-screen w-67 bg-patina-300 transition-transform duration-400 ${
+              isPanelOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {isPanelOpen && (
+              <ComponentList
+                isOpen={isPanelOpen}
+                onClose={() => setIsPanelOpen(false)}
+                addSelectedComponent={addSelectedComponent}
+              />
+            )}
+          </div>
         </div>
+
         <div
           className="h-full w-full rounded-lg border border-gray-700"
           ref={reactFlowWrapper}
