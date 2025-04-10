@@ -46,8 +46,8 @@ function Flow() {
   const makeNewComponent = useCallback(
     (component: ComponentType, x?: number, y?: number) => {
       const position = screenToFlowPosition({
-        x: x ? x : window.innerWidth / 2,
-        y: y ? y : window.innerHeight / 2,
+        x: x ?? window.innerWidth / 2,
+        y: y ?? window.innerHeight / 2,
       });
 
       const newComponent = {
