@@ -1,4 +1,4 @@
-interface SchemaType {
+export interface SchemaType {
   type: string;
   required: boolean;
 }
