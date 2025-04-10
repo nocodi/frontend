@@ -111,19 +111,18 @@ function Flow() {
             />
           </svg>
         </div>
-        <div className="relative">
-          <div
-            className={`absolute right-0 z-1 flex h-screen w-67 bg-patina-300 transition-transform duration-400 ${
-              isPanelOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            {isPanelOpen && (
-              <ComponentList
-                onClose={() => setIsPanelOpen(false)}
-                addSelectedComponent={addSelectedComponent}
-              />
-            )}
-          </div>
+
+        <div
+          className={`absolute right-0 z-1 flex h-full w-67 bg-patina-300 transition-transform duration-400 ${
+            isPanelOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {isPanelOpen && (
+            <ComponentList
+              onClose={() => setIsPanelOpen(false)}
+              addSelectedComponent={addSelectedComponent}
+            />
+          )}
         </div>
 
         <div
