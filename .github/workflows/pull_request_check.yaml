@@ -1,0 +1,44 @@
+name: Check Code on Pull Request Commit
+
+on:
+  pull_request:
+    types:
+      - synchronize # Triggered when new commits are pushed to a PR
+      - opened # Triggered when a PR is opened
+      - reopened # Triggered when a PR is reopened
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts"
+
+      # Cache npm dependencies
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm # Path to cache npm modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build:check
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run prettier
+        run: npm run pretty:check
