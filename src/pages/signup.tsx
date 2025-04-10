@@ -46,10 +46,6 @@ export default function Signup() {
       const response = await api.post("iam/signup/", { email, password });
       localStorage.setItem("request_id", response.data.request_id);
       localStorage.setItem("request_type", "signup");
-      toast.success("Registration was successful", {
-        position: "top-left",
-        autoClose: 3000,
-      });
       await navigate("/verification");
     } catch (err) {
       const errorMessage =

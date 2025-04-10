@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../services/Auth";
 
 const CheckNoAuthWrapper = () => {
-  const isAuthenticated = use(AuthContext);
+  const { isAuthenticated } = use(AuthContext);
   return isAuthenticated ? <Navigate to="/" /> : <Outlet />;
 };
 
