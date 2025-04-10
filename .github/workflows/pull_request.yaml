@@ -2,11 +2,11 @@ name: Notify Telegram on Pull Request
 
 on:
   pull_request:
-    types: [opened, reopened, closed, merged]
+    types: [opened, reopened, closed]
 
 jobs:
   notify-telegram:
-    environment:  SE shared
+    environment: SE shared
     runs-on: ubuntu-latest
     steps:
       - name: notify

@@ -9,27 +9,25 @@ export default function Verification() {
   const [loading, setLoading] = useState(false);
   const [requestId, setRequestId] = useState("");
 
-    useEffect(() => {
-        const storedRequestId = localStorage.getItem("request_id");
-        if (storedRequestId) {
-            setRequestId(storedRequestId);
-        } else {
-            setErrors({ code: "Please register first." });
-        }
-    }, []);
-
+  useEffect(() => {
+    const storedRequestId = localStorage.getItem("request_id");
+    if (storedRequestId) {
+      setRequestId(storedRequestId);
+    } else {
+      setErrors({ code: "Please register first." });
+    }
+  }, []);
 
   const handleVerification = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({ code: "" });
     setLoading(true);
 
-        if (!requestId) {
-            setErrors({ code: "Request code not found. Please register again." });
-            setLoading(false);
-            return;
-        }
-
+    if (!requestId) {
+      setErrors({ code: "Request code not found. Please register again." });
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -40,44 +38,55 @@ export default function Verification() {
         },
       );
 
-            if (response.status === 201) {
-                console.log(response.data);
-                toast.success("You are successfully verified!", {position: "top-left", autoClose: 3000})
-            } else {
-                console.log(response.status);
-            }
-        } catch (err) {
-            const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
-            // setErrors({ code: err.response?.data?.message || "An error occurred. Please try again." });
-            toast.error(errorMessage, {position: "top-left", autoClose: 3000})
-        } finally {
-            setLoading(false);
-         }
+      if (response.status === 201) {
+        console.log(response.data);
+        toast.success("You are successfully verified!", {
+          position: "top-left",
+          autoClose: 3000,
+        });
+      } else {
+        console.log(response.status);
+      }
+    } catch (err) {
+      const errorMessage =
+        axios.isAxiosError(err) ?
+          err.response?.data?.message || err.message
+        : "An unexpected error occurred.";
+      toast.error(errorMessage, { position: "top-left", autoClose: 3000 });
+    } finally {
+      setLoading(false);
+    }
   };
 
-    return (
-        <AuthLayout title="Email Verification">
-            <ToastContainer />
-            <form onSubmit={handleVerification} className="bg-patina-50 p-12 rounded-xl shadow-md w-1/2 relative overflow-hidden" dir="ltr">
-                <div className="form-control">
-                    <label className="label text-patina-700 text-lg font-medium">
-                        Verification Code 
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Enter verification code"
-                        className="input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 text-center text-sm tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                    />
-                    {errors.code && <p className="text-red-500 text-sm">{errors.code}</p>}
-                </div>
-                <button className="btn w-full mt-6 bg-patina-500 text-white hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" disabled={loading}>
-                    {loading ? "Verifying..." : "Verify"}
-                </button>
-            </form>
-            <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>
-
-        </AuthLayout>
-    );
+  return (
+    <AuthLayout title="Email Verification">
+      <ToastContainer />
+      <form
+        onSubmit={handleVerification}
+        className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-12 shadow-md"
+        dir="ltr"
+      >
+        <div className="form-control">
+          <label className="label text-lg font-medium text-patina-700">
+            Verification Code
+          </label>
+          <input
+            type="text"
+            placeholder="Enter verification code"
+            className="input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 text-center text-sm tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
+        </div>
+        <button
+          className="btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          disabled={loading}
+        >
+          {loading ? "Verifying..." : "Verify"}
+        </button>
+      </form>
+      <div className="absolute top-0 right-0 h-full w-1/2 rounded-r-xl bg-patina-500"></div>
+    </AuthLayout>
+  );
 }
