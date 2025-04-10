@@ -2,8 +2,9 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import api from "../services/api";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -39,30 +40,17 @@ export default function Signup() {
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
-    // setErrors("");
     setLoading(true);
 
     try {
-      const response = await axios.post("iam/signup/", {
-        email,
-        password,
+      const response = await api.post("iam/signup/", { email, password });
+      localStorage.setItem("request_id", response.data.request_id);
+      localStorage.setItem("request_type", "signup");
+      toast.success("Registration was successful", {
+        position: "top-left",
+        autoClose: 3000,
       });
-      if (response.status == 201) {
-        console.log(response.status);
-        console.log(response.data);
-        localStorage.setItem("request_id", response.data.request_id);
-        toast.success("Registration was successful", {
-          position: "top-left",
-          autoClose: 3000,
-        });
-        await navigate("/verification");
-      } else {
-        console.log(response.status);
-        toast.error("Registration failed", {
-          position: "top-left",
-          autoClose: 3000,
-        });
-      }
+      await navigate("/verification");
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
@@ -75,11 +63,9 @@ export default function Signup() {
   };
   return (
     <AuthLayout title="SignUp">
-      <ToastContainer />
       <form
         onSubmit={handleSignup}
         className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-16 shadow-md"
-        dir="ltr"
       >
         <div className="form-control">
           <label className="label text-patina-700">Email</label>
@@ -118,7 +104,7 @@ export default function Signup() {
 
         <p className="mt-4 text-center text-sm text-patina-700">
           Do you have an account?
-          <a href="/" className="text-patina-500 hover:text-patina-700">
+          <a href="/login" className="text-patina-500 hover:text-patina-700">
             Enter
           </a>
         </p>

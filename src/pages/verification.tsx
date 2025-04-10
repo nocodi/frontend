@@ -1,52 +1,51 @@
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
-import { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { use, useState } from "react";
+import { toast } from "react-toastify";
+import api from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../services/Auth";
+
+const getRequestId = () => localStorage.getItem("request_id");
 
 export default function Verification() {
   const [code, setCode] = useState("");
   const [errors, setErrors] = useState({ code: "" });
   const [loading, setLoading] = useState(false);
-  const [requestId, setRequestId] = useState("");
+  const navigate = useNavigate();
+  const { login } = use(AuthContext);
 
-  useEffect(() => {
-    const storedRequestId = localStorage.getItem("request_id");
-    if (storedRequestId) {
-      setRequestId(storedRequestId);
-    } else {
-      setErrors({ code: "Please register first." });
-    }
-  }, []);
+  if (!getRequestId()) void navigate("/login");
 
   const handleVerification = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!code) {
+      setErrors({ code: "Please enter the code" });
+      return;
+    }
     setErrors({ code: "" });
     setLoading(true);
 
-    if (!requestId) {
-      setErrors({ code: "Request code not found. Please register again." });
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.post(
-        "http://api.nocodi.ir/iam/signup/verify/",
-        {
-          otp: code,
-          request_id: requestId,
-        },
-      );
-
-      if (response.status === 201) {
-        console.log(response.data);
-        toast.success("You are successfully verified!", {
-          position: "top-left",
-          autoClose: 3000,
-        });
-      } else {
-        console.log(response.status);
+      const requestType = localStorage.getItem("request_type");
+      let requestPath;
+      if (requestType == "login") requestPath = "iam/login/otp/verify/";
+      else if (requestType == "signup") requestPath = "iam/signup/verify/";
+      else {
+        await navigate("/login");
+        return;
       }
+
+      const response = await api.post(requestPath, {
+        otp: code,
+        request_id: getRequestId(),
+      });
+
+      login(response.data.access_token);
+      toast.success("You are successfully logged in", {
+        position: "top-left",
+        autoClose: 3000,
+      });
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
@@ -60,11 +59,9 @@ export default function Verification() {
 
   return (
     <AuthLayout title="Email Verification">
-      <ToastContainer />
       <form
         onSubmit={handleVerification}
         className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-12 shadow-md"
-        dir="ltr"
       >
         <div className="form-control">
           <label className="label text-lg font-medium text-patina-700">

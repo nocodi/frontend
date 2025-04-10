@@ -3,12 +3,12 @@ import api from "../services/api";
 import AuthLayout from "../components/authLayout";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
-export default function ForgetPassword() {
+export default function PasswordlessLogin() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<"email", string>>>({});
+  const [errors, setErrors] = useState({ email: "" });
   const navigate = useNavigate();
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,25 +24,20 @@ export default function ForgetPassword() {
     }
   };
 
-  const handleForgetPassword = async (e: FormEvent) => {
+  const handlePasswordlessLogin = async (e: FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
 
     try {
       const response = await api.post("iam/login/otp/send/", { email });
-      if (response.status == 200) {
-        console.log(response.status);
-        console.log(response.data);
-        localStorage.setItem("request_id", response.data.request_id);
-        toast.success("You are successfully logged in", {
-          position: "top-left",
-          autoClose: 3000,
-        });
-        await navigate("/loginVerification");
-      } else {
-        console.log(response.status);
-      }
+      localStorage.setItem("request_id", response.data.request_id);
+      localStorage.setItem("request_type", "login");
+      toast.success("You are successfully logged in", {
+        position: "top-left",
+        autoClose: 3000,
+      });
+      await navigate("/verification");
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
@@ -56,11 +51,9 @@ export default function ForgetPassword() {
 
   return (
     <AuthLayout title="Passwordless Login">
-      <ToastContainer />
       <form
-        onSubmit={handleForgetPassword}
+        onSubmit={handlePasswordlessLogin}
         className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-15 shadow-md"
-        dir="ltr"
       >
         <div className="form-control">
           <label className="label text-patina-700">Email</label>

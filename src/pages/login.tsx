@@ -1,20 +1,19 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, use, useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-
-type LoginErrorsType = Partial<Record<"email" | "password", string>>;
+import { AuthContext } from "../services/Auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<LoginErrorsType>({});
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+  const { login } = use(AuthContext);
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -43,12 +42,12 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const validationErrors: LoginErrorsType = {};
+    const validationErrors = { email: "", password: "" };
     if (!email) validationErrors.email = "Enter Email";
     if (!password) validationErrors.password = "Enter Password";
     setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (!email || !password) {
       return;
     }
 
@@ -59,14 +58,12 @@ export default function Login() {
         password,
       });
 
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.access_token);
-        toast.success("You are successfully logged in", {
-          position: "top-left",
-          autoClose: 3000,
-        });
-        await navigate("/");
-      }
+      login(response.data.access_token);
+      toast.success("You are successfully logged in", {
+        position: "top-left",
+        autoClose: 3000,
+      });
+      await navigate("/");
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
@@ -80,8 +77,6 @@ export default function Login() {
 
   return (
     <AuthLayout title="Login">
-      <ToastContainer />
-
       <form
         onSubmit={handleSubmit}
         className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-12 shadow-md"
