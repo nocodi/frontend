@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDnD } from "./DnDContext";
 import { ComponentType } from "../types/Component";
 import getComponents from "../services/getComponents";
+import Tooltip from "./Tooltip";
 
 function ComponentList({
   onClose,
@@ -39,7 +40,7 @@ function ComponentList({
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-2 overflow-y-auto">
+    <div className="flex h-full w-full flex-col gap-2 overflow-y-scroll">
       <div className="flex flex-row">
         <div className="my-auto h-fit w-10">
           <button
@@ -93,11 +94,22 @@ function ComponentList({
           <div
             key={`${key}`}
             onClick={() => clickedOnComponent(item)}
-            className="tansition-all h-15 w-full cursor-pointer content-center border-l-4 border-patina-200 duration-300 hover:border-accent hover:bg-patina-200"
+            className="tansition-all group/component relative flex h-15 w-full cursor-pointer flex-row duration-300 hover:bg-patina-200"
             onDragStart={(event) => onDragStart(event, item)}
             draggable
           >
-            <div className="ml-5 text-sm">{item.name}</div>
+            <div className="h-full w-3 rounded-r-xl bg-patina-200 group-hover/component:bg-accent"></div>
+            <div>
+              <div className="ml-2 text-sm font-bold">{item.name}</div>
+
+              <Tooltip content={item.description}>
+                <div className="ml-4 text-xs">
+                  {item.description.length < 80 ?
+                    item.description
+                  : item.description.slice(0, 80) + " ..."}
+                </div>
+              </Tooltip>
+            </div>
           </div>
         ))}
 
