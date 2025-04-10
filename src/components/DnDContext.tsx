@@ -7,15 +7,20 @@ import {
   SetStateAction,
 } from "react";
 
-type DnDContextType = [string | null, Dispatch<SetStateAction<string | null>>];
+import { ComponentType } from "../types/Component";
+
+type DnDContextType = [
+  ComponentType | null,
+  Dispatch<SetStateAction<ComponentType | null>>,
+];
 
 const DnDContext = createContext<DnDContextType>([null, () => {}]);
 
 export const DnDProvider = ({ children }: { children: ReactNode }) => {
-  const [type, setType] = useState<string | null>("");
+  const [component, setComponent] = useState<ComponentType | null>(null);
 
   return (
-    <DnDContext.Provider value={[type, setType]}>
+    <DnDContext.Provider value={[component, setComponent]}>
       {children}
     </DnDContext.Provider>
   );
