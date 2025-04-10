@@ -16,12 +16,9 @@ function ComponentList({
   const [components, setComponents] = useState<ComponentType[]>([]);
 
   useEffect(() => {
-    async function fetchData() {
-      const data: ComponentType[] = await getComponents();
-      setComponents(data);
-    }
-
-    fetchData().catch((err) => {
+    getComponents()
+    .then(() => setComponents(data))
+    .catch((err) => {
       console.error("Failed to load components:", err);
     });
   }, []);
