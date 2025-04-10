@@ -9,5 +9,5 @@ export interface ComponentType {
   description: string;
   path: string;
   type: string;
-  schema?: Record<string, SchemaType>;
+  schema: Record<string, SchemaType>;
 }
