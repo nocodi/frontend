@@ -113,7 +113,7 @@ export default function Signup() {
                 </button>
                 
                 <p className="text-center mt-4 text-sm text-patina-700">
-                    Do you have an account?<a href="/" className="text-patina-500 hover:text-patina-700">Enter</a>
+                    Do you have an account?<a href="/login" className="text-patina-500 hover:text-patina-700">Enter</a>
                 </p>
             </form>
             <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>

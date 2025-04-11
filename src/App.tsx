@@ -5,13 +5,15 @@ import Verification from "./pages/verification";
 import ForgetPassword from "./pages/forgetPassword";
 import LoginVerification from "./pages/loginVerification";
 import Workflow from "./pages/Workflow";
+import Landing from "./pages/landing";
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path='/verification' element={<Verification />} />
           <Route path='/passwordlessLogin' element={<ForgetPassword />} />
