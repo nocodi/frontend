@@ -19,7 +19,6 @@ function ComponentList({
   useEffect(() => {
     getComponents()
       .then((data) => {
-        console.log(data);
         setComponents(data);
       })
       .catch((err) => {

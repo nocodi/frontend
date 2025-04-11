@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, use, useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { AuthContext } from "../services/Auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+  const { login } = use(AuthContext);
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
 
     if (!value) {
-      setErrors((prev) => ({ ...prev, email: "Enter Email" }));
+      setErrors((prev) => ({ ...prev, email: "Enter an Email" }));
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       setErrors((prev) => ({ ...prev, email: "Email is invalid" }));
     } else {
@@ -26,7 +28,7 @@ export default function Login() {
     }
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
 
@@ -37,32 +39,36 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const validationErrors = {};
+
+    const validationErrors = { email: "", password: "" };
     if (!email) validationErrors.email = "Enter Email";
     if (!password) validationErrors.password = "Enter Password";
-
     setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (!email || !password) {
       return;
     }
 
     setLoading(true);
     try {
-      const response = await axios.post("http://api.nocodi.ir/iam/login/password/", {
+      const response = await api.post("iam/login/password/", {
         email,
-        password
+        password,
       });
 
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.access_token);
-        toast.success("You are successfully logged in", { position: "top-left", autoClose: 3000 });
-        navigate("/");
-      }
+      login(response.data.access_token);
+      toast.success("You are successfully logged in", {
+        position: "top-left",
+        autoClose: 3000,
+      });
+      await navigate("/");
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "An error occurred. Please try again.";
+      const errorMessage =
+        axios.isAxiosError(err) ?
+          err.response?.data?.message || err.message
+        : "An unexpected error occurred.";
       toast.error(errorMessage, { position: "top-left", autoClose: 3000 });
     } finally {
       setLoading(false);
@@ -71,15 +77,16 @@ export default function Login() {
 
   return (
     <AuthLayout title="Login">
-      <ToastContainer />
-
-      <form onSubmit={handleSubmit} className="bg-patina-50 p-12 rounded-xl shadow-md w-1/2 relative overflow-hidden">
+      <form
+        onSubmit={handleSubmit}
+        className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-12 shadow-md"
+      >
         <div className="form-control">
           <label className="label text-patina-700">Email</label>
-          <input 
-            type="email" 
-            placeholder="Enter your email" 
-            className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-1 focus:ring-patina-400 ${errors.email ? 'border-red-500' : 'border-patina-500'}`}
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-1 focus:ring-patina-400 ${errors.email ? "border-red-500" : "border-patina-500"}`}
             value={email}
             onChange={handleEmailChange}
           />
@@ -90,10 +97,10 @@ export default function Login() {
 
         <div className="form-control mt-4">
           <label className="label text-patina-700">Password</label>
-          <input 
-            type="password" 
-            placeholder="Enter your password" 
-            className={`input input-bordered w-full bg-patina-100 border-patina-500 text-patina-900 tracking-widest rounded-xl focus:ring-2 focus:ring-patina-400 ${errors.password ? 'border-red-500' : 'border-patina-500'}`}
+          <input
+            type="password"
+            placeholder="Enter your password"
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${errors.password ? "border-red-500" : "border-patina-500"}`}
             value={password}
             onChange={handlePasswordChange}
           />
@@ -102,19 +109,32 @@ export default function Login() {
           )}
         </div>
 
-        <button className="btn btn-patina w-full mt-6 bg-patina-500 text-white hover:bg-patina-700 transition-all rounded-xl text-lg font-semibold" type="submit" disabled={loading}>
+        <button
+          className="btn-patina btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          type="submit"
+          disabled={loading}
+        >
           {loading ? "logging in.." : "Login"}
         </button>
-        
-        <p className="text-center mt-4 text-sm text-patina-700">
-          Don't you have an account? <a href="/signup" className="text-patina-500 hover:text-patina-700">Signup</a>
+
+        <p className="mt-4 text-center text-sm text-patina-700">
+          Don't you have an account?{" "}
+          <a href="/signup" className="text-patina-500 hover:text-patina-700">
+            Signup
+          </a>
         </p>
-        <p className="text-center mt-4 text-sm text-patina-700">
-          Login without password? <a href="/passwordlessLogin" className="text-patina-500 hover:text-patina-700">Enter</a>
+        <p className="mt-4 text-center text-sm text-patina-700">
+          Login without password?{" "}
+          <a
+            href="/passwordlessLogin"
+            className="text-patina-500 hover:text-patina-700"
+          >
+            Enter
+          </a>
         </p>
       </form>
-      
-      <div className="absolute top-0 right-0 h-full w-1/2 bg-patina-500 rounded-r-xl"></div>
+
+      <div className="absolute top-0 right-0 h-full w-1/2 rounded-r-xl bg-patina-500"></div>
     </AuthLayout>
   );
 }

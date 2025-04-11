@@ -1,16 +1,14 @@
-import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
+import api from "../services/api";
 import AuthLayout from "../components/authLayout";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import api from "../services/api";
 
-export default function Signup() {
+export default function PasswordlessLogin() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({ email: "" });
   const navigate = useNavigate();
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -26,26 +24,15 @@ export default function Signup() {
     }
   };
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPassword(value);
-
-    if (!value) {
-      setErrors((prev) => ({ ...prev, password: "Enter Password" }));
-    } else {
-      setErrors((prev) => ({ ...prev, password: "" }));
-    }
-  };
-
-  const handleSignup = async (e: FormEvent) => {
+  const handlePasswordlessLogin = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email) return;
     setLoading(true);
 
     try {
-      const response = await api.post("iam/signup/", { email, password });
+      const response = await api.post("iam/login/otp/send/", { email });
       localStorage.setItem("request_id", response.data.request_id);
-      localStorage.setItem("request_type", "signup");
+      localStorage.setItem("request_type", "login");
       await navigate("/verification");
     } catch (err) {
       const errorMessage =
@@ -57,11 +44,12 @@ export default function Signup() {
       setLoading(false);
     }
   };
+
   return (
-    <AuthLayout title="SignUp">
+    <AuthLayout title="Passwordless Login">
       <form
-        onSubmit={handleSignup}
-        className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-16 shadow-md"
+        onSubmit={handlePasswordlessLogin}
+        className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-15 shadow-md"
       >
         <div className="form-control">
           <label className="label text-patina-700">Email</label>
@@ -69,41 +57,20 @@ export default function Signup() {
             type="email"
             placeholder="Enter your Email"
             className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${errors.email ? "border-red-500" : "border-patina-500"}`}
-            value={email}
             onChange={handleEmailChange}
+            value={email}
           />
           {errors.email && (
             <span className="text-sm text-red-500">{errors.email}</span>
           )}
         </div>
-
-        <div className="form-control mt-4">
-          <label className="label text-patina-700">Password</label>
-          <input
-            type="password"
-            placeholder="Enter your Password"
-            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${errors.password ? "border-red-500" : "border-patina-500"}`}
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {errors.password && (
-            <span className="text-sm text-red-500">{errors.password}</span>
-          )}
-        </div>
-
         <button
           className="btn-patina btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          type="submit"
           disabled={loading}
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? "Sending..." : "Send"}
         </button>
-
-        <p className="mt-4 text-center text-sm text-patina-700">
-          Do you have an account?
-          <a href="/login" className="text-patina-500 hover:text-patina-700">
-            Enter
-          </a>
-        </p>
       </form>
       <div className="absolute top-0 right-0 h-full w-1/2 rounded-r-xl bg-patina-500"></div>
     </AuthLayout>
