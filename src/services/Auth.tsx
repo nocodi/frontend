@@ -1,6 +1,5 @@
 import { createContext, PropsWithChildren, useState } from "react";
-import { jwtDecode, type JwtPayload } from "jwt-decode";
-import api from "./api";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 type AuthJwtPayload = JwtPayload & { user_id: string };
 
@@ -11,7 +10,8 @@ const parseAuthJwt = (token: string) => {
 
 export type AuthContextType = {
   userId: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  isAuthenticated: boolean;
+  login: (token: string) => void;
   logout: () => void;
 };
 
@@ -24,9 +24,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     return parseAuthJwt(token);
   });
 
-  const login = async (email: string, password: string) => {
-    const response = await api.post("/auth/login", { email, password });
-    const { token } = response.data as { token: string };
+  const isAuthenticated = localStorage.getItem("authToken") != null;
+
+  const login = (token: string) => {
     localStorage.setItem("authToken", token);
     setUserId(parseAuthJwt(token));
   };
@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const value = {
     userId,
+    isAuthenticated,
     login,
     logout,
   };
