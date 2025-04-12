@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const testimonials = [
   {
@@ -23,20 +22,49 @@ const testimonials = [
     handle: "@danieldev",
     avatar: "https://i.pravatar.cc/100?img=32",
   },
+  {
+    quote: `Nocodi let me turn my freelance workflow into a productized business. 
+      It’s honestly like having a second developer on my team.`,
+    name: "Amina Tahir",
+    handle: "@aminatx",
+    avatar: "https://i.pravatar.cc/100?img=21",
+  },
+  {
+    quote: `The UI, the logic, the flexibility... everything about Nocodi is just slick.
+      I’ve switched three of my projects over already.`,
+    name: "Ravi Mehta",
+    handle: "@ravicodes",
+    avatar: "https://i.pravatar.cc/100?img=58",
+  },
 ];
 
 export default function About() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const scroll = (direction: string) => {
-    if (!scrollRef.current) return;
-    const { scrollLeft, clientWidth } = scrollRef.current;
-    const scrollAmount = direction === "left" ? -clientWidth : clientWidth;
-    scrollRef.current.scrollTo({
-      left: scrollLeft + scrollAmount,
-      behavior: "smooth",
-    });
-  };
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    const scrollSpeed = 0.5;
+    let animationFrameId: number;
+
+    const scroll = () => {
+      if (!isHovered && scrollContainer) {
+        scrollContainer.scrollLeft += scrollSpeed;
+        if (
+          scrollContainer.scrollLeft + scrollContainer.clientWidth >=
+          scrollContainer.scrollWidth
+        ) {
+          scrollContainer.scrollLeft = 0;
+        }
+      }
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isHovered]);
 
   return (
     <section
@@ -53,71 +81,35 @@ export default function About() {
           </p>
         </div>
 
-        <div className="relative">
-          <button
-            onClick={() => scroll("left")}
-            className="btn absolute top-1/2 left-0 z-10 btn-circle -translate-y-1/2 btn-ghost hover:bg-patina-200"
-          >
-            <ChevronLeft className="h-6 w-6 text-patina-600" />
-          </button>
-
-          <div className="scrollbar-hide overflow-x-auto" ref={scrollRef}>
-            <div className="flex w-max gap-6 px-10">
-              {testimonials.map((t, index) => (
-                <div
-                  key={index}
-                  className="card max-w-sm min-w-[300px] border border-patina-200 bg-gradient-to-br from-white via-patina-50 to-white shadow-lg backdrop-blur-md"
-                >
-                  <div className="card-body">
-                    <p className="font-semibold text-patina-900">“{t.quote}”</p>
-                    <div className="mt-6 flex items-center gap-3">
-                      <img
-                        src={t.avatar}
-                        alt={t.name}
-                        className="h-10 w-10 rounded-full ring-2 ring-patina-400"
-                      />
-                      <div>
-                        <p className="font-semibold text-patina-800">
-                          {t.name}
-                        </p>
-                        <p className="text-sm text-patina-600">{t.handle}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              <div className="card max-w-sm min-w-[300px] border border-patina-200 bg-gradient-to-br from-white via-patina-50 to-white shadow-lg backdrop-blur-md">
+        <div
+          className="scrollbar-hide overflow-x-auto"
+          ref={scrollRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <div className="flex w-max gap-6 px-10">
+            {[...testimonials, ...testimonials.slice(0, 1)].map((t, index) => (
+              <div
+                key={index}
+                className="card max-w-sm min-w-[300px] border border-patina-200 bg-gradient-to-br from-white via-patina-50 to-white shadow-lg backdrop-blur-md"
+              >
                 <div className="card-body">
-                  <p className="font-semibold text-patina-900">
-                    “{testimonials[0].quote}”
-                  </p>
+                  <p className="font-semibold text-patina-900">“{t.quote}”</p>
                   <div className="mt-6 flex items-center gap-3">
                     <img
-                      src={testimonials[0].avatar}
-                      alt={testimonials[0].name}
+                      src={t.avatar}
+                      alt={t.name}
                       className="h-10 w-10 rounded-full ring-2 ring-patina-400"
                     />
                     <div>
-                      <p className="font-semibold text-patina-800">
-                        {testimonials[0].name}
-                      </p>
-                      <p className="text-sm text-patina-600">
-                        {testimonials[0].handle}
-                      </p>
+                      <p className="font-semibold text-patina-800">{t.name}</p>
+                      <p className="text-sm text-patina-600">{t.handle}</p>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-
-          <button
-            onClick={() => scroll("right")}
-            className="btn absolute top-1/2 right-0 z-10 btn-circle -translate-y-1/2 btn-ghost hover:bg-patina-200"
-          >
-            <ChevronRight className="h-6 w-6 text-patina-600" />
-          </button>
         </div>
       </div>
     </section>

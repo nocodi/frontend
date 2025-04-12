@@ -1,10 +1,6 @@
 import { Link } from "react-scroll";
 
-export default function Navbar({
-  setLoginHovered,
-}: {
-  setLoginHovered: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function Navbar() {
   return (
     <div className="fixed top-0 z-50 w-full bg-base-100 bg-patina-50 shadow-md">
       <nav className="navbar px-4 md:px-10">
@@ -55,12 +51,10 @@ export default function Navbar({
 
         <div className="flex-none">
           <a
-            href="/Login"
+            href="/Signup"
             className="btn-patina btn text-patina-500 btn-outline hover:bg-patina-700"
-            onMouseEnter={() => setLoginHovered(true)}
-            onMouseLeave={() => setLoginHovered(false)}
           >
-            Login | Sign Up
+            Get Started
           </a>
         </div>
       </nav>

@@ -1,5 +1,5 @@
 import landing from "../assets/landing.png";
-const HeroSection = ({ isLoginHovered }: { isLoginHovered: boolean }) => {
+export default function HeroSection() {
   const heroData = {
     title: "Welcome to Nocodi",
     description: "Simplify your coding. Fast, flexible, and user-friendly.",
@@ -20,10 +20,9 @@ const HeroSection = ({ isLoginHovered }: { isLoginHovered: boolean }) => {
           </p>
         </div>
 
-        {/* Image */}
         <div className="flex flex-1 justify-center">
           <img
-            src={isLoginHovered ? landing : landing}
+            src={landing}
             alt="Hero"
             className="max-w-md rounded-lg shadow-2xl"
           />
@@ -31,6 +30,4 @@ const HeroSection = ({ isLoginHovered }: { isLoginHovered: boolean }) => {
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}
