@@ -14,6 +14,7 @@ import BotList from "./pages/BotList";
 import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
+import Landing from "./pages/landing";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/verification" element={<Verification />} />
             <Route path="/passwordlessLogin" element={<PasswordlessLogin />} />
+            <Route path="/landing" element={<Landing />} />
           </Route>
           <Route Component={CheckAuthWrapper}>
             <Route path="/" element={<Navigate to={"/workflow"} />} />

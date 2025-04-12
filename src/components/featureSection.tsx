@@ -1,5 +1,3 @@
-import React from "react";
-import flowImage from "../assets/flow.png";
 import hero from "../assets/HeroSection.png";
 
 export default function Services() {

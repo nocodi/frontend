@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
@@ -26,9 +26,9 @@ const testimonials = [
 ];
 
 export default function About() {
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  const scroll = (direction) => {
+  const scroll = (direction: string) => {
     if (!scrollRef.current) return;
     const { scrollLeft, clientWidth } = scrollRef.current;
     const scrollAmount = direction === "left" ? -clientWidth : clientWidth;

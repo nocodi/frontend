@@ -1,6 +1,5 @@
-import React from "react";
 import landing from "../assets/landing.png";
-const HeroSection = ({ isLoginHovered }) => {
+const HeroSection = ({ isLoginHovered }: { isLoginHovered: boolean }) => {
   const heroData = {
     title: "Welcome to Nocodi",
     description: "Simplify your coding. Fast, flexible, and user-friendly.",

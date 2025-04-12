@@ -1,5 +1,3 @@
-import React from "react";
-
 const tutorials = [
   {
     title: "Connect Telegram Bot",
