@@ -1,7 +1,7 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
-import { ComponentType } from "../types/Component";
+import { NodeComponent } from "../types/Component";
 
-function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
+function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
   const instance = useReactFlow();
 
   return (
@@ -65,7 +65,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[2px]">{data.name}</div>
+        <div className="inline-block align-middle text-[2px]">
+          {data.content_type.name}
+        </div>
       </div>
     </div>
   );

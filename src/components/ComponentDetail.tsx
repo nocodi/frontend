@@ -1,8 +1,8 @@
-import { ComponentType, SchemaType } from "../types/Component";
+import { NodeComponent, SchemaType } from "../types/Component";
 
 import { useState } from "react";
 
-const ComponentCard = ({ item }: { item: ComponentType }) => {
+const ComponentCard = ({ item }: { item: NodeComponent }) => {
   const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -49,7 +49,7 @@ const ComponentCard = ({ item }: { item: ComponentType }) => {
 
   const handleSubmit = () => {
     const newErrors: { [key: string]: string } = {};
-    Object.entries(item.schema).forEach(([key, value]) => {
+    Object.entries(item.content_type.schema).forEach(([key, value]) => {
       const error = validateField(
         formValues[key] || "",
         value.type,
@@ -72,11 +72,11 @@ const ComponentCard = ({ item }: { item: ComponentType }) => {
   return (
     <div className="space-y-4 rounded-2xl bg-patina-300 p-6 shadow">
       <h2 className="royalblue-200 text-2xl font-bold">{item.name}</h2>
-      <p className="text-patina-50">{item.description}</p>
+      <p className="text-patina-50">{item.content_type.description}</p>
       <div>
         <h3 className="royalblue-500 mb-2 text-lg font-semibold">Schema</h3>
         <ul className="space-y-3">
-          {Object.entries(item.schema).map(([key, value]) => (
+          {Object.entries(item.content_type.schema).map(([key, value]) => (
             <li key={key} className="text-gray-800">
               <label className="mb-1 block font-medium" htmlFor={key}>
                 {key}{" "}
@@ -122,7 +122,7 @@ const ComponentCard = ({ item }: { item: ComponentType }) => {
   );
 };
 
-const ComponentDetail = (data: ComponentType) => {
+const ComponentDetail = ({ data }: { data: NodeComponent }) => {
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4">
       <ComponentCard item={data} />

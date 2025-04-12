@@ -11,3 +11,10 @@ export type ComponentType = {
   type: string;
   schema: Record<string, SchemaType>;
 };
+
+export type NodeComponent = {
+  object_id?: number;
+  next_component?: NodeComponent;
+  name: string;
+  content_type: ComponentType;
+};
