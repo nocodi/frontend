@@ -101,7 +101,7 @@ function Flow({ botId }: { botId: number }) {
           setLoading(false);
         });
     },
-    [setNodes, screenToFlowPosition, botId],
+    [setNodes, screenToFlowPosition, botId, setIsBullseye, isBullseye],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
