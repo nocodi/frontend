@@ -80,14 +80,11 @@ const ComponentDetail = ({
       return;
     }
     api
-      .post(`${node.data.content_type.path.split(".ir")[1]}`, {
-        ...formValues,
-      })
+      .post(`${node.data.content_type.path.split(".ir")[1]}`, formValues)
       .then((res) => {
         const objId: number = res.data.id;
-
         api
-          .patch(`flow/${botId}/component/${node.id}`, {
+          .patch(`flow/${botId}/component/${node.id}/`, {
             object_id: objId,
           })
           .then((res) => {

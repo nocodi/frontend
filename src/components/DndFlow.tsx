@@ -79,7 +79,7 @@ function Flow({ botId }: { botId: number }) {
                   content_type: component,
                 };
                 const newNode: Node<NodeComponent> = {
-                  id: `${res.data.id}`,
+                  id: `${res.data.start_component.id}`,
                   type: "customNode",
                   position: position,
                   selected: false,
