@@ -33,7 +33,7 @@ function App() {
             <Route path="/" element={<Navigate to={"/workflow"} />} />
             <Route path="/workflow">
               <Route index Component={BotList} />
-              <Route path=":id" element={<Workflow />} />
+              <Route path=":botId" element={<Workflow />} />
             </Route>
           </Route>
         </Routes>

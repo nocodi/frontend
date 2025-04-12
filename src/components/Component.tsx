@@ -1,14 +1,30 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
-import { ComponentType } from "../types/Component";
+import { NodeComponent } from "../types/Component";
+import api from "../services/api";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { WorkflowParams } from "../pages/Workflow";
 
-function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
+function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
   const instance = useReactFlow();
+  const { botId } = useParams<WorkflowParams>();
+
+  function deleteComponent() {
+    api
+      .delete(`flow/${botId}/component/${id}/`)
+      .then(() => {
+        instance.deleteElements({ nodes: [{ id: id }] });
+      })
+      .catch((err) => {
+        toast(err.message);
+      });
+  }
 
   return (
     <div className="group flex flex-col items-center gap-1">
       <div className="invisible flex h-3 w-10 flex-row justify-end gap-0.5 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
         <svg
-          onClick={() => instance.deleteElements({ nodes: [{ id: id }] })}
+          onClick={() => deleteComponent()}
           className="h-3 w-3 cursor-pointer text-white hover:text-accent"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +81,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[2px]">{data.name}</div>
+        <div className="inline-block align-middle text-[2px]">
+          {data.content_type.name}
+        </div>
       </div>
     </div>
   );
