@@ -3,13 +3,14 @@ import { Node } from "reactflow";
 import { useState } from "react";
 import api from "../services/api";
 import { toast } from "react-toastify";
-
 const ComponentDetail = ({
+  botId,
   node,
   setNode,
   nodes,
   setNodes,
 }: {
+  botId: number;
   node: Node<NodeComponent>;
   setNode: React.Dispatch<
     React.SetStateAction<Node<NodeComponent> | undefined>
@@ -78,13 +79,40 @@ const ComponentDetail = ({
       setErrors(newErrors);
       return;
     }
-
     api
-      .patch(`${node.data.content_type.path.split(".ir")[1]}${node.id}`, {
+      .post(`${node.data.content_type.path.split(".ir")[1]}`, {
         ...formValues,
       })
       .then((res) => {
-        console.log(res);
+        const objId: number = res.data.id;
+
+        api
+          .patch(`flow/${botId}/component/${node.id}`, {
+            object_id: objId,
+          })
+          .then((res) => {
+            const objId: number = res.data.id;
+            setNodes(() =>
+              nodes.map((item) =>
+                item.id === node.id ?
+                  {
+                    ...item,
+                    data: {
+                      ...item.data,
+                      object_id: objId,
+                    },
+                  }
+                : item,
+              ),
+            );
+
+            setNode(undefined);
+            setFormValues({});
+            setErrors({});
+          })
+          .catch((err) => {
+            toast(err.message);
+          });
       })
       .catch((err) => {
         toast(err.message);

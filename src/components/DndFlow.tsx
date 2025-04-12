@@ -29,12 +29,13 @@ import ComponentDetail from "./ComponentDetail";
 
 const nodeTypes = { customNode: Component };
 
-function Flow({ id }: { id: number }) {
+function Flow({ botId }: { botId: number }) {
   const [currentComponent, setcurrentComponent] =
     useState<Node<NodeComponent>>();
   const [loading, setLoading] = useState(true);
   // Component Panel
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isBullseye, setIsBullseye] = useState(true); // checks if there are any components available, if not, means we should make a flow on first component creation
 
   // Edges and Nodes
   const [nodes, setNodes, onNodeChange] = useNodesState<NodeComponent>([]);
@@ -59,30 +60,39 @@ function Flow({ id }: { id: number }) {
       setLoading(true);
 
       api
-        .post("/flow/component/", {
-          bot: id,
+        .post(`/flow/${botId}/component/`, {
           content_type: component.id,
           name: "Salam",
           position_x: position.x,
           position_y: position.y,
         })
         .then((res) => {
-          const nodeData: NodeComponent = {
-            object_id: undefined,
-            next_component: undefined,
-            name: "Salam",
-            content_type: component,
-          };
-          const newNode: Node<NodeComponent> = {
-            id: `${res.data.id}`,
-            type: "customNode",
-            position: position,
-            selected: false,
-            data: nodeData,
-          };
-          console.log(res.data.id);
-          setNodes((nds) => nds.concat(newNode));
-          setcurrentComponent(newNode);
+          if (isBullseye) {
+            api
+              .post(`flow/${botId}/`, { start: res.data.id })
+              .then((res) => {
+                setIsBullseye(false);
+                const nodeData: NodeComponent = {
+                  object_id: undefined,
+                  next_component: undefined,
+                  name: "Salam",
+                  content_type: component,
+                };
+                const newNode: Node<NodeComponent> = {
+                  id: `${res.data.id}`,
+                  type: "customNode",
+                  position: position,
+                  selected: false,
+                  data: nodeData,
+                };
+
+                setNodes((nds) => nds.concat(newNode));
+                setcurrentComponent(newNode);
+              })
+              .catch((err) => {
+                toast(err.message);
+              });
+          }
         })
         .catch((err) => {
           toast(err.message);
@@ -91,7 +101,7 @@ function Flow({ id }: { id: number }) {
           setLoading(false);
         });
     },
-    [setNodes, screenToFlowPosition, id],
+    [setNodes, screenToFlowPosition, botId],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -119,9 +129,11 @@ function Flow({ id }: { id: number }) {
 
   useEffect(() => {
     api
-      .get(`flow/list/${id}/`)
+      .get(`flow/${botId}/`)
       .then((res) => {
-        console.log(res);
+        if (res.data.length > 0) {
+          setIsBullseye(false);
+        }
       })
       .catch((err) => {
         toast(err.message);
@@ -129,7 +141,7 @@ function Flow({ id }: { id: number }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [id]);
+  }, [botId]);
 
   return (
     <>
@@ -218,6 +230,7 @@ function Flow({ id }: { id: number }) {
           {currentComponent && (
             <div className="absolute z-50 h-screen w-screen content-center backdrop-blur-xs">
               <ComponentDetail
+                botId={botId}
                 node={currentComponent}
                 setNode={setcurrentComponent}
                 nodes={nodes}
@@ -231,11 +244,11 @@ function Flow({ id }: { id: number }) {
   );
 }
 
-function DnDFlow({ id }: { id: number }) {
+function DnDFlow({ botId }: { botId: number }) {
   return (
     <ReactFlowProvider>
       <DnDProvider>
-        <Flow id={id} />
+        <Flow botId={botId} />
       </DnDProvider>
     </ReactFlowProvider>
   );

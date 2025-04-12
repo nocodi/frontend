@@ -16,7 +16,7 @@ function Workflow() {
             <div className="h-15 shrink-0 bg-patina-300 px-5">
               <div className="">title whatever</div>
             </div>
-            <DnDFlow id={Number(id)} />
+            <DnDFlow botId={Number(id)} />
           </div>
         </div>
       }
