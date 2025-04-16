@@ -61,7 +61,7 @@ export default function Verification() {
     <AuthLayout title="Email Verification">
       <form
         onSubmit={handleVerification}
-        className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-12 shadow-md"
+        className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
       >
         <div className="form-control">
           <label className="label text-lg font-medium text-patina-700">
@@ -77,13 +77,13 @@ export default function Verification() {
           {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
         </div>
         <button
-          className="btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          className="btn w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
           disabled={loading}
         >
           {loading ? "Verifying..." : "Verify"}
         </button>
       </form>
-      <div className="absolute top-0 right-0 h-full w-1/2 rounded-r-xl bg-patina-500"></div>
+      <div className="absolute top-0 right-0 hidden h-full w-1/2 rounded-r-xl bg-patina-500 lg:block"></div>
     </AuthLayout>
   );
 }
