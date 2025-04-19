@@ -65,7 +65,9 @@ export default function Signup() {
         className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
       >
         <div className="form-control">
-          <label className="label text-patina-700">Email</label>
+          <label className="label text-sm font-semibold text-patina-700">
+            Email
+          </label>
           <input
             type="email"
             placeholder="Enter your Email"
@@ -81,7 +83,9 @@ export default function Signup() {
         </div>
 
         <div className="form-control">
-          <label className="label text-patina-700">Password</label>
+          <label className="label text-sm font-semibold text-patina-700">
+            Password
+          </label>
           <input
             type="password"
             placeholder="Enter your Password"
@@ -97,20 +101,20 @@ export default function Signup() {
         </div>
 
         <button
-          className="btn-patina btn w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          className="btn-patina btn w-full rounded-xl bg-patina-500 py-2 text-lg font-semibold text-white transition-all hover:bg-patina-700"
           disabled={loading}
         >
           {loading ? "Registering..." : "Register"}
         </button>
-
-        <p className="text-center text-sm text-patina-700">
-          Do you have an account?{" "}
-          <a href="/login" className="text-patina-500 hover:text-patina-700">
-            Enter
-          </a>
-        </p>
+        <div className="space-y-2 text-center text-sm text-patina-700">
+          <p>
+            Do you have an account?{" "}
+            <a href="/login" className="text-patina-500 hover:text-patina-700">
+              Enter
+            </a>
+          </p>
+        </div>
       </form>
-      <div className="absolute top-0 right-0 hidden h-full w-1/2 rounded-r-xl bg-patina-500 lg:block"></div>
     </AuthLayout>
   );
 }

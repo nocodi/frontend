@@ -83,7 +83,6 @@ export default function Verification() {
           {loading ? "Verifying..." : "Verify"}
         </button>
       </form>
-      <div className="absolute top-0 right-0 hidden h-full w-1/2 rounded-r-xl bg-patina-500 lg:block"></div>
     </AuthLayout>
   );
 }

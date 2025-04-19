@@ -15,7 +15,13 @@ export default function AuthLayout({ children, title }: AuthLayoutProps) {
           </h2>
           {children}
         </div>
-        <div className="hidden w-1/2 bg-patina-500 lg:block"></div>
+        <div className="hidden w-full items-center justify-center bg-patina-500 sm:flex sm:w-1/2">
+          <p className="px-8 text-center text-3xl leading-relaxed font-semibold text-white">
+            No Code,
+            <br />
+            Low Code
+          </p>
+        </div>
       </div>
     </div>
   );

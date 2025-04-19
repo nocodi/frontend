@@ -75,7 +75,10 @@ export default function Login() {
 
   return (
     <AuthLayout title="Login">
-      <form onSubmit={handleSubmit} className="w-full space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
+      >
         <div className="form-control">
           <label className="label text-sm font-semibold text-patina-700">
             Email
@@ -83,7 +86,7 @@ export default function Login() {
           <input
             type="email"
             placeholder="Enter your email"
-            className={`input-bordered input w-full rounded-xl border bg-patina-100 tracking-widest text-patina-900 focus:ring-1 focus:ring-patina-400 ${
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-1 focus:ring-patina-400 ${
               errors.email ? "border-red-500" : "border-patina-500"
             }`}
             value={email}
@@ -101,7 +104,7 @@ export default function Login() {
           <input
             type="password"
             placeholder="Enter your password"
-            className={`input-bordered input w-full rounded-xl border bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${
               errors.password ? "border-red-500" : "border-patina-500"
             }`}
             value={password}
