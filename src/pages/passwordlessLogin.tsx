@@ -49,14 +49,16 @@ export default function PasswordlessLogin() {
     <AuthLayout title="Passwordless Login">
       <form
         onSubmit={handlePasswordlessLogin}
-        className="relative w-1/2 overflow-hidden rounded-xl bg-patina-50 p-15 shadow-md"
+        className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
       >
         <div className="form-control">
           <label className="label text-patina-700">Email</label>
           <input
             type="email"
             placeholder="Enter your Email"
-            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${errors.email ? "border-red-500" : "border-patina-500"}`}
+            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${
+              errors.email ? "border-red-500" : "border-patina-500"
+            }`}
             onChange={handleEmailChange}
             value={email}
           />
@@ -65,14 +67,13 @@ export default function PasswordlessLogin() {
           )}
         </div>
         <button
-          className="btn-patina btn mt-6 w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          className="btn-patina btn w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
           type="submit"
           disabled={loading}
         >
           {loading ? "Sending..." : "Send"}
         </button>
       </form>
-      <div className="absolute top-0 right-0 h-full w-1/2 rounded-r-xl bg-patina-500"></div>
     </AuthLayout>
   );
 }
