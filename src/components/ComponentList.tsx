@@ -28,7 +28,7 @@ function ComponentList({
           console.error("Failed to load components:", err);
         });
     }
-  }, []);
+  }, [contentTypes, setContentTypes]);
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
