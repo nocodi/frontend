@@ -5,7 +5,7 @@ import getComponents from "../services/getComponents";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
 
-function ComponentList({
+function ContentTypesList({
   onClose,
   addSelectedComponent,
   contentTypes,
@@ -115,4 +115,4 @@ function ComponentList({
   );
 }
 
-export default ComponentList;
+export default ContentTypesList;

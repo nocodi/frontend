@@ -2,7 +2,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 
 import Component from "./Component";
 import { ComponentType, NodeComponent } from "../types/Component";
-import ComponentList from "./ComponentList";
+import ContentTypesList from "./ContentTypesList";
 
 import ReactFlow, {
   useReactFlow,
@@ -200,7 +200,7 @@ function Flow({ botId }: { botId: number }) {
                 }`}
               >
                 {isPanelOpen && (
-                  <ComponentList
+                  <ContentTypesList
                     onClose={() => setIsPanelOpen(false)}
                     addSelectedComponent={addSelectedComponent}
                     contentTypes={contentTypes}
