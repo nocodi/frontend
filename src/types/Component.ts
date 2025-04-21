@@ -1,11 +1,9 @@
-import { Node } from "reactflow";
-
 export type SchemaType = {
   type: string;
   required: boolean;
 };
 
-export type ComponentType = {
+export type ContentType = {
   id: number;
   name: string;
   description: string;
@@ -14,9 +12,12 @@ export type ComponentType = {
   schema: Record<string, SchemaType>;
 };
 
-export type NodeComponent = {
-  object_id?: number;
-  next_component?: Node<NodeComponent>;
+export type ComponentType = {
+  id: number;
+  next_component: number | null;
   name: string;
-  content_type: ComponentType;
+  content_type: number;
+  object_id: number | null;
+  position_x: number;
+  position_y: number;
 };

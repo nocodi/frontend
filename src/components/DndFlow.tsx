@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 
 import Component from "./Component";
-import { ComponentType, NodeComponent } from "../types/Component";
+import { ContentType, ComponentType } from "../types/Component";
 import ContentTypesList from "./ContentTypesList";
 
 import ReactFlow, {
@@ -31,22 +31,56 @@ import getComponents from "../services/getComponents";
 const nodeTypes = { customNode: Component };
 
 function Flow({ botId }: { botId: number }) {
-  const [currentComponent, setcurrentComponent] =
-    useState<Node<NodeComponent>>();
+  const [unattendedComponent, setUnattendedComponent] =
+    useState<Node<ComponentType>>();
   const [loading, setLoading] = useState(true);
   // Component Panel
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [isBullseye, setIsBullseye] = useState(true); // checks if there are any components available, if not, means we should make a flow on first component creation
-
-  // Edges and Nodes
-  const [nodes, setNodes, onNodeChange] = useNodesState<NodeComponent>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [isFlowAvailable, setIsFlowAvailable] = useState(false); // checks if there are any components available, if not, means we should make a flow on first component creation
 
   const reactFlowWrapper = useRef(null);
-  const { screenToFlowPosition } = useReactFlow();
+  const flowInstance = useReactFlow();
+  // const initialNodes = [
+  //   {
+  //     id: "1",
+  //     position: flowInstance.screenToFlowPosition({
+  //       x: 50,
+  //       y: 50,
+  //     }),
+  //     type: "customNode",
+  //     selected: false,
+  //     data: {
+  //       id: 1,
+  //       next_component: null,
+  //       name: "hi",
+  //       content_type: 10,
+  //       object_id: null,
+  //     },
+  //   },
+  //   {
+  //     id: "2",
+  //     position: flowInstance.screenToFlowPosition({
+  //       x: 150,
+  //       y: 150,
+  //     }),
+  //     type: "customNode",
+  //     selected: false,
+  //     data: {
+  //       id: 2,
+  //       next_component: null,
+  //       name: "bye",
+  //       content_type: 12,
+  //       object_id: null,
+  //     },
+  //   },
+  // ];
   const [component] = useDnD();
 
-  const [contentTypes, setContentTypes] = useState<ComponentType[]>([]);
+  // Edges and Nodes
+  const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) =>
@@ -55,8 +89,8 @@ function Flow({ botId }: { botId: number }) {
   );
 
   const makeNewComponent = useCallback(
-    (component: ComponentType, x?: number, y?: number) => {
-      const position = screenToFlowPosition({
+    (content: ContentType, x?: number, y?: number) => {
+      const position = flowInstance.screenToFlowPosition({
         x: x ?? window.innerWidth / 2,
         y: y ?? window.innerHeight / 2,
       });
@@ -64,24 +98,24 @@ function Flow({ botId }: { botId: number }) {
 
       api
         .post(`/flow/${botId}/component/`, {
-          content_type: component.id,
-          name: "Salam",
+          content_type: content.id,
+          name: content.name,
           position_x: position.x,
           position_y: position.y,
         })
         .then((res) => {
-          if (isBullseye) {
+          if (!isFlowAvailable) {
             api
               .post(`flow/${botId}/`, { start: res.data.id })
               .then((res) => {
-                setIsBullseye(false);
-                const nodeData: NodeComponent = {
+                setIsFlowAvailable(true);
+                const nodeData: ComponentType = {
                   object_id: undefined,
                   next_component: undefined,
                   name: "Salam",
-                  content_type: component,
+                  content_type: 0,
                 };
-                const newNode: Node<NodeComponent> = {
+                const newNode: ComponentType = {
                   id: `${res.data.start_component.id}`,
                   type: "customNode",
                   position: position,
@@ -90,7 +124,7 @@ function Flow({ botId }: { botId: number }) {
                 };
 
                 setNodes((nds) => nds.concat(newNode));
-                setcurrentComponent(newNode);
+                setUnattendedComponent(newNode);
               })
               .catch((err) => {
                 toast(err.message);
@@ -104,7 +138,7 @@ function Flow({ botId }: { botId: number }) {
           setLoading(false);
         });
     },
-    [setNodes, screenToFlowPosition, botId, setIsBullseye, isBullseye],
+    [flowInstance, botId, isFlowAvailable, setNodes],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -126,7 +160,7 @@ function Flow({ botId }: { botId: number }) {
     [component, makeNewComponent],
   );
 
-  const addSelectedComponent = (component: ComponentType) => {
+  const addSelectedComponent = (component: ContentType) => {
     makeNewComponent(component);
   };
 
@@ -135,7 +169,33 @@ function Flow({ botId }: { botId: number }) {
       .get(`flow/${botId}/`)
       .then((res) => {
         if (res.data.length > 0) {
-          setIsBullseye(false);
+          setIsFlowAvailable(true);
+        }
+      })
+      .catch((err) => {
+        toast(err.message);
+      })
+      .finally(() => {});
+
+    api
+      .get(`flow/${botId}/component`)
+      .then((res) => {
+        const components: ComponentType[] = res.data;
+        if (res.data.length > 0) {
+          components.forEach((element: ComponentType) => {
+            setNodes((nds) =>
+              nds.concat({
+                id: element.id.toString(),
+                position: flowInstance.screenToFlowPosition({
+                  x: element.position_x,
+                  y: element.position_y,
+                }),
+                type: "customNode",
+                selected: false,
+                data: element,
+              }),
+            );
+          });
         }
         if (contentTypes.length === 0) {
           getComponents()
@@ -153,7 +213,7 @@ function Flow({ botId }: { botId: number }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [botId, contentTypes, setContentTypes]);
+  }, [botId, contentTypes, setContentTypes, flowInstance, setNodes]);
 
   return (
     <>
@@ -240,12 +300,12 @@ function Flow({ botId }: { botId: number }) {
               </div>
             </div>
           </div>
-          {currentComponent && (
+          {unattendedComponent && (
             <div className="absolute z-50 h-screen w-screen content-center backdrop-blur-xs">
               <ComponentDetail
                 botId={botId}
-                node={currentComponent}
-                setNode={setcurrentComponent}
+                node={unattendedComponent}
+                setNode={setUnattendedComponent}
                 nodes={nodes}
                 setNodes={setNodes}
               />

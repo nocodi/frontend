@@ -1,19 +1,19 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
-import { NodeComponent } from "../types/Component";
+import { ComponentType } from "../types/Component";
 import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { WorkflowParams } from "../pages/Workflow";
 
-function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
-  const instance = useReactFlow();
+function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
+  const flowInstance = useReactFlow();
   const { botId } = useParams<WorkflowParams>();
 
   function deleteComponent() {
     api
       .delete(`flow/${botId}/component/${id}/`)
       .then(() => {
-        instance.deleteElements({ nodes: [{ id: id }] });
+        flowInstance.deleteElements({ nodes: [{ id: id }] });
       })
       .catch((err) => {
         toast(err.message);
@@ -81,9 +81,7 @@ function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[2px]">
-          {data.content_type.name}
-        </div>
+        <div className="inline-block align-middle text-[12px]">{data.name}</div>
       </div>
     </div>
   );
