@@ -45,6 +45,8 @@ function Flow({ botId }: { botId: number }) {
   const { screenToFlowPosition } = useReactFlow();
   const [component] = useDnD();
 
+  const [contentTypes, setContentTypes] = useState<ComponentType[]>([]);
+
   const onConnect = useCallback(
     (connection: Edge | Connection) =>
       setEdges((eds) => addEdge(connection, eds)),
@@ -201,6 +203,8 @@ function Flow({ botId }: { botId: number }) {
                   <ComponentList
                     onClose={() => setIsPanelOpen(false)}
                     addSelectedComponent={addSelectedComponent}
+                    contentTypes={contentTypes}
+                    setContentTypes={setContentTypes}
                   />
                 )}
               </div>

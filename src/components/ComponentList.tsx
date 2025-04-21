@@ -8,22 +8,26 @@ import Tooltip from "./Tooltip";
 function ComponentList({
   onClose,
   addSelectedComponent,
+  contentTypes,
+  setContentTypes,
 }: {
   onClose: () => void;
   addSelectedComponent: (component: ComponentType) => void;
+  contentTypes: ComponentType[];
+  setContentTypes: React.Dispatch<React.SetStateAction<ComponentType[]>>;
 }) {
   const setComponent = useDnD()[1];
 
-  const [components, setComponents] = useState<ComponentType[]>([]);
-
   useEffect(() => {
-    getComponents()
-      .then((data) => {
-        setComponents(data);
-      })
-      .catch((err) => {
-        console.error("Failed to load components:", err);
-      });
+    if (contentTypes.length === 0) {
+      getComponents()
+        .then((data) => {
+          setContentTypes(data);
+        })
+        .catch((err) => {
+          console.error("Failed to load components:", err);
+        });
+    }
   }, []);
 
   const onDragStart = (
@@ -41,7 +45,7 @@ function ComponentList({
 
   const [query, setQuery] = useState("");
 
-  const filtered = components.filter((item) =>
+  const filtered = contentTypes.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase()),
   );
 
