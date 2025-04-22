@@ -2,7 +2,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 
 import Component from "./Component";
 import { ComponentType, NodeComponent } from "../types/Component";
-import ComponentList from "./ComponentList";
+import ContentTypesList from "./ContentTypesList";
 
 import ReactFlow, {
   useReactFlow,
@@ -24,6 +24,7 @@ import { DnDProvider, useDnD } from "../components/DnDContext";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import ComponentDetail from "./ComponentDetail";
+import getComponents from "../services/getComponents";
 
 // const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
@@ -44,6 +45,8 @@ function Flow({ botId }: { botId: number }) {
   const reactFlowWrapper = useRef(null);
   const { screenToFlowPosition } = useReactFlow();
   const [component] = useDnD();
+
+  const [contentTypes, setContentTypes] = useState<ComponentType[]>([]);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) =>
@@ -134,6 +137,15 @@ function Flow({ botId }: { botId: number }) {
         if (res.data.length > 0) {
           setIsBullseye(false);
         }
+        if (contentTypes.length === 0) {
+          getComponents()
+            .then((data) => {
+              setContentTypes(data);
+            })
+            .catch((err) => {
+              console.error("Failed to load components:", err);
+            });
+        }
       })
       .catch((err) => {
         toast(err.message);
@@ -141,7 +153,7 @@ function Flow({ botId }: { botId: number }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [botId]);
+  }, [botId, contentTypes, setContentTypes]);
 
   return (
     <>
@@ -198,9 +210,10 @@ function Flow({ botId }: { botId: number }) {
                 }`}
               >
                 {isPanelOpen && (
-                  <ComponentList
+                  <ContentTypesList
                     onClose={() => setIsPanelOpen(false)}
                     addSelectedComponent={addSelectedComponent}
+                    contentTypes={contentTypes}
                   />
                 )}
               </div>
