@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDnD } from "./DnDContext";
 import { ComponentType } from "../types/Component";
-import getComponents from "../services/getComponents";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
 
@@ -9,26 +8,12 @@ function ContentTypesList({
   onClose,
   addSelectedComponent,
   contentTypes,
-  setContentTypes,
 }: {
   onClose: () => void;
   addSelectedComponent: (component: ComponentType) => void;
   contentTypes: ComponentType[];
-  setContentTypes: React.Dispatch<React.SetStateAction<ComponentType[]>>;
 }) {
   const setComponent = useDnD()[1];
-
-  useEffect(() => {
-    if (contentTypes.length === 0) {
-      getComponents()
-        .then((data) => {
-          setContentTypes(data);
-        })
-        .catch((err) => {
-          console.error("Failed to load components:", err);
-        });
-    }
-  }, [contentTypes, setContentTypes]);
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
