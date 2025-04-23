@@ -1,4 +1,4 @@
-import { NodeComponent, SchemaType } from "../types/Component";
+import { ContentType, ComponentType, SchemaType } from "../types/Component";
 import { Node } from "reactflow";
 import { useState } from "react";
 import api from "../services/api";
@@ -9,25 +9,27 @@ const ComponentDetail = ({
   setNode,
   nodes,
   setNodes,
+  contentTypes,
 }: {
   botId: number;
-  node: Node<NodeComponent>;
-  setNode: React.Dispatch<
-    React.SetStateAction<Node<NodeComponent> | undefined>
-  >;
-  nodes: Node<NodeComponent>[];
+  node: ComponentType;
+  setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
+  nodes: Node<ComponentType, string | undefined>[];
   setNodes: React.Dispatch<
-    React.SetStateAction<Node<NodeComponent, string | undefined>[]>
+    React.SetStateAction<Node<ComponentType, string | undefined>[]>
   >;
+  contentTypes: ContentType[];
 }) => {
   const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  //const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
+
+  const contentOfComponent: ContentType = contentTypes[node.content_type - 10];
 
   const validateField = (
     value: string,
@@ -67,7 +69,7 @@ const ComponentDetail = ({
 
   const handleSubmit = () => {
     const newErrors: { [key: string]: string } = {};
-    Object.entries(node.data.content_type.schema).forEach(([key, value]) => {
+    Object.entries(contentOfComponent.schema).forEach(([key, value]) => {
       const error = validateField(
         formValues[key] || "",
         value.type,
@@ -80,7 +82,7 @@ const ComponentDetail = ({
       return;
     }
     api
-      .post(`${node.data.content_type.path.split(".ir")[1]}`, formValues)
+      .post(`${contentOfComponent.path.split(".ir")[1]}`, formValues)
       .then((res) => {
         const objId: number = res.data.id;
         api
@@ -91,7 +93,7 @@ const ComponentDetail = ({
             const objId: number = res.data.id;
             setNodes(() =>
               nodes.map((item) =>
-                item.id === node.id ?
+                item.id === node.id.toString() ?
                   {
                     ...item,
                     data: {
@@ -113,10 +115,10 @@ const ComponentDetail = ({
       })
       .catch((err) => {
         toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    // .finally(() => {
-    //   setLoading(false);
-    // });
   };
   const handleCancel = () => {
     setNode(undefined);
@@ -127,38 +129,37 @@ const ComponentDetail = ({
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4">
       <div className="space-y-4 rounded-2xl bg-patina-300 p-6 shadow">
-        <h2 className="royalblue-200 text-2xl font-bold">{node.data.name}</h2>
-        <p className="text-patina-50">{node.data.content_type.description}</p>
+        <h1 className="royalblue-200 text-2xl font-bold">{node.name}</h1>
+        <h2 className="royalblue-200 text-2xl font-bold">{node.name}</h2>
+        <p className="text-patina-50">{contentOfComponent.description}</p>
         <div>
           <h3 className="royalblue-500 mb-2 text-lg font-semibold">Schema</h3>
           <ul className="space-y-3">
-            {Object.entries(node.data.content_type.schema).map(
-              ([key, value]) => (
-                <li key={key} className="text-gray-800">
-                  <label className="mb-1 block font-medium" htmlFor={key}>
-                    {key}{" "}
-                    <span className="royalblue-50 text-sm">
-                      ({value.type}, {value.required ? "required" : "optional"})
-                    </span>
-                  </label>
-                  <input
-                    id={key}
-                    type="text"
-                    placeholder={key}
-                    value={formValues[key] || ""}
-                    onChange={(e) => handleChange(key, e.target.value)}
-                    onBlur={() => handleBlur(key, value)}
-                    required={value.required}
-                    className={`w-full rounded-lg border px-3 py-2 ${
-                      errors[key] ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors[key] && (
-                    <p className="mt-1 text-sm text-red-600">{errors[key]}</p>
-                  )}
-                </li>
-              ),
-            )}
+            {Object.entries(contentOfComponent.schema).map(([key, value]) => (
+              <li key={key} className="text-gray-800">
+                <label className="mb-1 block font-medium" htmlFor={key}>
+                  {key}{" "}
+                  <span className="royalblue-50 text-sm">
+                    ({value.type}, {value.required ? "required" : "optional"})
+                  </span>
+                </label>
+                <input
+                  id={key}
+                  type="text"
+                  placeholder={key}
+                  value={formValues[key] || ""}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                  onBlur={() => handleBlur(key, value)}
+                  required={value.required}
+                  className={`w-full rounded-lg border px-3 py-2 ${
+                    errors[key] ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors[key] && (
+                  <p className="mt-1 text-sm text-red-600">{errors[key]}</p>
+                )}
+              </li>
+            ))}
           </ul>
           <div className="mt-6 flex space-x-4">
             <button

@@ -32,7 +32,7 @@ const nodeTypes = { customNode: Component };
 
 function Flow({ botId }: { botId: number }) {
   const [unattendedComponent, setUnattendedComponent] =
-    useState<Node<ComponentType>>();
+    useState<ComponentType>();
   const [loading, setLoading] = useState(true);
   // Component Panel
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -320,6 +320,7 @@ function Flow({ botId }: { botId: number }) {
                 setNode={setUnattendedComponent}
                 nodes={nodes}
                 setNodes={setNodes}
+                contentTypes={contentTypes}
               />
             </div>
           )}
