@@ -16,6 +16,7 @@ import ReactFlow, {
   useNodesState,
   ReactFlowProvider,
   Node,
+  NodeDragHandler,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
@@ -27,7 +28,6 @@ import getComponents from "../services/getComponents";
 import { toast } from "react-toastify";
 
 // const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
-
 const nodeTypes = { customNode: Component };
 
 function Flow({ botId }: { botId: number }) {
@@ -37,6 +37,10 @@ function Flow({ botId }: { botId: number }) {
   // Component Panel
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isFlowAvailable, setIsFlowAvailable] = useState(false); // checks if there are any components available, if not, means we should make a flow on first component creation
+  const [draggingNodeXY, setDraggingNodeXY] = useState<{
+    x: number;
+    y: number;
+  }>({ x: -1, y: -1 });
 
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
@@ -83,9 +87,26 @@ function Flow({ botId }: { botId: number }) {
   const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 
   const onConnect = useCallback(
-    (connection: Edge | Connection) =>
-      setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
+    (connection: Edge | Connection) => {
+      setLoading(true);
+      if (connection.target) {
+        const nextComponentId: number = parseInt(connection.target);
+        api
+          .patch(`flow/${botId}/component/${connection.source}`, {
+            next_component: nextComponentId,
+          })
+          .then(() => {
+            setEdges((eds) => addEdge(connection, eds));
+          })
+          .catch((err) => {
+            toast(err.message);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    },
+    [setEdges, botId],
   );
 
   const makeNewComponent = useCallback(
@@ -167,6 +188,46 @@ function Flow({ botId }: { botId: number }) {
 
   const addSelectedComponent = (content: ContentType) => {
     makeNewComponent(content);
+  };
+
+  const nodeDragEnter: NodeDragHandler = (
+    _event: React.MouseEvent,
+    node: Node,
+  ) => {
+    setDraggingNodeXY({ x: node.position.x, y: node.position.y });
+  };
+  const nodeDragExit: NodeDragHandler = (
+    _event: React.MouseEvent,
+    node: Node,
+  ) => {
+    if (
+      draggingNodeXY.x !== node.position.x &&
+      draggingNodeXY.y !== node.position.y
+    ) {
+      setLoading(true);
+      api
+        .patch(`flow/${botId}/component/${node.id}/`, {
+          position_x: node.position.x,
+          position_y: node.position.y,
+        })
+        .then(() => {})
+        .catch((err) => {
+          setNodes(() =>
+            nodes.map((item) =>
+              item.id === node.id ?
+                {
+                  ...item,
+                  position: { x: draggingNodeXY.x, y: draggingNodeXY.y },
+                }
+              : item,
+            ),
+          );
+          toast(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   useEffect(() => {
@@ -311,6 +372,8 @@ function Flow({ botId }: { botId: number }) {
                   nodeTypes={nodeTypes}
                   onDrop={onDrop}
                   onDragOver={onDragOver}
+                  onNodeDragStart={nodeDragEnter}
+                  onNodeDragStop={nodeDragExit}
                 >
                   <Background />
                   <MiniMap pannable={true} zoomable={true} />
