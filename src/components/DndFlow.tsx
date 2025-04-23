@@ -180,6 +180,8 @@ function Flow({ botId }: { botId: number }) {
     api
       .get(`flow/${botId}/component`)
       .then((res) => {
+        setNodes([]);
+        setEdges([]);
         const components: ComponentType[] = res.data;
         if (res.data.length > 0) {
           components.forEach((element: ComponentType) => {
@@ -212,7 +214,6 @@ function Flow({ botId }: { botId: number }) {
           getComponents()
             .then((data) => {
               setContentTypes(data);
-              console.log(data);
             })
             .catch((err) => {
               toast(err.message);
