@@ -22,7 +22,7 @@ const ComponentDetail = ({
 }) => {
   const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
@@ -117,7 +117,7 @@ const ComponentDetail = ({
         toast(err.message);
       })
       .finally(() => {
-        setLoading(false);
+        //setLoading(false);
       });
   };
   const handleCancel = () => {
@@ -130,7 +130,9 @@ const ComponentDetail = ({
     <div className="mx-auto max-w-3xl space-y-6 p-4">
       <div className="space-y-4 rounded-2xl bg-patina-300 p-6 shadow">
         <h1 className="royalblue-200 text-2xl font-bold">{node.name}</h1>
-        <h2 className="royalblue-200 text-2xl font-bold">{node.name}</h2>
+        <h2 className="royalblue-200 text-2xl font-bold">
+          {schemaOfComponent.name}
+        </h2>
         <p className="text-patina-50">{schemaOfComponent.description}</p>
         <div>
           <h3 className="royalblue-500 mb-2 text-lg font-semibold">Schema</h3>

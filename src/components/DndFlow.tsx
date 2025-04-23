@@ -15,6 +15,7 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   ReactFlowProvider,
+  Node,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
@@ -73,7 +74,7 @@ function Flow({ botId }: { botId: number }) {
   //     },
   //   },
   // ];
-  const [component] = useDnD();
+  const [content] = useDnD();
 
   // Edges and Nodes
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
@@ -106,29 +107,34 @@ function Flow({ botId }: { botId: number }) {
           if (!isFlowAvailable) {
             api
               .post(`flow/${botId}/`, { start: res.data.id })
-              .then((res) => {
+              .then(() => {
                 setIsFlowAvailable(true);
-                const nodeData: ComponentType = {
-                  object_id: undefined,
-                  next_component: undefined,
-                  name: "Salam",
-                  content_type: 0,
-                };
-                const newNode: ComponentType = {
-                  id: `${res.data.start_component.id}`,
-                  type: "customNode",
-                  position: position,
-                  selected: false,
-                  data: nodeData,
-                };
-
-                setNodes((nds) => nds.concat(newNode));
-                setUnattendedComponent(newNode);
               })
               .catch((err) => {
                 toast(err.message);
               });
           }
+          //console.log(res);
+
+          const componentData: ComponentType = {
+            id: res.data.id,
+            object_id: null,
+            next_component: null,
+            name: res.data.name,
+            content_type: res.data.content_type,
+            position_x: position.x,
+            position_y: position.y,
+          };
+          const newNode: Node<ComponentType> = {
+            id: `${res.data.id}`,
+            type: "customNode",
+            position: position,
+            selected: false,
+            data: componentData,
+          };
+
+          setNodes((nds) => nds.concat(newNode));
+          setUnattendedComponent(componentData);
         })
         .catch((err) => {
           toast(err.message);
@@ -150,17 +156,17 @@ function Flow({ botId }: { botId: number }) {
       event.preventDefault();
 
       // check if the dropped element is valid
-      if (!component) {
+      if (!content) {
         return;
       }
 
-      makeNewComponent(component, event.clientX, event.clientY);
+      makeNewComponent(content, event.clientX, event.clientY);
     },
-    [component, makeNewComponent],
+    [content, makeNewComponent],
   );
 
-  const addSelectedComponent = (component: ContentType) => {
-    makeNewComponent(component);
+  const addSelectedComponent = (content: ContentType) => {
+    makeNewComponent(content);
   };
 
   useEffect(() => {
