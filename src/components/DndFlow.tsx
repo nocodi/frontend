@@ -44,40 +44,7 @@ function Flow({ botId }: { botId: number }) {
 
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
-  // const initialNodes = [
-  //   {
-  //     id: "1",
-  //     position: flowInstance.screenToFlowPosition({
-  //       x: 50,
-  //       y: 50,
-  //     }),
-  //     type: "customNode",
-  //     selected: false,
-  //     data: {
-  //       id: 1,
-  //       next_component: null,
-  //       name: "hi",
-  //       content_type: 10,
-  //       object_id: null,
-  //     },
-  //   },
-  //   {
-  //     id: "2",
-  //     position: flowInstance.screenToFlowPosition({
-  //       x: 150,
-  //       y: 150,
-  //     }),
-  //     type: "customNode",
-  //     selected: false,
-  //     data: {
-  //       id: 2,
-  //       next_component: null,
-  //       name: "bye",
-  //       content_type: 12,
-  //       object_id: null,
-  //     },
-  //   },
-  // ];
+
   const [content] = useDnD();
 
   // Edges and Nodes
