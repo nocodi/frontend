@@ -22,9 +22,9 @@ import "reactflow/dist/style.css";
 
 import { DnDProvider, useDnD } from "../components/DnDContext";
 import api from "../services/api";
-import { toast } from "react-toastify";
 import ComponentDetail from "./ComponentDetail";
 import getComponents from "../services/getComponents";
+import { toast } from "react-toastify";
 
 // const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
@@ -195,15 +195,27 @@ function Flow({ botId }: { botId: number }) {
                 data: element,
               }),
             );
+
+            if (element.next_component != null) {
+              const next_component: number = element.next_component;
+              setEdges((edg) =>
+                edg.concat({
+                  id: `e${element.id}-${element.next_component}`,
+                  source: element.id.toString(),
+                  target: next_component.toString(),
+                }),
+              );
+            }
           });
         }
         if (contentTypes.length === 0) {
           getComponents()
             .then((data) => {
               setContentTypes(data);
+              console.log(data);
             })
             .catch((err) => {
-              console.error("Failed to load components:", err);
+              toast(err.message);
             });
         }
       })
@@ -213,7 +225,7 @@ function Flow({ botId }: { botId: number }) {
       .finally(() => {
         setLoading(false);
       });
-  }, [botId, contentTypes, setContentTypes, flowInstance, setNodes]);
+  }, [botId]);
 
   return (
     <>
