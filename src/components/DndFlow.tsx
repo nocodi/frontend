@@ -15,7 +15,6 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
   ReactFlowProvider,
-  Node,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
@@ -165,6 +164,16 @@ function Flow({ botId }: { botId: number }) {
   };
 
   useEffect(() => {
+    if (contentTypes.length === 0) {
+      getComponents()
+        .then((data) => {
+          setContentTypes(data);
+          //console.log(data);
+        })
+        .catch((err) => {
+          toast(err.message);
+        });
+    }
     api
       .get(`flow/${botId}/`)
       .then((res) => {
@@ -209,15 +218,6 @@ function Flow({ botId }: { botId: number }) {
               );
             }
           });
-        }
-        if (contentTypes.length === 0) {
-          getComponents()
-            .then((data) => {
-              setContentTypes(data);
-            })
-            .catch((err) => {
-              toast(err.message);
-            });
         }
       })
       .catch((err) => {

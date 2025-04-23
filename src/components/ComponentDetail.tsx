@@ -29,7 +29,7 @@ const ComponentDetail = ({
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const contentOfComponent: ContentType = contentTypes[node.content_type - 10];
+  const schemaOfComponent: ContentType = contentTypes[node.content_type - 10];
 
   const validateField = (
     value: string,
@@ -69,7 +69,7 @@ const ComponentDetail = ({
 
   const handleSubmit = () => {
     const newErrors: { [key: string]: string } = {};
-    Object.entries(contentOfComponent.schema).forEach(([key, value]) => {
+    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
       const error = validateField(
         formValues[key] || "",
         value.type,
@@ -82,7 +82,7 @@ const ComponentDetail = ({
       return;
     }
     api
-      .post(`${contentOfComponent.path.split(".ir")[1]}`, formValues)
+      .post(`${schemaOfComponent.path.split(".ir")[1]}`, formValues)
       .then((res) => {
         const objId: number = res.data.id;
         api
@@ -131,11 +131,11 @@ const ComponentDetail = ({
       <div className="space-y-4 rounded-2xl bg-patina-300 p-6 shadow">
         <h1 className="royalblue-200 text-2xl font-bold">{node.name}</h1>
         <h2 className="royalblue-200 text-2xl font-bold">{node.name}</h2>
-        <p className="text-patina-50">{contentOfComponent.description}</p>
+        <p className="text-patina-50">{schemaOfComponent.description}</p>
         <div>
           <h3 className="royalblue-500 mb-2 text-lg font-semibold">Schema</h3>
           <ul className="space-y-3">
-            {Object.entries(contentOfComponent.schema).map(([key, value]) => (
+            {Object.entries(schemaOfComponent.schema).map(([key, value]) => (
               <li key={key} className="text-gray-800">
                 <label className="mb-1 block font-medium" htmlFor={key}>
                   {key}{" "}
