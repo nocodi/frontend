@@ -3,8 +3,8 @@ import { ComponentType } from "../types/Component";
 import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { WorkflowParams } from "../pages/Workflow";
-import { useLoading, useUnattended } from "./DndFlow";
+import { useLoading, WorkflowParams } from "../pages/Workflow";
+import { useUnattended } from "./Flow";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();

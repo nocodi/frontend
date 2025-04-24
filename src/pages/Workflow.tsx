@@ -1,6 +1,14 @@
 import { useParams } from "react-router-dom";
 import DnDFlow from "../components/DndFlow";
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
+
+type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
+
+const loadingContext = createContext<loadingContextType>(() => {});
+
+export const useLoading = () => {
+  return useContext(loadingContext);
+};
 
 export type WorkflowParams = {
   botId: string;
@@ -16,7 +24,7 @@ function Workflow() {
       : <div className="h-screen overflow-hidden text-white">
           <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
             <div className="h-15 shrink-0 bg-patina-300 px-5">
-              <div className="flex flex-row">
+              <div className="mt-1 flex flex-row gap-2">
                 <div className="">title whatever</div>
                 {loading ?
                   <svg
@@ -59,7 +67,9 @@ function Workflow() {
                 }
               </div>
             </div>
-            <DnDFlow botId={Number(botId)} setLoading={setLoading} />
+            <loadingContext.Provider value={setLoading}>
+              <DnDFlow botId={Number(botId)} />
+            </loadingContext.Provider>
           </div>
         </div>
       }
