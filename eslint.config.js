@@ -23,6 +23,7 @@ export default tseslint.config(
     },
     rules: {
       "no-unused-vars": "off",
+      "@typescript-eslint/prefer-promise-reject-errors": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-misused-promises": [
         "error",
