@@ -159,7 +159,7 @@ function Flow({ botId }: { botId: number }) {
     <>
       {loading ?
         <svg
-          className="m-auto size-10 animate-spin text-cream-900"
+          className="m-auto size-10 animate-spin text-base-content"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
