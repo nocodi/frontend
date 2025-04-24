@@ -44,10 +44,15 @@ const unattendedComponentContext =
 
 const nodeTypes = { customNode: Component };
 
-function Flow({ botId }: { botId: number }) {
+function Flow({
+  botId,
+  setLoading,
+}: {
+  botId: number;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [unattendedComponent, setUnattendedComponent] =
     useState<ComponentType>();
-  const [loading, setLoading] = useState(true);
   // Component Panel
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isFlowAvailable, setIsFlowAvailable] = useState(false); // checks if there are any components available, if not, means we should make a flow on first component creation
@@ -66,6 +71,8 @@ function Flow({ botId }: { botId: number }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
+
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
@@ -212,6 +219,7 @@ function Flow({ botId }: { botId: number }) {
   };
 
   useEffect(() => {
+    setLoading(true);
     if (contentTypes.length === 0) {
       getComponents()
         .then((data) => {
@@ -222,6 +230,7 @@ function Flow({ botId }: { botId: number }) {
           toast(err.message);
         });
     }
+
     api
       .get(`flow/${botId}/`)
       .then((res) => {
@@ -276,119 +285,106 @@ function Flow({ botId }: { botId: number }) {
       });
   }, [botId]);
 
+  const componentDidMount = () => {
+    setIsFirstLoad(false);
+  };
+
   return (
     <>
-      {loading ?
-        <svg
-          className="m-auto size-10 animate-spin text-cream-900"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-      : <>
-          <div className="h-full w-full">
-            <div className="relative h-full w-full bg-patina-900">
-              <div
-                onClick={() => setIsPanelOpen(true)}
-                className="group btn absolute right-0 z-1 mt-5 mr-5 flex h-10 w-12 items-center justify-center rounded-xl border-2 text-white btn-outline hover:border-accent"
-              >
-                <svg
-                  className="h-6 w-6 group-hover:text-accent"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="5"
-                    d="M5 12h14m-7 7V5"
-                  />
-                </svg>
-              </div>
-
-              <div
-                className={`absolute right-0 z-1 flex h-full w-67 bg-patina-300 transition-transform duration-400 ${
-                  isPanelOpen ? "translate-x-0" : "translate-x-full"
-                }`}
-              >
-                {isPanelOpen && (
-                  <ContentTypesList
-                    onClose={() => setIsPanelOpen(false)}
-                    addSelectedComponent={addSelectedComponent}
-                    contentTypes={contentTypes}
-                  />
-                )}
-              </div>
-
-              <div
-                className="h-full w-full rounded-lg border border-gray-700"
-                ref={reactFlowWrapper}
-              >
-                <unattendedComponentContext.Provider
-                  value={[unattendedComponent, setUnattendedComponent]}
-                >
-                  <ReactFlow
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodeChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                    nodeTypes={nodeTypes}
-                    onDrop={onDrop}
-                    onDragOver={onDragOver}
-                    onNodeDragStart={nodeDragEnter}
-                    onNodeDragStop={nodeDragExit}
-                  >
-                    <Background />
-                    <MiniMap pannable={true} zoomable={true} />
-                    <Controls />
-                  </ReactFlow>
-                </unattendedComponentContext.Provider>
-              </div>
-            </div>
+      <div className="h-full w-full">
+        <div className="relative h-full w-full bg-patina-900">
+          <div
+            onClick={() => setIsPanelOpen(true)}
+            className="group btn absolute right-0 z-1 mt-5 mr-5 flex h-10 w-12 items-center justify-center rounded-xl border-2 text-white btn-outline hover:border-accent"
+          >
+            <svg
+              className="h-6 w-6 group-hover:text-accent"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="5"
+                d="M5 12h14m-7 7V5"
+              />
+            </svg>
           </div>
-          {unattendedComponent && (
-            <div className="absolute z-50 h-screen w-screen content-center backdrop-blur-xs">
-              <ComponentDetail
-                botId={botId}
-                node={unattendedComponent}
-                setNode={setUnattendedComponent}
-                nodes={nodes}
-                setNodes={setNodes}
+
+          <div
+            className={`absolute right-0 z-1 flex h-full w-67 bg-patina-300 transition-transform duration-400 ${
+              isPanelOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {isPanelOpen && (
+              <ContentTypesList
+                onClose={() => setIsPanelOpen(false)}
+                addSelectedComponent={addSelectedComponent}
                 contentTypes={contentTypes}
               />
-            </div>
-          )}
-        </>
-      }
+            )}
+          </div>
+
+          <div
+            className="h-full w-full rounded-lg border border-gray-700"
+            ref={reactFlowWrapper}
+          >
+            <unattendedComponentContext.Provider
+              value={[unattendedComponent, setUnattendedComponent]}
+            >
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodeChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+                nodeTypes={nodeTypes}
+                fitView={isFirstLoad}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                onNodeDragStart={nodeDragEnter}
+                onNodeDragStop={nodeDragExit}
+              >
+                <Background />
+                <MiniMap pannable={true} zoomable={true} />
+                <Controls />
+              </ReactFlow>
+            </unattendedComponentContext.Provider>
+          </div>
+        </div>
+      </div>
+      {unattendedComponent && (
+        <div className="absolute z-50 h-screen w-screen content-center backdrop-blur-xs">
+          <ComponentDetail
+            botId={botId}
+            node={unattendedComponent}
+            setNode={setUnattendedComponent}
+            nodes={nodes}
+            setNodes={setNodes}
+            contentTypes={contentTypes}
+          />
+        </div>
+      )}
     </>
   );
 }
 
-function DnDFlow({ botId }: { botId: number }) {
+function DnDFlow({
+  botId,
+  setLoading,
+}: {
+  botId: number;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <ReactFlowProvider>
       <DnDProvider>
-        <Flow botId={botId} />
+        <Flow botId={botId} setLoading={setLoading} />
       </DnDProvider>
     </ReactFlowProvider>
   );
