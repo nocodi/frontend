@@ -1,4 +1,11 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+} from "react";
 
 import Component from "./Component";
 import { ContentType, ComponentType } from "../types/Component";
@@ -27,7 +34,14 @@ import ComponentDetail from "./ComponentDetail";
 import getComponents from "../services/getComponents";
 import { toast } from "react-toastify";
 
-// const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+type unattendedComponentContextType = [
+  ComponentType | undefined,
+  React.Dispatch<React.SetStateAction<ComponentType | undefined>>,
+];
+
+const unattendedComponentContext =
+  createContext<unattendedComponentContextType>([undefined, () => {}]);
+
 const nodeTypes = { customNode: Component };
 
 function Flow({ botId }: { botId: number }) {
@@ -329,23 +343,26 @@ function Flow({ botId }: { botId: number }) {
                 className="h-full w-full rounded-lg border border-gray-700"
                 ref={reactFlowWrapper}
               >
-                <ReactFlow
-                  nodes={nodes}
-                  edges={edges}
-                  onNodesChange={onNodeChange}
-                  onEdgesChange={onEdgesChange}
-                  onConnect={onConnect}
-                  fitView
-                  nodeTypes={nodeTypes}
-                  onDrop={onDrop}
-                  onDragOver={onDragOver}
-                  onNodeDragStart={nodeDragEnter}
-                  onNodeDragStop={nodeDragExit}
+                <unattendedComponentContext.Provider
+                  value={[unattendedComponent, setUnattendedComponent]}
                 >
-                  <Background />
-                  <MiniMap pannable={true} zoomable={true} />
-                  <Controls />
-                </ReactFlow>
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodeChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    nodeTypes={nodeTypes}
+                    onDrop={onDrop}
+                    onDragOver={onDragOver}
+                    onNodeDragStart={nodeDragEnter}
+                    onNodeDragStop={nodeDragExit}
+                  >
+                    <Background />
+                    <MiniMap pannable={true} zoomable={true} />
+                    <Controls />
+                  </ReactFlow>
+                </unattendedComponentContext.Provider>
               </div>
             </div>
           </div>
@@ -376,5 +393,9 @@ function DnDFlow({ botId }: { botId: number }) {
     </ReactFlowProvider>
   );
 }
+
+export const useUnattended = () => {
+  return useContext(unattendedComponentContext);
+};
 
 export default DnDFlow;

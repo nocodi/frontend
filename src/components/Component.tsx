@@ -4,10 +4,12 @@ import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { WorkflowParams } from "../pages/Workflow";
+import { useUnattended } from "./DndFlow";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const { botId } = useParams<WorkflowParams>();
+  const setUnattendedComponent = useUnattended()[1];
 
   function deleteComponent() {
     api
@@ -18,6 +20,10 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       .catch((err) => {
         toast(err.message);
       });
+  }
+
+  function editComponentDetails() {
+    setUnattendedComponent(data);
   }
 
   return (
@@ -41,6 +47,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
         </svg>
 
         <svg
+          onClick={() => editComponentDetails()}
           className="h-3 w-3 cursor-pointer hover:text-accent dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
