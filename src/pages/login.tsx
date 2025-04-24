@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, use, useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { AuthContext } from "../services/Auth";

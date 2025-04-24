@@ -42,7 +42,7 @@ const BotList = () => {
     );
 
   return (
-    <div className="min-h-screen w-full bg-base-200">
+    <div className="min-h-screen w-full bg-base-300">
       <div className="container mx-auto flex min-h-screen flex-col gap-4 p-4">
         <h2 className="mt-10 mb-2 text-3xl font-bold">Your Bots</h2>
         {loading ?
@@ -58,7 +58,7 @@ const BotList = () => {
               cy="12"
               r="10"
               stroke="currentColor"
-              stroke-width="4"
+              strokeWidth="4"
             ></circle>
             <path
               className="opacity-75"
@@ -78,7 +78,7 @@ const BotList = () => {
                   {filtered.map((item) => (
                     <div
                       key={item.id}
-                      className="card border border-base-300 bg-base-100 shadow-xl transition-transform duration-300 ease-in-out hover:scale-105"
+                      className="card-border card bg-base-100 transition-transform duration-300 ease-in-out hover:scale-105"
                     >
                       <div className="card-body">
                         <h3 className="card-title">{item.name}</h3>
