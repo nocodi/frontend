@@ -93,7 +93,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[12px]">{data.name}</div>
+        <div className="inline-block align-middle text-[10px]">{data.name}</div>
       </div>
     </div>
   );
