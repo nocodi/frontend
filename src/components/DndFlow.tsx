@@ -72,7 +72,7 @@ function Flow({
 
   const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
 
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isFirstLoad, _setIsFirstLoad] = useState(true);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
@@ -224,7 +224,6 @@ function Flow({
       getComponents()
         .then((data) => {
           setContentTypes(data);
-          //console.log(data);
         })
         .catch((err) => {
           toast(err.message);
@@ -284,10 +283,6 @@ function Flow({
         setLoading(false);
       });
   }, [botId]);
-
-  const componentDidMount = () => {
-    setIsFirstLoad(false);
-  };
 
   return (
     <>
