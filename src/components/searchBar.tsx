@@ -10,7 +10,7 @@ export default function SearchBar({
   return (
     <label className="input tracking-widest input-primary">
       <svg
-        className="h-[1em] text-patina-500 opacity-50"
+        className="h-[1em] opacity-50"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
@@ -27,7 +27,6 @@ export default function SearchBar({
       </svg>
       <input
         type="search"
-        required
         placeholder="Search"
         value={value}
         onChange={onChange}

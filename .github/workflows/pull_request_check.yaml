@@ -8,7 +8,7 @@ on:
       - reopened # Triggered when a PR is reopened
 
 jobs:
-  setup:
+  check:
     runs-on: ubuntu-latest
 
     steps:

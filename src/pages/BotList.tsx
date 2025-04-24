@@ -78,7 +78,7 @@ const BotList = () => {
                   {filtered.map((item) => (
                     <div
                       key={item.id}
-                      className="card-border card bg-base-100 transition-transform duration-300 ease-in-out hover:scale-105"
+                      className="card-border card bg-base-100 transition-transform duration-300 ease-in-out sm:hover:scale-105"
                     >
                       <div className="card-body">
                         <h3 className="card-title">{item.name}</h3>
