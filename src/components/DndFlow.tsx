@@ -42,6 +42,10 @@ type unattendedComponentContextType = [
 const unattendedComponentContext =
   createContext<unattendedComponentContextType>([undefined, () => {}]);
 
+type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
+
+const loadingContext = createContext<loadingContextType>(() => {});
+
 const nodeTypes = { customNode: Component };
 
 function Flow({
@@ -329,27 +333,29 @@ function Flow({
             className="h-full w-full rounded-lg border border-gray-700"
             ref={reactFlowWrapper}
           >
-            <unattendedComponentContext.Provider
-              value={[unattendedComponent, setUnattendedComponent]}
-            >
-              <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodeChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                nodeTypes={nodeTypes}
-                fitView={isFirstLoad}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-                onNodeDragStart={nodeDragEnter}
-                onNodeDragStop={nodeDragExit}
+            <loadingContext.Provider value={setLoading}>
+              <unattendedComponentContext.Provider
+                value={[unattendedComponent, setUnattendedComponent]}
               >
-                <Background />
-                <MiniMap pannable={true} zoomable={true} />
-                <Controls />
-              </ReactFlow>
-            </unattendedComponentContext.Provider>
+                <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  onNodesChange={onNodeChange}
+                  onEdgesChange={onEdgesChange}
+                  onConnect={onConnect}
+                  nodeTypes={nodeTypes}
+                  fitView={isFirstLoad}
+                  onDrop={onDrop}
+                  onDragOver={onDragOver}
+                  onNodeDragStart={nodeDragEnter}
+                  onNodeDragStop={nodeDragExit}
+                >
+                  <Background />
+                  <MiniMap pannable={true} zoomable={true} />
+                  <Controls />
+                </ReactFlow>
+              </unattendedComponentContext.Provider>
+            </loadingContext.Provider>
           </div>
         </div>
       </div>
@@ -387,6 +393,10 @@ function DnDFlow({
 
 export const useUnattended = () => {
   return useContext(unattendedComponentContext);
+};
+
+export const useLoading = () => {
+  return useContext(loadingContext);
 };
 
 export default DnDFlow;

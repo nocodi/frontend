@@ -4,14 +4,16 @@ import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { WorkflowParams } from "../pages/Workflow";
-import { useUnattended } from "./DndFlow";
+import { useLoading, useUnattended } from "./DndFlow";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const { botId } = useParams<WorkflowParams>();
   const setUnattendedComponent = useUnattended()[1];
+  const setLoading = useLoading();
 
   function deleteComponent() {
+    setLoading(true);
     api
       .delete(`flow/${botId}/component/${id}/`)
       .then(() => {
@@ -19,6 +21,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       })
       .catch((err) => {
         toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
