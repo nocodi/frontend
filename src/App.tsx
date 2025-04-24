@@ -15,6 +15,8 @@ import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
 import Landing from "./pages/landing";
+import AboutContact from "./pages/AboutPage";
+import TutorialPage from "./pages/TutorialPage";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
             <Route path="/verification" element={<Verification />} />
             <Route path="/passwordlessLogin" element={<PasswordlessLogin />} />
             <Route path="/landing" element={<Landing />} />
+            <Route path="/About" element={<AboutContact />} />
+            <Route path="/Tutorial" element={<TutorialPage />} />
           </Route>
           <Route Component={CheckAuthWrapper}>
             <Route path="/" element={<Navigate to={"/workflow"} />} />

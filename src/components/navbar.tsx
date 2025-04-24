@@ -1,4 +1,4 @@
-import { Link } from "react-scroll";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
@@ -11,38 +11,17 @@ export default function Navbar() {
 
           <ul className="menu menu-horizontal hidden gap-4 md:flex">
             <li>
-              <Link
-                to="services"
-                spy={true}
-                smooth={true}
-                offset={0}
-                duration={500}
-                className="cursor-pointer text-patina-500"
-              >
+              <Link to="services" className="cursor-pointer text-patina-500">
                 Services
               </Link>
             </li>
             <li>
-              <Link
-                to="TutorialSection"
-                spy={true}
-                smooth={true}
-                offset={-40}
-                duration={500}
-                className="cursor-pointer text-patina-500"
-              >
+              <Link to="/tutorial" className="cursor-pointer text-patina-500">
                 Tutorial
               </Link>
             </li>
             <li>
-              <Link
-                to="about"
-                spy={true}
-                smooth={true}
-                offset={0}
-                duration={500}
-                className="cursor-pointer text-patina-500"
-              >
+              <Link to="/about" className="cursor-pointer text-patina-500">
                 About Us
               </Link>
             </li>
