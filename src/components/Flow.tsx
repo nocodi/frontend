@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 
 import Component from "./Component";
+import CustomEdge from "./EdgeComponent";
 import { ContentType, ComponentType } from "../types/Component";
 
 import ReactFlow, {
   useReactFlow,
   Edge,
   Connection,
-  addEdge,
   Background,
   Controls,
   MiniMap,
@@ -15,6 +15,7 @@ import ReactFlow, {
   useNodesState,
   Node,
   NodeDragHandler,
+  DefaultEdgeOptions,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
@@ -32,6 +33,7 @@ import ComponentDetail from "./ComponentDetail";
 import { toast } from "react-toastify";
 
 const nodeTypes = { customNode: Component };
+const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow({ botId }: { botId: number }) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -65,7 +67,18 @@ export default function Flow({ botId }: { botId: number }) {
             next_component: nextComponentId,
           })
           .then(() => {
-            setEdges((eds) => addEdge(connection, eds));
+            if (connection.source && connection.target) {
+              const newEdge: Edge<DefaultEdgeOptions> = {
+                id: `e${connection.source}-${connection.target}`,
+                source: connection.source,
+                target: connection.target,
+                type: "customEdge",
+              };
+              const exists = edges.some((edge) => edge.id === newEdge.id);
+              if (!exists) {
+                setEdges((eds) => eds.concat(newEdge));
+              }
+            }
           })
           .catch((err) => {
             toast(err.message);
@@ -247,6 +260,7 @@ export default function Flow({ botId }: { botId: number }) {
                   id: `e${element.id}-${element.next_component}`,
                   source: element.id.toString(),
                   target: next_component.toString(),
+                  type: "customEdge",
                 }),
               );
             }
@@ -313,6 +327,7 @@ export default function Flow({ botId }: { botId: number }) {
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
               nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
               fitView={isFirstLoad}
               onDrop={onDrop}
               onDragOver={onDragOver}
