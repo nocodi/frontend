@@ -1,15 +1,7 @@
-import {
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-  createContext,
-  useContext,
-} from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 
 import Component from "./Component";
 import { ContentType, ComponentType } from "../types/Component";
-import ContentTypesList from "./ContentTypesList";
 
 import ReactFlow, {
   useReactFlow,
@@ -27,34 +19,24 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
+import { useLoading } from "../pages/Workflow";
 import { useDnD } from "../components/DnDContext";
+import { useUnattended } from "./UnattendedComponentContext";
 
 import api from "../services/api";
+import getContetnTypes from "../services/getContents";
+
+import ContentTypesList from "./ContentTypesList";
 import ComponentDetail from "./ComponentDetail";
-import getComponents from "../services/getComponents";
+
 import { toast } from "react-toastify";
-import { useLoading } from "../pages/Workflow";
-
-type unattendedComponentContextType = [
-  ComponentType | undefined,
-  React.Dispatch<React.SetStateAction<ComponentType | undefined>>,
-];
-
-const unattendedComponentContext =
-  createContext<unattendedComponentContextType>([undefined, () => {}]);
-
-export const useUnattended = () => {
-  return useContext(unattendedComponentContext);
-};
 
 const nodeTypes = { customNode: Component };
 
 export default function Flow({ botId }: { botId: number }) {
-  const [unattendedComponent, setUnattendedComponent] =
-    useState<ComponentType>();
-
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isFlowAvailable, setIsFlowAvailable] = useState(false); // checks if there are any components available, if not, means we should make a flow on first component creation
+
   const [draggingNodeXY, setDraggingNodeXY] = useState<{
     x: number;
     y: number;
@@ -62,8 +44,8 @@ export default function Flow({ botId }: { botId: number }) {
 
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
-
   const [content] = useDnD();
+  const [unattendedComponent, setUnattendedComponent] = useUnattended();
   const setLoading = useLoading();
 
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
@@ -98,12 +80,12 @@ export default function Flow({ botId }: { botId: number }) {
 
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) => {
+      setLoading(true);
+
       const position = flowInstance.screenToFlowPosition({
         x: x ?? window.innerWidth / 2,
         y: y ?? window.innerHeight / 2,
       });
-      setLoading(true);
-
       api
         .post(`/flow/${botId}/component/`, {
           content_type: content.id,
@@ -139,9 +121,8 @@ export default function Flow({ botId }: { botId: number }) {
             selected: false,
             data: componentData,
           };
-
           setNodes((nds) => nds.concat(newNode));
-          setUnattendedComponent(componentData);
+          setUnattendedComponent(newNode.data);
         })
         .catch((err) => {
           toast(err.message);
@@ -162,7 +143,6 @@ export default function Flow({ botId }: { botId: number }) {
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
 
-      // check if the dropped element is valid
       if (!content) {
         return;
       }
@@ -219,7 +199,7 @@ export default function Flow({ botId }: { botId: number }) {
   useEffect(() => {
     setLoading(true);
     if (contentTypes.length === 0) {
-      getComponents()
+      getContetnTypes()
         .then((data) => {
           setContentTypes(data);
         })
@@ -237,8 +217,7 @@ export default function Flow({ botId }: { botId: number }) {
       })
       .catch((err) => {
         toast(err.message);
-      })
-      .finally(() => {});
+      });
 
     api
       .get(`flow/${botId}/component`)
@@ -327,27 +306,23 @@ export default function Flow({ botId }: { botId: number }) {
             className="h-full w-full rounded-lg border border-gray-700"
             ref={reactFlowWrapper}
           >
-            <unattendedComponentContext.Provider
-              value={[unattendedComponent, setUnattendedComponent]}
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodeChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              fitView={isFirstLoad}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeDragStart={nodeDragEnter}
+              onNodeDragStop={nodeDragExit}
             >
-              <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodeChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                nodeTypes={nodeTypes}
-                fitView={isFirstLoad}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-                onNodeDragStart={nodeDragEnter}
-                onNodeDragStop={nodeDragExit}
-              >
-                <Background />
-                <MiniMap pannable={true} zoomable={true} />
-                <Controls />
-              </ReactFlow>
-            </unattendedComponentContext.Provider>
+              <Background />
+              <MiniMap pannable={true} zoomable={true} />
+              <Controls />
+            </ReactFlow>
           </div>
         </div>
       </div>

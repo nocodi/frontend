@@ -4,7 +4,7 @@ import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useLoading, WorkflowParams } from "../pages/Workflow";
-import { useUnattended } from "./Flow";
+import { useUnattended } from "./UnattendedComponentContext";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();

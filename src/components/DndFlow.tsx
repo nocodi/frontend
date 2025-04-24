@@ -1,13 +1,16 @@
 import { DnDProvider } from "./DnDContext";
 import { ReactFlowProvider } from "reactflow";
 import Flow from "./Flow";
+import { UnattendedComponentProvider } from "./UnattendedComponentContext";
 
 function DnDFlow({ botId }: { botId: number }) {
   return (
     <ReactFlowProvider>
-      <DnDProvider>
-        <Flow botId={botId} />
-      </DnDProvider>
+      <UnattendedComponentProvider>
+        <DnDProvider>
+          <Flow botId={botId} />
+        </DnDProvider>
+      </UnattendedComponentProvider>
     </ReactFlowProvider>
   );
 }
