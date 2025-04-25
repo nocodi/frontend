@@ -99,13 +99,10 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </div>
-              : <p className="m-auto text-primary-content">
-                  Nothing Matched Your Query.
-                </p>
-              }
+              : <p className="m-auto">Nothing Matched Your Query.</p>}
             </>
-          : <p className="m-auto text-primary-content">No Bot yet.</p>
-        : <p className="m-auto text-primary-content">Failed to load bots.</p>}
+          : <p className="m-auto">No Bot yet.</p>
+        : <p className="m-auto">Failed to load bots.</p>}
       </div>
     </div>
   );
