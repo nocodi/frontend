@@ -1,4 +1,4 @@
-import hero from "../assets/HeroSection.png";
+import hero from "../../assets/HeroSection.png";
 
 export default function Services() {
   return (
@@ -11,8 +11,6 @@ export default function Services() {
             Telegram bot.
           </p>
         </div>
-
-        {/* Flow Image */}
         <div className="flex justify-center">
           <img
             src={hero}

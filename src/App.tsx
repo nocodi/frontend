@@ -15,6 +15,8 @@ import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
 import Landing from "./pages/landing";
+import AboutContact from "./pages/AboutPage";
+import TutorialPage from "./pages/TutorialPage";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
               <Route index Component={BotList} />
               <Route path=":botId" element={<Workflow />} />
             </Route>
+            <Route path="/About" element={<AboutContact />} />
+            <Route path="/Tutorial" element={<TutorialPage />} />
           </Route>
         </Routes>
       </Router>

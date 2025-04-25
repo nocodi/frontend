@@ -4,12 +4,13 @@ import { Instagram, Linkedin, X } from "lucide-react";
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-b from-white to-patina-100 py-10 text-base-content">
-      {/* <form className="mx-auto max-w-6xl rounded-xl border border-patina-400 bg-white p-6 shadow-lg"> */}
-      <div className="container mx-auto px-4">
-        <div className="mb-10 grid grid-cols-2 gap-6 md:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="mb-10 grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:grid-cols-3 md:text-left">
           <div>
-            <h6 className="footer-title text-patina-500">About NoCodi</h6>
-            <ul className="space-y-2 text-patina-500">
+            <h6 className="footer-title text-lg font-semibold text-patina-500">
+              About NoCodi
+            </h6>
+            <ul className="mt-2 space-y-2 text-patina-500">
               <li>
                 <ScrollLink
                   to="services"
@@ -48,72 +49,56 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-
           <div>
-            <h6 className="footer-title text-patina-500">About Nocodi</h6>
-            <ul className="space-y-2 text-patina-500">
+            <h6 className="footer-title text-lg font-semibold text-patina-500">
+              Resources
+            </h6>
+            <ul className="mt-2 space-y-2 text-patina-500">
               <li>
-                <a className="link link-hover">Services</a>
+                <a className="link link-hover" href="/blog">
+                  Blog
+                </a>
               </li>
               <li>
-                <a className="link link-hover">Services</a>
-              </li>
-              <li>
-                <a className="link link-hover">Services</a>
-              </li>
-              <li>
-                <a className="link link-hover">Services</a>
+                <a className="link link-hover" href="/faq">
+                  FAQ
+                </a>
               </li>
             </ul>
           </div>
-
           <div>
-            <h6 className="footer-title text-patina-500">About Nocodi</h6>
-            <ul className="space-y-2 text-patina-500">
+            <h6 className="footer-title text-lg font-semibold text-patina-500">
+              Contact
+            </h6>
+            <ul className="mt-2 space-y-2 text-patina-500">
               <li>
-                <a className="link link-hover">Services</a>
+                <a className="link link-hover" href="mailto:nocodi@gmail.com">
+                  Email Us
+                </a>
               </li>
               <li>
-                <a className="link link-hover">Services</a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h6 className="footer-title text-patina-500">About NoCodi</h6>
-            <ul className="space-y-2 text-patina-500">
-              <li>
-                <a className="link link-hover">Services</a>
-              </li>
-              <li>
-                <a className="link link-hover">Services</a>
-              </li>
-              <li>
-                <a className="link link-hover">Services</a>
-              </li>
-              <li>
-                <a className="link link-hover">Services</a>
+                <a className="link link-hover" href="tel:+98939371901">
+                  Call Us
+                </a>
               </li>
             </ul>
           </div>
         </div>
-
         <div className="border-t border-patina-500 pt-6 text-center text-patina-500">
-          <h4 className="mb-2 text-xl font-bold">Nocodi</h4>
-          <div className="flex justify-center space-x-4 text-patina-500">
-            <a className="hover:text-primary-focus text-patina-500 transition">
+          <h4 className="mb-2 text-xl font-bold">NoCodi</h4>
+          <div className="flex justify-center space-x-4">
+            <a href="#" className="transition hover:text-patina-600">
               <Instagram size={20} />
             </a>
-            <a className="hover:text-primary-focus text-patina-500 transition">
+            <a href="#" className="transition hover:text-patina-600">
               <X size={20} />
             </a>
-            <a className="hover:text-primary-focus text-patina-500 transition">
+            <a href="#" className="transition hover:text-patina-600">
               <Linkedin size={20} />
             </a>
           </div>
         </div>
       </div>
-      {/* </form> */}
     </footer>
   );
 };
