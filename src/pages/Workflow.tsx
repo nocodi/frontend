@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import DnDFlow from "../components/DndFlow";
 import { createContext, useContext, useState } from "react";
+import CodeGeneration from "../components/CodeGeneration";
 
 type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -25,7 +26,9 @@ function Workflow() {
           <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
             <div className="h-15 shrink-0 bg-patina-300 px-5">
               <div className="mt-1 flex flex-row gap-2">
-                <div className="">title whatever</div>
+                <div className="">
+                  <CodeGeneration botId={Number(botId)} />
+                </div>
                 {loading ?
                   <svg
                     className="h-6 w-6 animate-spin text-cream-900"
