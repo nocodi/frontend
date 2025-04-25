@@ -297,7 +297,6 @@ const ComponentDetail = ({
               >
                 Cancel
               </button>
-
             </div>
           </div>
         </>
