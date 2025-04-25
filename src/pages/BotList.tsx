@@ -116,7 +116,7 @@ const BotList = () => {
                         <h3 className="card-title">{item.name}</h3>
                         <p>{item.description}</p>
                         <Link
-                          to={`/workflow/${item.id}`}
+                          to={`bot/${item.id}`}
                           className="btn mt-4 btn-primary"
                         >
                           Open Bot

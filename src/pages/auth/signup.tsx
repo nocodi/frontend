@@ -1,18 +1,16 @@
-import { ChangeEvent, FormEvent, use, useState } from "react";
-import AuthLayout from "../components/authLayout";
+import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
+import AuthLayout from "../../components/authLayout";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import api from "../services/api";
-import { AuthContext } from "../services/Auth";
+import api from "../../services/api";
 
-export default function Login() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = use(AuthContext);
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -49,18 +47,12 @@ export default function Login() {
     if (!email || !password) return;
 
     setLoading(true);
-    try {
-      const response = await api.post("iam/login/password/", {
-        email,
-        password,
-      });
 
-      login(response.data.access_token);
-      toast.success("You are successfully logged in", {
-        position: "top-left",
-        autoClose: 3000,
-      });
-      await navigate("/");
+    try {
+      const response = await api.post("iam/signup/", { email, password });
+      localStorage.setItem("request_id", response.data.request_id);
+      localStorage.setItem("request_type", "signup");
+      await navigate("/verification");
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
@@ -73,7 +65,7 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout title="Login">
+    <AuthLayout title="Sign Up">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
@@ -115,21 +107,14 @@ export default function Login() {
           type="submit"
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Registering..." : "Register"}
         </button>
-
         <div className="space-y-2 text-center text-sm">
           <p>
-            Don't you have an account?{" "}
-            <a href="/signup" className="link-primary">
-              Signup
-            </a>
-          </p>
-          <p>
-            Login without password?{" "}
-            <a href="/passwordlessLogin" className="link-primary">
+            Do you have an account?{" "}
+            <Link to="/login" className="link-primary">
               Enter
-            </a>
+            </Link>
           </p>
         </div>
       </form>

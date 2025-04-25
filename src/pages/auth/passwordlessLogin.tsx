@@ -1,14 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
-import AuthLayout from "../components/authLayout";
+import AuthLayout from "../../components/authLayout";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import api from "../services/api";
+import api from "../../services/api";
 
-export default function Signup() {
+export default function PasswordlessLogin() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -25,33 +24,19 @@ export default function Signup() {
     }
   };
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPassword(value);
-
-    if (!value) {
-      setErrors((prev) => ({ ...prev, password: "Enter Password" }));
-    } else {
-      setErrors((prev) => ({ ...prev, password: "" }));
-    }
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    const validationErrors = { email: "", password: "" };
+    const validationErrors = { email: "" };
     if (!email) validationErrors.email = "Enter Email";
-    if (!password) validationErrors.password = "Enter Password";
     setErrors(validationErrors);
 
-    if (!email || !password) return;
-
+    if (!email) return;
     setLoading(true);
 
     try {
-      const response = await api.post("iam/signup/", { email, password });
+      const response = await api.post("iam/login/otp/send/", { email });
       localStorage.setItem("request_id", response.data.request_id);
-      localStorage.setItem("request_type", "signup");
+      localStorage.setItem("request_type", "login");
       await navigate("/verification");
     } catch (err) {
       const errorMessage =
@@ -65,7 +50,7 @@ export default function Signup() {
   };
 
   return (
-    <AuthLayout title="Sign Up">
+    <AuthLayout title="Passwordless Login">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
@@ -85,38 +70,13 @@ export default function Signup() {
             <span className="text-sm text-error">{errors.email}</span>
           )}
         </div>
-
-        <div>
-          <label className="label text-primary">Password</label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            className={`input w-full tracking-widest ${
-              errors.password ? "input-error" : "input-primary"
-            }`}
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {errors.password && (
-            <span className="text-sm text-error">{errors.password}</span>
-          )}
-        </div>
-
         <button
           className="btn w-full transition-all btn-lg btn-primary"
           type="submit"
           disabled={loading}
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? "Sending..." : "Send"}
         </button>
-        <div className="space-y-2 text-center text-sm">
-          <p>
-            Do you have an account?{" "}
-            <a href="/login" className="link-primary">
-              Enter
-            </a>
-          </p>
-        </div>
       </form>
     </AuthLayout>
   );
