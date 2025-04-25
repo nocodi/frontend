@@ -37,13 +37,13 @@ function ContentTypesList({
   return (
     <div className="flex h-full w-full flex-col gap-2 overflow-y-scroll">
       <div className="flex flex-row">
-        <div className="my-auto h-fit w-10">
+        <div className="my-auto h-fit w-fit">
           <button
             onClick={onClose}
-            className="group float-right cursor-pointer rounded"
+            className="group btn ml-2 cursor-pointer p-4 btn-outline btn-primary"
           >
             <svg
-              className="h-6 w-6 group-hover:text-accent"
+              className="h-6 w-6"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -74,11 +74,11 @@ function ContentTypesList({
             <div
               key={`${key}`}
               onClick={() => clickedOnComponent(item)}
-              className="tansition-all group/component relative flex h-15 w-full cursor-pointer flex-row duration-300 hover:bg-patina-200"
+              className="tansition-all group/component relative flex h-15 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
               onDragStart={(event) => onDragStart(event, item)}
               draggable
             >
-              <div className="h-full w-3 rounded-r-xl bg-patina-200 group-hover/component:bg-accent"></div>
+              <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
               <div>
                 <div className="ml-2 text-sm font-bold">{item.name}</div>
 
