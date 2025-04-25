@@ -19,7 +19,6 @@ import AboutContact from "./pages/public/AboutPage";
 import TutorialPage from "./pages/public/TutorialPage";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function App() {
   return (
     <>
