@@ -15,6 +15,7 @@ import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
 import Landing from "./pages/landing";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (

@@ -1,9 +1,9 @@
+import { use, useState } from "react";
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
-import { use, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../services/api";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../services/Auth";
 
 const getRequestId = () => localStorage.getItem("request_id");
@@ -17,7 +17,7 @@ export default function Verification() {
 
   if (!getRequestId()) void navigate("/login");
 
-  const handleVerification = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!code) {
       setErrors({ code: "Please enter the code" });
@@ -41,6 +41,8 @@ export default function Verification() {
         request_id: getRequestId(),
       });
 
+      localStorage.removeItem("request_id");
+      localStorage.removeItem("request_type");
       login(response.data.access_token);
       toast.success("You are successfully logged in", {
         position: "top-left",
@@ -60,24 +62,23 @@ export default function Verification() {
   return (
     <AuthLayout title="Email Verification">
       <form
-        onSubmit={handleVerification}
+        onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
       >
-        <div className="form-control">
-          <label className="label text-lg font-medium text-patina-700">
-            Verification Code
-          </label>
+        <div>
+          <label className="label text-primary">Verification Code</label>
           <input
             type="text"
             placeholder="Enter verification code"
-            className="input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 text-center text-sm tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400"
+            className="input w-full tracking-widest"
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
+          {errors.code && <p className="text-sm text-error">{errors.code}</p>}
         </div>
         <button
-          className="btn w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          className="btn w-full transition-all btn-lg btn-primary"
+          type="submit"
           disabled={loading}
         >
           {loading ? "Verifying..." : "Verify"}
