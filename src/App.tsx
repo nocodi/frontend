@@ -10,7 +10,7 @@ import Signup from "./pages/auth/signup";
 import Verification from "./pages/auth/verification";
 import PasswordlessLogin from "./pages/auth/passwordlessLogin";
 import Workflow from "./pages/Workflow";
-import BotList from "./pages/BotList";
+import Dashboard from "./pages/Dashboard";
 import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
@@ -36,7 +36,7 @@ function App() {
               <Route path="passwordlessLogin" element={<PasswordlessLogin />} />
             </Route>
             <Route Component={CheckAuthWrapper} path="dashboard">
-              <Route index Component={BotList} />
+              <Route index Component={Dashboard} />
               <Route path="bot/:botId" element={<Workflow />} />
               <Route path="*" element={<Navigate to={"/dashboard"} />} />
             </Route>
