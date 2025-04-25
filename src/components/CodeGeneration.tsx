@@ -1,41 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import api from "../services/api";
+import { toast } from "react-toastify";
 
 export default function CodeGeneration({ botId }: { botId: number }) {
-  const [generatedCode, setGeneratedCode] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const handleDownload = () => {
+    setLoading(true);
     api
       .get(`/bot/${botId}/generate-code`)
       .then((response) => {
-        setGeneratedCode(response.data.code);
+        const blob = new Blob([response.data], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "generated-code.txt";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       })
       .catch((error) => {
-        console.error("Error fetching code:", error);
+        toast(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  }, [botId]);
-
-  const handleDownload = () => {
-    const blob = new Blob([generatedCode], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "generated-code.txt";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="p-6 text-center">
+    <div className="text-center">
       <button
-        className="btn-patina btn text-patina-500 btn-outline hover:bg-patina-700"
+        className="btn-patina btn w-25 bg-primary text-primary btn-outline hover:bg-primary"
         onClick={handleDownload}
-        disabled={!generatedCode}
+        disabled={loading}
       >
-        Download
+        {loading ?
+          <svg
+            className="my-auto h-6 w-6 animate-spin text-base-content"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        : <p className="text-secondary-content">Download</p>}
       </button>
     </div>
   );
