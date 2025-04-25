@@ -22,7 +22,9 @@ const ComponentDetail = ({
   >;
   contentTypes: ContentType[];
 }) => {
-  const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
+  const [formValues, setFormValues] = useState<{
+    [key: string]: string | boolean;
+  }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(true);
 
@@ -38,11 +40,11 @@ const ComponentDetail = ({
     type: string,
     required: boolean,
   ): string => {
-    if (required && !value.trim()) {
+    if (required && !value.toString().trim()) {
       return "This field is required.";
     }
 
-    if (value.trim()) {
+    if (value.toString().trim()) {
       if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
         return "Please enter a valid integer.";
       }
@@ -83,10 +85,22 @@ const ComponentDetail = ({
       setErrors(newErrors);
       return;
     }
+    const processedValues = { ...formValues };
+    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
+      if (value.type === "BooleanField") {
+        if (processedValues[key]) {
+          if (processedValues[key] === "true") processedValues[key] = true;
+          else if (processedValues[key] === "false")
+            processedValues[key] = false;
+        } else {
+          delete processedValues[key];
+        }
+      }
+    });
     setLoading(true);
     if (!node.object_id) {
       api
-        .post(`${schemaOfComponent.path.split(".ir")[1]}`, formValues)
+        .post(`${schemaOfComponent.path.split(".ir")[1]}`, processedValues)
         .then((res) => {
           const objId: number = res.data.id;
           api
@@ -126,7 +140,7 @@ const ComponentDetail = ({
     } else {
       api
         .patch(
-          `${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`,
+          `${schemaOfComponent.path.split(".ir")[1]}${node.object_id}/`,
           formValues,
         )
         .then(() => {
@@ -152,7 +166,6 @@ const ComponentDetail = ({
         .get(`${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`)
         .then((res) => {
           const { id, timestamp, ...rest } = res.data;
-          console.log(rest);
           setFormValues(rest);
         })
         .catch((err) => {
@@ -213,7 +226,7 @@ const ComponentDetail = ({
                       {value.type === "BooleanField" ?
                         <select
                           id={key}
-                          value={formValues[key] ?? ""}
+                          value={formValues[key]?.toString() || ""}
                           onChange={(e) => handleChange(key, e.target.value)}
                           onBlur={() => handleBlur(key, value)}
                           required={value.required}
@@ -229,7 +242,7 @@ const ComponentDetail = ({
                           id={key}
                           type="text"
                           placeholder={key}
-                          value={formValues[key] ?? ""}
+                          value={formValues[key]?.toString() || ""}
                           onChange={(e) => handleChange(key, e.target.value)}
                           onBlur={() => handleBlur(key, value)}
                           required={value.required}

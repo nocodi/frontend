@@ -214,7 +214,6 @@ export default function Flow({ botId }: { botId: number }) {
     if (contentTypes.length === 0) {
       getContentTypes()
         .then((data) => {
-          console.log(data);
           setContentTypes(data);
         })
         .catch((err) => {
