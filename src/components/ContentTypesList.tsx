@@ -1,47 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDnD } from "./DnDContext";
-import { ComponentType } from "../types/Component";
-import getComponents from "../services/getComponents";
+import { ContentType } from "../types/Component";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
 
-function ComponentList({
+function ContentTypesList({
   onClose,
   addSelectedComponent,
+  contentTypes,
 }: {
   onClose: () => void;
-  addSelectedComponent: (component: ComponentType) => void;
+  addSelectedComponent: (component: ContentType) => void;
+  contentTypes: ContentType[];
 }) {
-  const setComponent = useDnD()[1];
-
-  const [components, setComponents] = useState<ComponentType[]>([]);
-
-  useEffect(() => {
-    getComponents()
-      .then((data) => {
-        setComponents(data);
-      })
-      .catch((err) => {
-        console.error("Failed to load components:", err);
-      });
-  }, []);
+  const setContent = useDnD()[1];
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    component: ComponentType,
+    component: ContentType,
   ) => {
-    setComponent(component);
+    setContent(component);
     event.dataTransfer.effectAllowed = "move";
   };
 
-  const clickedOnComponent = (component: ComponentType) => {
-    addSelectedComponent(component);
+  const clickedOnComponent = (content: ContentType) => {
+    addSelectedComponent(content);
     onClose();
   };
 
   const [query, setQuery] = useState("");
 
-  const filtered = components.filter((item) =>
+  const filtered = contentTypes.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -111,4 +100,4 @@ function ComponentList({
   );
 }
 
-export default ComponentList;
+export default ContentTypesList;

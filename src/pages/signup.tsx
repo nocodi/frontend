@@ -3,7 +3,6 @@ import axios from "axios";
 import AuthLayout from "../components/authLayout";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import api from "../services/api";
 
 export default function Signup() {
@@ -37,9 +36,16 @@ export default function Signup() {
     }
   };
 
-  const handleSignup = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    const validationErrors = { email: "", password: "" };
+    if (!email) validationErrors.email = "Enter Email";
+    if (!password) validationErrors.password = "Enter Password";
+    setErrors(validationErrors);
+
     if (!email || !password) return;
+
     setLoading(true);
 
     try {
@@ -61,55 +67,52 @@ export default function Signup() {
   return (
     <AuthLayout title="Sign Up">
       <form
-        onSubmit={handleSignup}
+        onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
       >
-        <div className="form-control">
-          <label className="label text-sm font-semibold text-patina-700">
-            Email
-          </label>
+        <div>
+          <label className="label text-primary">Email</label>
           <input
             type="email"
-            placeholder="Enter your Email"
-            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${
-              errors.email ? "border-red-500" : "border-patina-500"
+            placeholder="Enter your email"
+            className={`input w-full tracking-widest ${
+              errors.email ? "input-error" : "input-primary"
             }`}
             value={email}
             onChange={handleEmailChange}
           />
           {errors.email && (
-            <span className="text-sm text-red-500">{errors.email}</span>
+            <span className="text-sm text-error">{errors.email}</span>
           )}
         </div>
 
-        <div className="form-control">
-          <label className="label text-sm font-semibold text-patina-700">
-            Password
-          </label>
+        <div>
+          <label className="label text-primary">Password</label>
           <input
             type="password"
-            placeholder="Enter your Password"
-            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${
-              errors.password ? "border-red-500" : "border-patina-500"
+            placeholder="Enter your password"
+            className={`input w-full tracking-widest ${
+              errors.password ? "input-error" : "input-primary"
             }`}
             value={password}
             onChange={handlePasswordChange}
           />
           {errors.password && (
-            <span className="text-sm text-red-500">{errors.password}</span>
+            <span className="text-sm text-error">{errors.password}</span>
           )}
         </div>
 
         <button
-          className="btn-patina btn w-full rounded-xl bg-patina-500 py-2 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          className="btn w-full transition-all btn-lg btn-primary"
+          type="submit"
           disabled={loading}
         >
           {loading ? "Registering..." : "Register"}
         </button>
-        <div className="space-y-2 text-center text-sm text-patina-700">
+        <div className="space-y-2 text-center text-sm">
           <p>
             Do you have an account?{" "}
-            <a href="/login" className="text-patina-500 hover:text-patina-700">
+            <a href="/login" className="link-primary">
               Enter
             </a>
           </p>
