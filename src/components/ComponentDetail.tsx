@@ -60,7 +60,7 @@ const ComponentDetail = ({
 
   const handleBlur = (key: string, schemanode: SchemaType) => {
     const error = validateField(
-      formValues[key].toString() || "",
+      formValues[key]?.toString() || "",
       schemanode.type,
       schemanode.required,
     );
@@ -73,7 +73,7 @@ const ComponentDetail = ({
     const newErrors: { [key: string]: string } = {};
     Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
       const error = validateField(
-        formValues[key].toString() || "",
+        formValues[key]?.toString() || "",
         value.type,
         value.required,
       );
@@ -213,7 +213,7 @@ const ComponentDetail = ({
                       {value.type === "BooleanField" ?
                         <select
                           id={key}
-                          value={formValues[key].toString() || ""}
+                          value={formValues[key] ?? ""}
                           onChange={(e) => handleChange(key, e.target.value)}
                           onBlur={() => handleBlur(key, value)}
                           required={value.required}
@@ -229,7 +229,7 @@ const ComponentDetail = ({
                           id={key}
                           type="text"
                           placeholder={key}
-                          value={formValues[key] || ""}
+                          value={formValues[key] ?? ""}
                           onChange={(e) => handleChange(key, e.target.value)}
                           onBlur={() => handleBlur(key, value)}
                           required={value.required}
