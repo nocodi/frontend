@@ -1,23 +1,34 @@
 import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
-import { NodeComponent } from "../types/Component";
+import { ComponentType } from "../types/Component";
 import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { WorkflowParams } from "../pages/Workflow";
+import { useLoading, WorkflowParams } from "../pages/Workflow";
+import { useUnattended } from "./UnattendedComponentContext";
 
-function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
-  const instance = useReactFlow();
+function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
+  const flowInstance = useReactFlow();
   const { botId } = useParams<WorkflowParams>();
+  const setUnattendedComponent = useUnattended()[1];
+  const setLoading = useLoading();
 
   function deleteComponent() {
+    setLoading(true);
     api
       .delete(`flow/${botId}/component/${id}/`)
       .then(() => {
-        instance.deleteElements({ nodes: [{ id: id }] });
+        flowInstance.deleteElements({ nodes: [{ id: id }] });
       })
       .catch((err) => {
         toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  }
+
+  function editComponentDetails() {
+    setUnattendedComponent(data);
   }
 
   return (
@@ -41,6 +52,7 @@ function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
         </svg>
 
         <svg
+          onClick={() => editComponentDetails()}
           className="h-3 w-3 cursor-pointer hover:text-accent dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
@@ -81,9 +93,7 @@ function Component({ id, data, isConnectable }: NodeProps<NodeComponent>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[2px]">
-          {data.content_type.name}
-        </div>
+        <div className="inline-block align-middle text-[10px]">{data.name}</div>
       </div>
     </div>
   );
