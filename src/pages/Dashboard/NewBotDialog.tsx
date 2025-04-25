@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { Plus } from "lucide-react";
 
 type NewBotDialogProps = {
@@ -68,6 +68,7 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
                 required
               />
             </div>
+
             <div className="modal-action">
               <button
                 type="submit"
