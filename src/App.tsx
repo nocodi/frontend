@@ -5,18 +5,18 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Login from "./pages/login";
-import Signup from "./pages/signup";
-import Verification from "./pages/verification";
-import PasswordlessLogin from "./pages/passwordlessLogin";
+import Login from "./pages/auth/login";
+import Signup from "./pages/auth/signup";
+import Verification from "./pages/auth/verification";
+import PasswordlessLogin from "./pages/auth/passwordlessLogin";
 import Workflow from "./pages/Workflow";
 import BotList from "./pages/BotList";
 import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
-import Landing from "./pages/landing";
-import AboutContact from "./pages/AboutPage";
-import TutorialPage from "./pages/TutorialPage";
+import Landing from "./pages/public/landing";
+import AboutContact from "./pages/public/AboutPage";
+import TutorialPage from "./pages/public/TutorialPage";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {

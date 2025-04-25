@@ -1,10 +1,10 @@
 import { ChangeEvent, FormEvent, use, useState } from "react";
-import AuthLayout from "../components/authLayout";
+import AuthLayout from "../../components/authLayout";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../services/api";
-import { AuthContext } from "../services/Auth";
+import api from "../../services/api";
+import { AuthContext } from "../../services/Auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
