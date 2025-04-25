@@ -22,7 +22,9 @@ const ComponentDetail = ({
   >;
   contentTypes: ContentType[];
 }) => {
-  const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
+  const [formValues, setFormValues] = useState<{
+    [key: string]: string | boolean;
+  }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(true);
 
@@ -31,27 +33,28 @@ const ComponentDetail = ({
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const schemaOfComponent: ContentType = contentTypes[node.content_type - 10];
+  const schemaOfComponent = contentTypes.find(
+    (contentType) => contentType.id == node.content_type,
+  )!;
 
   const validateField = (
     value: string,
     type: string,
     required: boolean,
   ): string => {
-    if (required && !value.trim()) {
+    if (required && !value.toString().trim()) {
       return "This field is required.";
     }
 
-    if (value.trim()) {
+    if (value.toString().trim()) {
       if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
         return "Please enter a valid integer.";
       }
       if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
         return "Please enter 'true' or 'false'.";
       }
-
-      if (type === "CharField" && !/[a-zA-Z]/.test(value)) {
-        return "Please enter a valid text.";
+      if (type === "CharField" && !/^[a-zA-Z0-9]+$/.test(value)) {
+        return "Only letters and numbers are allowed.";
       }
     }
 
@@ -60,7 +63,7 @@ const ComponentDetail = ({
 
   const handleBlur = (key: string, schemanode: SchemaType) => {
     const error = validateField(
-      formValues[key].toString() || "",
+      formValues[key]?.toString() || "",
       schemanode.type,
       schemanode.required,
     );
@@ -73,7 +76,7 @@ const ComponentDetail = ({
     const newErrors: { [key: string]: string } = {};
     Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
       const error = validateField(
-        formValues[key].toString() || "",
+        formValues[key]?.toString() || "",
         value.type,
         value.required,
       );
@@ -83,10 +86,23 @@ const ComponentDetail = ({
       setErrors(newErrors);
       return;
     }
+    const processedValues = { ...formValues };
+
+    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
+      if (value.type === "BooleanField") {
+        if (processedValues[key]) {
+          if (processedValues[key] === "true") processedValues[key] = true;
+          else if (processedValues[key] === "false")
+            processedValues[key] = false;
+        } else {
+          delete processedValues[key];
+        }
+      }
+    });
     setLoading(true);
     if (!node.object_id) {
       api
-        .post(`${schemaOfComponent.path.split(".ir")[1]}`, formValues)
+        .post(`${schemaOfComponent.path.split(".ir")[1]}`, processedValues)
         .then((res) => {
           const objId: number = res.data.id;
           api
@@ -126,7 +142,7 @@ const ComponentDetail = ({
     } else {
       api
         .patch(
-          `${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`,
+          `${schemaOfComponent.path.split(".ir")[1]}${node.object_id}/`,
           formValues,
         )
         .then(() => {
@@ -152,7 +168,6 @@ const ComponentDetail = ({
         .get(`${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`)
         .then((res) => {
           const { id, timestamp, ...rest } = res.data;
-          console.log(rest);
           setFormValues(rest);
         })
         .catch((err) => {
@@ -167,105 +182,125 @@ const ComponentDetail = ({
   }, []);
 
   return (
-    <div className="mx-auto h-[calc(100vh-2rem)] max-w-3xl space-y-6 overflow-y-auto p-4">
-      <div className="space-y-4 rounded-2xl bg-patina-300 p-6 shadow">
-        {loading ?
-          <svg
-            className="mx-auto h-6 w-6 animate-spin text-cream-900"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
+    <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
+      {loading ?
+        <svg
+          className="mx-auto h-6 w-6 animate-spin text-[#58A6FF]"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      : <>
+          {/* <h1 className="text-2xl font-bold text-base-content">
+              {node.name}
+            </h1> */}
+          <button
+            onClick={handleCancel}
+            className="btn float-right cursor-pointer p-2 btn-outline btn-primary"
           >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        : <>
-            <h1 className="royalblue-200 text-2xl font-bold">{node.name}</h1>
-            <h2 className="royalblue-200 text-2xl font-bold">
-              {schemaOfComponent.name}
-            </h2>
-            <p className="text-patina-50">{schemaOfComponent.description}</p>
-            <div>
-              <h3 className="royalblue-500 mb-2 text-lg font-semibold">
-                Schema
-              </h3>
-              <ul className="space-y-3">
-                {Object.entries(schemaOfComponent.schema).map(
-                  ([key, value]) => (
-                    <li key={key} className="text-gray-800">
-                      <label className="mb-1 block font-medium" htmlFor={key}>
-                        {key}{" "}
-                        {value.required ?
-                          <span className="text-red-500">*</span>
-                        : <></>}
-                      </label>
-                      {value.type === "BooleanField" ?
-                        <select
-                          id={key}
-                          value={formValues[key].toString() || ""}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          onBlur={() => handleBlur(key, value)}
-                          required={value.required}
-                          className={`w-full rounded-lg border px-3 py-2 ${
-                            errors[key] ? "border-red-500" : "border-gray-300"
-                          }`}
-                        >
-                          <option value="">Select an option</option>
-                          <option value="true">True</option>
-                          <option value="false">False</option>
-                        </select>
-                      : <input
-                          id={key}
-                          type="text"
-                          placeholder={key}
-                          value={formValues[key] || ""}
-                          onChange={(e) => handleChange(key, e.target.value)}
-                          onBlur={() => handleBlur(key, value)}
-                          required={value.required}
-                          className={`w-full rounded-lg border px-3 py-2 ${
-                            errors[key] ? "border-red-500" : "border-gray-300"
-                          }`}
-                        />
-                      }
-                      {errors[key] && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors[key]}
-                        </p>
-                      )}
-                    </li>
-                  ),
-                )}
-              </ul>
-              <div className="mt-6 flex space-x-4">
-                <button
-                  onClick={handleSubmit}
-                  className="btn-patina btn mt-6 h-8 w-fit rounded-md bg-patina-500 text-white transition-all hover:bg-patina-700"
-                >
-                  Submit
-                </button>
-
-                <button
-                  onClick={handleCancel}
-                  className="btn-patina btn mt-6 h-8 w-fit rounded-md bg-white text-patina-500 transition-all hover:bg-patina-100"
-                >
-                  Cancel
-                </button>
-              </div>
+            <svg
+              className="h-6 w-6"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18 17.94 6M18 18 6.06 6"
+              />
+            </svg>
+          </button>
+          <h2 className="text-xl font-semibold text-base-content">
+            {schemaOfComponent.name}
+          </h2>
+          <p className="text-gray-400">{schemaOfComponent.description}</p>
+          <div>
+            <h3 className="mb-2 text-lg font-semibold text-base-content">
+              Schema
+            </h3>
+            <ul className="space-y-3">
+              {Object.entries(schemaOfComponent.schema).map(([key, value]) => (
+                <li key={key} className="text-primary">
+                  <label
+                    className="mb-1 block border-primary font-medium"
+                    htmlFor={key}
+                  >
+                    {key}{" "}
+                    {value.required ?
+                      <span className="text-red-500">*</span>
+                    : <></>}
+                  </label>
+                  {value.type === "BooleanField" ?
+                    <select
+                      id={key}
+                      value={formValues[key]?.toString() || ""}
+                      onChange={(e) => handleChange(key, e.target.value)}
+                      onBlur={() => handleBlur(key, value)}
+                      required={value.required}
+                      className={`w-full rounded-lg border bg-base-300 px-3 py-2 text-base-content ${
+                        errors[key] ? "border-red-500" : "border-primary"
+                      }`}
+                    >
+                      <option value="">Select an option</option>
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                  : <input
+                      id={key}
+                      type="text"
+                      placeholder={key}
+                      value={formValues[key]?.toString() || ""}
+                      onChange={(e) => handleChange(key, e.target.value)}
+                      onBlur={() => handleBlur(key, value)}
+                      required={value.required}
+                      className={`w-full rounded-lg border bg-base-300 px-3 py-2 text-base-content ${
+                        errors[key] ? "border-red-500" : "border-primary"
+                      }`}
+                    />
+                  }
+                  {errors[key] && (
+                    <p className="mt-1 text-sm text-red-500">{errors[key]}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex space-x-4">
+              <button
+                onClick={handleSubmit}
+                className="btn float-right cursor-pointer p-3 btn-primary"
+              >
+                Submit
+              </button>
+              <button
+                onClick={handleCancel}
+                className="btn float-right cursor-pointer p-2 btn-outline btn-primary"
+              >
+                Cancel
+              </button>
             </div>
-          </>
-        }
-      </div>
+          </div>
+        </>
+      }
     </div>
   );
 };

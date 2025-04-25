@@ -1,10 +1,10 @@
 import { use, useState } from "react";
 import axios from "axios";
-import AuthLayout from "../components/authLayout";
+import AuthLayout from "../../components/authLayout";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import api from "../services/api";
-import { AuthContext } from "../services/Auth";
+import api from "../../services/api";
+import { AuthContext } from "../../services/Auth";
 
 const getRequestId = () => localStorage.getItem("request_id");
 

@@ -4,7 +4,7 @@ import { AuthContext } from "../services/Auth";
 
 const CheckNoAuthWrapper = () => {
   const { isAuthenticated } = use(AuthContext);
-  return isAuthenticated ? <Navigate to="/" /> : <Outlet />;
+  return isAuthenticated ? <Navigate to="/dashboard" /> : <Outlet />;
 };
 
 export default CheckNoAuthWrapper;

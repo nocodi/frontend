@@ -33,10 +33,10 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
 
   return (
     <div className="group flex flex-col items-center gap-1">
-      <div className="invisible flex h-3 w-10 flex-row justify-end gap-0.5 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
+      <div className="invisible flex h-3 w-10 flex-row justify-end gap-0.5 text-base-content opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
         <svg
           onClick={() => deleteComponent()}
-          className="h-3 w-3 cursor-pointer text-white hover:text-accent"
+          className="h-3 w-3 cursor-pointer hover:text-patina-400"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -53,7 +53,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
 
         <svg
           onClick={() => editComponentDetails()}
-          className="h-3 w-3 cursor-pointer hover:text-accent dark:text-white"
+          className="h-3 w-3 cursor-pointer hover:text-patina-400"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -69,7 +69,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           />
         </svg>
       </div>
-      <div className="relative h-9 w-13 cursor-pointer rounded-lg border-2 border-patina-400 bg-patina-200 text-center shadow-lg">
+      <div className="relative h-9 w-13 cursor-pointer rounded-lg border-2 border-base-content bg-primary text-center text-primary-content shadow-lg">
         <div>
           <Handle
             type="source"
@@ -93,7 +93,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[10px]">{data.name}</div>
+        <div className="inline-block align-middle text-[9px]">{data.name}</div>
       </div>
     </div>
   );

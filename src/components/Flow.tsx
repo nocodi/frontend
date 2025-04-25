@@ -63,7 +63,7 @@ export default function Flow({ botId }: { botId: number }) {
       if (connection.target) {
         const nextComponentId: number = parseInt(connection.target);
         api
-          .patch(`flow/${botId}/component/${connection.source}`, {
+          .patch(`flow/${botId}/component/${connection.source}/`, {
             next_component: nextComponentId,
           })
           .then(() => {
@@ -233,7 +233,7 @@ export default function Flow({ botId }: { botId: number }) {
       });
 
     api
-      .get(`flow/${botId}/component`)
+      .get(`flow/${botId}/component/`)
       .then((res) => {
         setNodes([]);
         setEdges([]);
@@ -277,14 +277,14 @@ export default function Flow({ botId }: { botId: number }) {
 
   return (
     <>
-      <div className="h-full w-full">
-        <div className="relative h-full w-full bg-patina-900">
+      <div className="h-full w-full text-primary">
+        <div className="relative h-full w-full bg-base-300">
           <div
             onClick={() => setIsPanelOpen(true)}
-            className="group btn absolute right-0 z-1 mt-5 mr-5 flex h-10 w-12 items-center justify-center rounded-xl border-2 text-white btn-outline hover:border-accent"
+            className="group btn absolute right-0 z-1 mt-5 mr-5 flex h-10 w-12 items-center justify-center rounded-xl border-2 btn-outline btn-primary"
           >
             <svg
-              className="h-6 w-6 group-hover:text-accent"
+              className="h-6 w-6"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -303,7 +303,7 @@ export default function Flow({ botId }: { botId: number }) {
           </div>
 
           <div
-            className={`absolute right-0 z-1 flex h-full w-67 bg-patina-300 transition-transform duration-400 ${
+            className={`absolute right-0 z-1 flex h-full w-67 bg-base-200 text-base-content transition-transform duration-400 ${
               isPanelOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
@@ -316,10 +316,7 @@ export default function Flow({ botId }: { botId: number }) {
             )}
           </div>
 
-          <div
-            className="h-full w-full rounded-lg border border-gray-700"
-            ref={reactFlowWrapper}
-          >
+          <div className="h-full w-full" ref={reactFlowWrapper}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -342,7 +339,7 @@ export default function Flow({ botId }: { botId: number }) {
         </div>
       </div>
       {unattendedComponent && (
-        <div className="absolute z-50 h-screen w-screen content-center backdrop-blur-xs">
+        <div className="absolute z-50 h-screen w-screen content-center p-4 backdrop-blur-xs">
           <ComponentDetail
             botId={botId}
             node={unattendedComponent}
