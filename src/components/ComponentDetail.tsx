@@ -31,9 +31,7 @@ const ComponentDetail = ({
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const [schemaOfComponent, _setSchemaOfComponent] = useState<ContentType>(
-    contentTypes[node.content_type - 10],
-  );
+  const schemaOfComponent: ContentType = contentTypes[node.content_type - 10];
 
   const validateField = (
     value: string,
@@ -110,9 +108,6 @@ const ComponentDetail = ({
                   : item,
                 ),
               );
-              setFormValues({});
-              setErrors({});
-              setNode(undefined);
             })
             .catch((err) => {
               toast(err.message);
@@ -120,6 +115,7 @@ const ComponentDetail = ({
             .finally(() => {
               setLoading(false);
             });
+          setNode(undefined);
         })
         .catch((err) => {
           toast(err.message);
@@ -134,8 +130,6 @@ const ComponentDetail = ({
           formValues,
         )
         .then(() => {
-          setFormValues({});
-          setErrors({});
           setNode(undefined);
         })
         .catch((err) => {
@@ -158,6 +152,7 @@ const ComponentDetail = ({
         .get(`${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`)
         .then((res) => {
           const { id, timestamp, ...rest } = res.data;
+          console.log(rest);
           setFormValues(rest);
         })
         .catch((err) => {
@@ -218,7 +213,7 @@ const ComponentDetail = ({
                       {value.type === "BooleanField" ?
                         <select
                           id={key}
-                          value={formValues[key] || ""}
+                          value={formValues[key].toString() || ""}
                           onChange={(e) => handleChange(key, e.target.value)}
                           onBlur={() => handleBlur(key, value)}
                           required={value.required}
