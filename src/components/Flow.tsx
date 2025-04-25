@@ -25,7 +25,7 @@ import { useDnD } from "../components/DnDContext";
 import { useUnattended } from "./UnattendedComponentContext";
 
 import api from "../services/api";
-import getContetnTypes from "../services/getContents";
+import getContentTypes from "../services/getContents";
 
 import ContentTypesList from "./ContentTypesList";
 import ComponentDetail from "./ComponentDetail";
@@ -212,7 +212,7 @@ export default function Flow({ botId }: { botId: number }) {
   useEffect(() => {
     setLoading(true);
     if (contentTypes.length === 0) {
-      getContetnTypes()
+      getContentTypes()
         .then((data) => {
           setContentTypes(data);
         })
