@@ -67,16 +67,13 @@ export default function About() {
   }, [isHovered]);
 
   return (
-    <section
-      className="bg-gradient-to-b from-patina-100 to-white px-4 py-20"
-      id="about"
-    >
+    <section className="bg-base-200 px-4 py-20" id="about">
       <div className="mx-auto max-w-7xl space-y-12">
         <div className="text-center">
-          <h2 className="text-4xl font-bold text-patina-600">
+          <h2 className="text-4xl font-bold text-primary">
             What our users say
           </h2>
-          <p className="mt-4 text-lg text-patina-800">
+          <p className="mt-4 text-lg text-primary">
             Real feedback from developers and makers.
           </p>
         </div>
@@ -91,7 +88,7 @@ export default function About() {
             {[...testimonials, ...testimonials.slice(0, 1)].map((t, index) => (
               <div
                 key={index}
-                className="card max-w-sm min-w-[300px] border border-patina-200 bg-gradient-to-br from-white via-patina-50 to-white shadow-lg backdrop-blur-md"
+                className="card max-w-sm min-w-[300px] border border-patina-200 bg-gradient-to-br from-white via-primary-content to-white shadow-lg backdrop-blur-md"
               >
                 <div className="card-body">
                   <p className="font-semibold text-patina-900">“{t.quote}”</p>
@@ -99,11 +96,11 @@ export default function About() {
                     <img
                       src={t.avatar}
                       alt={t.name}
-                      className="h-10 w-10 rounded-full ring-2 ring-patina-400"
+                      className="h-10 w-10 rounded-full ring-2 ring-primary"
                     />
                     <div>
                       <p className="font-semibold text-patina-800">{t.name}</p>
-                      <p className="text-sm text-patina-600">{t.handle}</p>
+                      <p className="text-sm text-primary">{t.handle}</p>
                     </div>
                   </div>
                 </div>

@@ -17,7 +17,6 @@ import { AuthProvider } from "./services/Auth";
 import Landing from "./pages/landing";
 import AboutContact from "./pages/AboutPage";
 import TutorialPage from "./pages/TutorialPage";
-import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (

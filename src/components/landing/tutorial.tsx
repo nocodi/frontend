@@ -23,8 +23,8 @@ const tutorials = [
 
 export default function TutorialSection() {
   return (
-    <section className="bg-gradient-to-b from-white to-patina-100 px-4 py-16 text-white">
-      <form className="mx-auto max-w-6xl rounded-xl border border-patina-400 bg-white bg-gradient-to-b from-patina-50 to-white p-6 shadow-lg">
+    <section className="bg-base-200 px-4 py-16 text-white">
+      <form className="mx-auto max-w-6xl rounded-xl border border-patina-400 bg-base-200 p-6 shadow-lg">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="mb-10 text-3xl font-bold text-patina-500">
             Telegram Bot Tutorials
