@@ -17,8 +17,14 @@ const BotList = () => {
   const [bots, setBots] = useState<BotData[]>();
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [newBot, setNewBot] = useState({
+    name: "",
+    token: "",
+    description: "",
+  });
 
-  useEffect(() => {
+  const fetchBots = () => {
     api
       .get<BotData[]>("bot/my-bots/")
       .then((res) => {
@@ -30,7 +36,25 @@ const BotList = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchBots();
   }, []);
+
+  const handleCreateBot = () => {
+    api
+      .post("bot/create-bot/", newBot)
+      .then(() => {
+        toast.success("Bot created successfully!");
+        setShowModal(false);
+        setNewBot({ name: "", token: "", description: "" });
+        fetchBots();
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
 
   const filtered =
     query == "" ? bots : (
@@ -42,9 +66,17 @@ const BotList = () => {
     );
 
   return (
-    <div className="min-h-screen w-full bg-base-300">
+    <div className="min-h-screen w-screen bg-base-300">
       <div className="container mx-auto flex min-h-screen flex-col gap-4 p-4">
-        <h2 className="mt-10 mb-2 text-3xl font-bold">Your Bots</h2>
+        <div className="mt-10 flex items-center justify-between">
+          <h2 className="mb-2 text-3xl font-bold">Your Bots</h2>
+          <button
+            onClick={() => setShowModal(true)}
+            className="btn btn-primary"
+          >
+            Create Bot
+          </button>
+        </div>
         {loading ?
           <svg
             className="m-auto size-10 animate-spin"
@@ -101,6 +133,63 @@ const BotList = () => {
           : <p className="m-auto text-primary-content">No Bot yet.</p>
         : <p className="m-auto text-primary-content">Faild to load bots.</p>}
       </div>
+
+      {/* Create Bot Modal */}
+      {showModal && (
+        <div className="modal-open modal">
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Create New Bot</h3>
+            <div className="mt-4 grid w-full grid-cols-1 sm:grid-cols-3 sm:gap-4">
+              <label className="label mt-4 sm:mt-0">Bot Name</label>
+              <input
+                type="text"
+                placeholder="Enter bot name"
+                className="input-bordered input w-full input-primary sm:col-span-2"
+                value={newBot.name}
+                onChange={(e) => setNewBot({ ...newBot, name: e.target.value })}
+              />
+              <label className="label mt-4 sm:mt-0">Bot Token</label>
+              <input
+                type="text"
+                placeholder="Enter bot token"
+                className="input-bordered input w-full input-primary sm:col-span-2"
+                value={newBot.token}
+                onChange={(e) =>
+                  setNewBot({ ...newBot, token: e.target.value })
+                }
+              />
+              <label className="label mt-4 sm:mt-0">Bot Description</label>
+              <input
+                type="text"
+                placeholder="Enter bot description"
+                className="input-bordered input w-full input-primary sm:col-span-2"
+                value={newBot.description}
+                onChange={(e) =>
+                  setNewBot({ ...newBot, description: e.target.value })
+                }
+              />
+            </div>
+            <div className="modal-action">
+              <button
+                className="btn"
+                onClick={() => {
+                  setShowModal(false);
+                  setNewBot({ name: "", token: "", description: "" });
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleCreateBot}
+                disabled={!newBot.name || !newBot.token}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
