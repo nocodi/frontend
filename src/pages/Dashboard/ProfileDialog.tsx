@@ -1,14 +1,16 @@
-import { useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import { UserRoundCog } from "lucide-react";
 import api from "../../services/api";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../services/Auth";
 
 export default function ProfileDialog() {
   const [pass, setPass] = useState("");
   const [passConfirm, setPassConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
+  const { logout } = use(AuthContext);
 
   const resetForm = () => {
     setPass("");
@@ -19,7 +21,7 @@ export default function ProfileDialog() {
     e.preventDefault();
     setLoading(true);
     api
-      .put("iam/update/password/", { password: pass })
+      .put("iam/update/password/", { email: "kooft@nocodi.ir", password: pass })
       .then(
         () => {
           resetForm();
@@ -89,6 +91,15 @@ export default function ProfileDialog() {
             </div>
 
             <div className="modal-action">
+              <button
+                type="button"
+                className="btn mr-auto btn-error"
+                onClick={() => {
+                  logout();
+                }}
+              >
+                Logout
+              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
