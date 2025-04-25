@@ -1,10 +1,7 @@
 export default function TutorialMain() {
   return (
-    <section
-      id="tutorial"
-      className="bg-gradient-to-b from-patina-100 to-white px-4 py-16 text-white"
-    >
-      <form className="mx-auto max-w-6xl rounded-xl border border-patina-400 bg-gradient-to-b from-patina-50 to-white p-6 shadow-lg">
+    <section id="tutorial" className="bg-base-300 px-4 py-16 text-white">
+      <form className="mx-auto max-w-6xl rounded-xl border border-patina-400 bg-base-200 p-6 shadow-lg">
         <div className="flex items-center justify-center py-10">
           <div className="aspect-video w-full max-w-4xl">
             <iframe
