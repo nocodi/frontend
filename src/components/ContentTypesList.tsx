@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDnD } from "./DnDContext";
-import { ComponentType } from "../types/Component";
+import { ContentType } from "../types/Component";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
 
@@ -10,21 +10,21 @@ function ContentTypesList({
   contentTypes,
 }: {
   onClose: () => void;
-  addSelectedComponent: (component: ComponentType) => void;
-  contentTypes: ComponentType[];
+  addSelectedComponent: (component: ContentType) => void;
+  contentTypes: ContentType[];
 }) {
-  const setComponent = useDnD()[1];
+  const setContent = useDnD()[1];
 
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    component: ComponentType,
+    component: ContentType,
   ) => {
-    setComponent(component);
+    setContent(component);
     event.dataTransfer.effectAllowed = "move";
   };
 
-  const clickedOnComponent = (component: ComponentType) => {
-    addSelectedComponent(component);
+  const clickedOnComponent = (content: ContentType) => {
+    addSelectedComponent(content);
     onClose();
   };
 

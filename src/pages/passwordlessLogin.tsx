@@ -1,14 +1,14 @@
-import axios from "axios";
-import api from "../services/api";
-import AuthLayout from "../components/authLayout";
 import { ChangeEvent, FormEvent, useState } from "react";
+import axios from "axios";
+import AuthLayout from "../components/authLayout";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import api from "../services/api";
 
 export default function PasswordlessLogin() {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({ email: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,8 +24,12 @@ export default function PasswordlessLogin() {
     }
   };
 
-  const handlePasswordlessLogin = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const validationErrors = { email: "" };
+    if (!email) validationErrors.email = "Enter Email";
+    setErrors(validationErrors);
+
     if (!email) return;
     setLoading(true);
 
@@ -48,26 +52,26 @@ export default function PasswordlessLogin() {
   return (
     <AuthLayout title="Passwordless Login">
       <form
-        onSubmit={handlePasswordlessLogin}
+        onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-6 sm:max-w-md md:max-w-lg"
       >
-        <div className="form-control">
-          <label className="label text-patina-700">Email</label>
+        <div>
+          <label className="label text-primary">Email</label>
           <input
             type="email"
-            placeholder="Enter your Email"
-            className={`input-bordered input w-full rounded-xl border-patina-500 bg-patina-100 tracking-widest text-patina-900 focus:ring-2 focus:ring-patina-400 ${
-              errors.email ? "border-red-500" : "border-patina-500"
+            placeholder="Enter your email"
+            className={`input w-full tracking-widest ${
+              errors.email ? "input-error" : "input-primary"
             }`}
-            onChange={handleEmailChange}
             value={email}
+            onChange={handleEmailChange}
           />
           {errors.email && (
-            <span className="text-sm text-red-500">{errors.email}</span>
+            <span className="text-sm text-error">{errors.email}</span>
           )}
         </div>
         <button
-          className="btn-patina btn w-full rounded-xl bg-patina-500 text-lg font-semibold text-white transition-all hover:bg-patina-700"
+          className="btn w-full transition-all btn-lg btn-primary"
           type="submit"
           disabled={loading}
         >
