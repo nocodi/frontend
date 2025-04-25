@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const api = axios.create({
   baseURL: "http://api.nocodi.ir",
@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("authToken");
       window.location.href = "/login";

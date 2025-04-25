@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, use, useState } from "react";
 import AuthLayout from "../components/authLayout";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { AuthContext } from "../services/Auth";
 
@@ -121,15 +121,15 @@ export default function Login() {
         <div className="space-y-2 text-center text-sm">
           <p>
             Don't you have an account?{" "}
-            <a href="/signup" className="link-primary">
+            <Link to="/signup" className="link-primary">
               Signup
-            </a>
+            </Link>
           </p>
           <p>
             Login without password?{" "}
-            <a href="/passwordlessLogin" className="link-primary">
+            <Link to="/passwordlessLogin" className="link-primary">
               Enter
-            </a>
+            </Link>
           </p>
         </div>
       </form>

@@ -21,29 +21,30 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <AuthProvider>
+    <>
       <ToastContainer />
-      <Router>
-        <Routes>
-          <Route Component={CheckNoAuthWrapper}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/verification" element={<Verification />} />
-            <Route path="/passwordlessLogin" element={<PasswordlessLogin />} />
-            <Route path="/landing" element={<Landing />} />
-          </Route>
-          <Route Component={CheckAuthWrapper}>
-            <Route path="/" element={<Navigate to={"/workflow"} />} />
-            <Route path="/workflow">
-              <Route index Component={BotList} />
-              <Route path=":botId" element={<Workflow />} />
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="about" element={<AboutContact />} />
+            <Route path="tutorial" element={<TutorialPage />} />
+            <Route Component={CheckNoAuthWrapper}>
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<Signup />} />
+              <Route path="verification" element={<Verification />} />
+              <Route path="passwordlessLogin" element={<PasswordlessLogin />} />
             </Route>
-            <Route path="/About" element={<AboutContact />} />
-            <Route path="/Tutorial" element={<TutorialPage />} />
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+            <Route Component={CheckAuthWrapper} path="dashboard">
+              <Route index Component={BotList} />
+              <Route path="bot/:botId" element={<Workflow />} />
+              <Route path="*" element={<Navigate to={"/dashboard"} />} />
+            </Route>
+            <Route path="*" element={<Navigate to={"/"} />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </>
   );
 }
 

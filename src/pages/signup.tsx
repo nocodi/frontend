@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
 import AuthLayout from "../components/authLayout";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../services/api";
 
@@ -112,9 +112,9 @@ export default function Signup() {
         <div className="space-y-2 text-center text-sm">
           <p>
             Do you have an account?{" "}
-            <a href="/login" className="link-primary">
+            <Link to="/login" className="link-primary">
               Enter
-            </a>
+            </Link>
           </p>
         </div>
       </form>
