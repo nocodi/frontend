@@ -30,8 +30,6 @@ function App() {
             <Route path="/verification" element={<Verification />} />
             <Route path="/passwordlessLogin" element={<PasswordlessLogin />} />
             <Route path="/landing" element={<Landing />} />
-            <Route path="/About" element={<AboutContact />} />
-            <Route path="/Tutorial" element={<TutorialPage />} />
           </Route>
           <Route Component={CheckAuthWrapper}>
             <Route path="/" element={<Navigate to={"/workflow"} />} />
@@ -39,6 +37,8 @@ function App() {
               <Route index Component={BotList} />
               <Route path=":botId" element={<Workflow />} />
             </Route>
+            <Route path="/About" element={<AboutContact />} />
+            <Route path="/Tutorial" element={<TutorialPage />} />
           </Route>
         </Routes>
       </Router>

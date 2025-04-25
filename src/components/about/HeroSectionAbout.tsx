@@ -1,9 +1,9 @@
-import landing from "../assets/landing.png";
+import landing from "../../assets/landing.png";
 
-export default function HeroSectionTutorial() {
+export default function HeroSectionAbout() {
   const heroData = {
-    title: "Nocodi Tutorial",
-    description: "You can see tutorial...",
+    title: "About Nocodi",
+    description: "Simplify your coding. Fast, flexible, and user-friendly.",
   };
 
   return (
@@ -25,7 +25,7 @@ export default function HeroSectionTutorial() {
         <button
           onClick={() => {
             document
-              .getElementById("tutorial")
+              .getElementById("about-us")
               ?.scrollIntoView({ behavior: "smooth" });
           }}
           className="btn-patina btn rounded-xl bg-patina-500 px-6 py-2 text-lg font-semibold text-white transition-all hover:bg-patina-700"

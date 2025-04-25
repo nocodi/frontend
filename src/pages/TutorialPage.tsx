@@ -1,7 +1,7 @@
 import Navbar from "../components/navbar";
-import HeroSectionTutorial from "../components/HeroSectionTutorial";
+import HeroSectionTutorial from "../components/tutorial/HeroSectionTutorial";
 import Footer from "../components/footer";
-import TutorialMain from "../components/TuturialMain";
+import TutorialMain from "../components/tutorial/TuturialMain";
 export default function TutorialPage() {
   return (
     <>
