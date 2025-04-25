@@ -9,7 +9,7 @@ export default function HeroSectionTutorial() {
   return (
     <section
       id="hero"
-      className="relative flex h-[500px] items-center justify-center bg-base-200 px-4 py-10"
+      className="relative flex h-[500px] items-center justify-center bg-base-300 px-4 py-10"
     >
       <div
         className="absolute inset-0 z-0 bg-base-200 bg-cover bg-center"

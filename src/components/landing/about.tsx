@@ -67,7 +67,7 @@ export default function About() {
   }, [isHovered]);
 
   return (
-    <section className="bg-base-200 px-4 py-20" id="about">
+    <section className="bg-base-300 px-4 py-20" id="about">
       <div className="mx-auto max-w-7xl space-y-12">
         <div className="text-center">
           <h2 className="text-4xl font-bold text-primary">
@@ -88,7 +88,7 @@ export default function About() {
             {[...testimonials, ...testimonials.slice(0, 1)].map((t, index) => (
               <div
                 key={index}
-                className="card max-w-sm min-w-[300px] border border-patina-200 bg-gradient-to-br from-white via-primary-content to-white shadow-lg backdrop-blur-md"
+                className="card max-w-sm min-w-[300px] border border-patina-200 bg-base-200 shadow-lg backdrop-blur-md"
               >
                 <div className="card-body">
                   <p className="font-semibold text-patina-900">“{t.quote}”</p>

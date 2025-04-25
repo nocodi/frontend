@@ -10,7 +10,7 @@ const tutorials = [
 ];
 export default function ContactUs() {
   return (
-    <section className="bg-base-200 px-4 py-16 text-white">
+    <section className="bg-base-300 px-4 py-16 text-white">
       <form className="mx-auto max-w-6xl rounded-xl border border-primary bg-base-200 p-6 shadow-lg">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="mb-10 text-3xl font-bold text-primary">NoCodi</h2>

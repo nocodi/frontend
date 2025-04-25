@@ -1,6 +1,6 @@
 export default function AboutUs() {
   return (
-    <section id="about-us" className="bg-base-200 px-4 py-16 text-primary">
+    <section id="about-us" className="bg-base-300 px-4 py-16 text-primary">
       <form className="mx-auto max-w-6xl rounded-xl border border-primary bg-base-200 p-6 shadow-lg">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="mb-6 text-4xl font-bold">About Us</h2>

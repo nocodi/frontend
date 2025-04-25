@@ -1,6 +1,6 @@
 export default function TutorialMain() {
   return (
-    <section id="tutorial" className="bg-base-200 px-4 py-16 text-white">
+    <section id="tutorial" className="bg-base-300 px-4 py-16 text-white">
       <form className="mx-auto max-w-6xl rounded-xl border border-patina-400 bg-base-200 p-6 shadow-lg">
         <div className="flex items-center justify-center py-10">
           <div className="aspect-video w-full max-w-4xl">
