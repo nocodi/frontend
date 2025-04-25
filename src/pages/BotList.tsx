@@ -24,10 +24,6 @@ const BotList = () => {
     description: "",
   });
 
-  useEffect(() => {
-    fetchBots();
-  }, []);
-
   const fetchBots = () => {
     api
       .get<BotData[]>("bot/my-bots/")
@@ -41,6 +37,10 @@ const BotList = () => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    fetchBots();
+  }, []);
 
   const handleCreateBot = () => {
     api
@@ -66,15 +66,13 @@ const BotList = () => {
     );
 
   return (
-    <div className="min-h-screen w-full bg-base-200">
+    <div className="min-h-screen w-screen bg-base-200">
       <div className="container mx-auto flex min-h-screen flex-col gap-4 p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="mt-10 mb-2 text-3xl font-bold text-cream-900">
-            Your Bots
-          </h2>
+        <div className="mt-10 flex items-center justify-between">
+          <h2 className="mb-2 text-3xl font-bold text-cream-900">Your Bots</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="btn mt-10 btn-primary"
+            className="btn btn-primary"
           >
             Create Bot
           </button>
@@ -138,50 +136,40 @@ const BotList = () => {
 
       {/* Create Bot Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-          <div className="card w-96 bg-base-100 p-6 shadow-xl">
-            <h3 className="mb-4 pb-4 text-xl font-bold">Create New Bot</h3>
-            <div className="form-control mb-4 w-full">
-              <label className="label">
-                <span className="label-text">Bot Name</span>
-              </label>
+        <div className="modal-open modal">
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Create New Bot</h3>
+            <div className="mt-4 grid w-full grid-cols-1 sm:grid-cols-3 sm:gap-4">
+              <label className="label mt-4 sm:mt-0">Bot Name</label>
               <input
                 type="text"
                 placeholder="Enter bot name"
-                className="input-bordered input w-full"
+                className="input-bordered input w-full input-primary sm:col-span-2"
                 value={newBot.name}
                 onChange={(e) => setNewBot({ ...newBot, name: e.target.value })}
               />
-            </div>
-            <div className="form-control mb-4 w-full">
-              <label className="label">
-                <span className="label-text">Bot Token</span>
-              </label>
+              <label className="label mt-4 sm:mt-0">Bot Token</label>
               <input
                 type="text"
                 placeholder="Enter bot token"
-                className="input-bordered input w-full"
+                className="input-bordered input w-full input-primary sm:col-span-2"
                 value={newBot.token}
                 onChange={(e) =>
                   setNewBot({ ...newBot, token: e.target.value })
                 }
               />
-            </div>
-            <div className="form-control mb-4 w-full">
-              <label className="label">
-                <span className="label-text">Bot Description</span>
-              </label>
+              <label className="label mt-4 sm:mt-0">Bot Description</label>
               <input
                 type="text"
                 placeholder="Enter bot description"
-                className="input-bordered input w-full"
+                className="input-bordered input w-full input-primary sm:col-span-2"
                 value={newBot.description}
                 onChange={(e) =>
                   setNewBot({ ...newBot, description: e.target.value })
                 }
               />
             </div>
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="modal-action">
               <button
                 className="btn"
                 onClick={() => {
