@@ -42,14 +42,12 @@ const BotList = () => {
     );
 
   return (
-    <div className="min-h-screen w-full bg-base-200">
+    <div className="min-h-screen w-full bg-base-300">
       <div className="container mx-auto flex min-h-screen flex-col gap-4 p-4">
-        <h2 className="mt-10 mb-2 text-3xl font-bold text-cream-900">
-          Your Bots
-        </h2>
+        <h2 className="mt-10 mb-2 text-3xl font-bold">Your Bots</h2>
         {loading ?
           <svg
-            className="m-auto size-10 animate-spin text-cream-900"
+            className="m-auto size-10 animate-spin"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -60,7 +58,7 @@ const BotList = () => {
               cy="12"
               r="10"
               stroke="currentColor"
-              stroke-width="4"
+              strokeWidth="4"
             ></circle>
             <path
               className="opacity-75"
@@ -80,7 +78,7 @@ const BotList = () => {
                   {filtered.map((item) => (
                     <div
                       key={item.id}
-                      className="card bg-base-100 shadow-xl transition-transform duration-300 ease-in-out hover:scale-105"
+                      className="card-border card bg-base-100 transition-transform duration-300 ease-in-out sm:hover:scale-105"
                     >
                       <div className="card-body">
                         <h3 className="card-title">{item.name}</h3>
@@ -95,13 +93,13 @@ const BotList = () => {
                     </div>
                   ))}
                 </div>
-              : <p className="m-auto text-cream-500">
+              : <p className="m-auto text-primary-content">
                   Nothing Matched Your Query.
                 </p>
               }
             </>
-          : <p className="m-auto text-cream-500">No Bot yet.</p>
-        : <p className="m-auto text-cream-500">Faild to load bots.</p>}
+          : <p className="m-auto text-primary-content">No Bot yet.</p>
+        : <p className="m-auto text-primary-content">Faild to load bots.</p>}
       </div>
     </div>
   );

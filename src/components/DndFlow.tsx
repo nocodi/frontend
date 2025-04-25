@@ -159,7 +159,7 @@ function Flow({ botId }: { botId: number }) {
     <>
       {loading ?
         <svg
-          className="m-auto size-10 animate-spin text-cream-900"
+          className="m-auto size-10 animate-spin text-base-content"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -170,7 +170,7 @@ function Flow({ botId }: { botId: number }) {
             cy="12"
             r="10"
             stroke="currentColor"
-            stroke-width="4"
+            strokeWidth="4"
           ></circle>
           <path
             className="opacity-75"
