@@ -63,7 +63,7 @@ export default function Flow({ botId }: { botId: number }) {
       if (connection.target) {
         const nextComponentId: number = parseInt(connection.target);
         api
-          .patch(`flow/${botId}/component/${connection.source}`, {
+          .patch(`flow/${botId}/component/${connection.source}/`, {
             next_component: nextComponentId,
           })
           .then(() => {
@@ -214,6 +214,7 @@ export default function Flow({ botId }: { botId: number }) {
     if (contentTypes.length === 0) {
       getContentTypes()
         .then((data) => {
+          console.log(data);
           setContentTypes(data);
         })
         .catch((err) => {
@@ -233,7 +234,7 @@ export default function Flow({ botId }: { botId: number }) {
       });
 
     api
-      .get(`flow/${botId}/component`)
+      .get(`flow/${botId}/component/`)
       .then((res) => {
         setNodes([]);
         setEdges([]);
