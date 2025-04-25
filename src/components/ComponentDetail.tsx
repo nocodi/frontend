@@ -87,7 +87,7 @@ const ComponentDetail = ({
       return;
     }
     const processedValues = { ...formValues };
-    console.log(processedValues);
+
     Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
       if (value.type === "BooleanField") {
         if (processedValues[key]) {
@@ -297,6 +297,7 @@ const ComponentDetail = ({
               >
                 Cancel
               </button>
+
             </div>
           </div>
         </>

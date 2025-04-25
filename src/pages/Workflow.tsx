@@ -22,16 +22,16 @@ function Workflow() {
     <>
       {!botId || isNaN(Number(botId)) ?
         <div>Not a Number</div>
-      : <div className="h-screen overflow-hidden text-white">
+      : <div className="h-screen overflow-hidden">
           <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
-            <div className="h-15 shrink-0 bg-patina-300 px-5">
-              <div className="items-right flex h-full flex-row-reverse gap-3">
+            <div className="h-15 shrink-0 bg-base-200 px-5">
+              <div className="items-right flex h-full flex-row-reverse gap-3 text-primary">
                 <div className="my-auto">
                   <CodeGeneration botId={Number(botId)} />
                 </div>
                 {loading ?
                   <svg
-                    className="my-auto h-6 w-6 animate-spin text-cream-900"
+                    className="my-auto h-6 w-6 animate-spin"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -51,7 +51,7 @@ function Workflow() {
                     ></path>
                   </svg>
                 : <svg
-                    className="my-auto h-6 w-6 text-patina-700"
+                    className="my-auto h-6 w-6"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
