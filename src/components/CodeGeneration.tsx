@@ -15,7 +15,7 @@ export default function CodeGeneration({ botId }: { botId: number }) {
 
         const link = document.createElement("a");
         link.href = url;
-        link.download = "generated-code.txt";
+        link.download = "bot-generated-code.py";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
