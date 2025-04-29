@@ -33,6 +33,8 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
     } catch (error) {
       toast.error("Failed to create bot. Please try again.");
       setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

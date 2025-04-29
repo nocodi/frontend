@@ -1,9 +1,9 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DnDFlow from "../components/DndFlow";
 import { createContext, useContext, useState } from "react";
 import CodeGeneration from "../components/CodeGeneration";
 import Loading from "../components/Loading";
-import { Check } from "lucide-react";
+import { Check, Undo2 } from "lucide-react";
 
 type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -29,7 +29,7 @@ function Workflow() {
             <div className="h-15 shrink-0 bg-base-200 px-5">
               <div className="flex h-full items-center justify-between gap-3 text-primary">
                 <Link to="/dashboard" className="btn btn-outline">
-                  Back to Home
+                  <Undo2 />
                 </Link>
                 <div className="flex items-center gap-3">
                   <div className="my-auto">
@@ -37,8 +37,7 @@ function Workflow() {
                   </div>
                   {loading ?
                     <Loading size={30} />
-                     : <Check size={30} className="my-auto" />
-                  }
+                  : <Check size={30} className="my-auto" />}
                 </div>
               </div>
             </div>
