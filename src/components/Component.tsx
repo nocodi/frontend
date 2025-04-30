@@ -20,7 +20,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
         flowInstance.deleteElements({ nodes: [{ id: id }] });
       })
       .catch((err) => {
-        toast(err.message);
+        toast(err.message, { position: "top-left", autoClose: 3000 });
       })
       .finally(() => {
         setLoading(false);

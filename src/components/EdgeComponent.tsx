@@ -49,7 +49,7 @@ export default function CustomEdge({
         flowInstance.deleteElements({ edges: [{ id: id }] });
       })
       .catch((err) => {
-        toast(err.message);
+        toast(err.message, { position: "top-left", autoClose: 3000 });
       })
       .finally(() => {
         setLoading(false);
