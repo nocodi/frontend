@@ -9,6 +9,7 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const resetForm = () => {
@@ -16,12 +17,15 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
     setToken("");
     setDescription("");
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     onCreate({ name, token, description });
-    resetForm();
-    modalRef.current?.close();
+    setTimeout(() => {
+      resetForm();
+      modalRef.current?.close();
+      setLoading(false);
+    }, 1500);
   };
 
   return (
@@ -71,13 +75,6 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
 
             <div className="modal-action">
               <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={!name || !token}
-              >
-                Create
-              </button>
-              <button
                 type="button"
                 className="btn"
                 onClick={() => {
@@ -86,6 +83,13 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
                 }}
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={!name || !token || loading}
+              >
+                {loading ? "Creating..." : "Create"}
               </button>
             </div>
           </form>

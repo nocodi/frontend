@@ -101,13 +101,6 @@ export default function ProfileDialog() {
                 Logout
               </button>
               <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? "Changing..." : "Change Password"}
-              </button>
-              <button
                 type="button"
                 className="btn"
                 onClick={() => {
@@ -116,6 +109,13 @@ export default function ProfileDialog() {
                 }}
               >
                 Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? "Changing..." : "Change Password"}
               </button>
             </div>
           </form>
