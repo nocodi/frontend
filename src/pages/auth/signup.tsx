@@ -116,6 +116,7 @@ export default function Signup() {
               Enter
             </Link>
           </p>
+          <p className="invisible">placeholder for layout consistency</p>
         </div>
       </form>
     </AuthLayout>
