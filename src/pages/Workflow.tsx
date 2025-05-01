@@ -33,10 +33,7 @@ function Workflow() {
                 </div>
                 {loading ?
                   <Loading size={30} />
-                : <div className="flex items-center justify-center">
-                    <Check size={30} />
-                  </div>
-                }
+                : <Check size={30} className="my-auto" />}
               </div>
             </div>
             <loadingContext.Provider value={setLoading}>
