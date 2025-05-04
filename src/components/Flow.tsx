@@ -81,7 +81,7 @@ export default function Flow({ botId }: { botId: number }) {
             }
           })
           .catch((err) => {
-            toast(err.message, { position: "top-left", autoClose: 3000 });
+            toast(err.message);
           })
           .finally(() => {
             setLoading(false);
@@ -114,7 +114,7 @@ export default function Flow({ botId }: { botId: number }) {
                 setIsFlowAvailable(true);
               })
               .catch((err) => {
-                toast(err.message, { position: "top-left", autoClose: 3000 });
+                toast(err.message);
               });
           }
 
@@ -138,7 +138,7 @@ export default function Flow({ botId }: { botId: number }) {
           setUnattendedComponent(newNode.data);
         })
         .catch((err) => {
-          toast(err.message, { position: "top-left", autoClose: 3000 });
+          toast(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -201,7 +201,7 @@ export default function Flow({ botId }: { botId: number }) {
               : item,
             ),
           );
-          toast(err.message, { position: "top-left", autoClose: 3000 });
+          toast(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -217,7 +217,7 @@ export default function Flow({ botId }: { botId: number }) {
           setContentTypes(data);
         })
         .catch((err) => {
-          toast(err.message, { position: "top-left", autoClose: 3000 });
+          toast(err.message);
         });
     }
 
@@ -229,7 +229,7 @@ export default function Flow({ botId }: { botId: number }) {
         }
       })
       .catch((err) => {
-        toast(err.message, { position: "top-left", autoClose: 3000 });
+        toast(err.message);
       });
 
     api
@@ -268,7 +268,7 @@ export default function Flow({ botId }: { botId: number }) {
         }
       })
       .catch((err) => {
-        toast(err.message, { position: "top-left", autoClose: 3000 });
+        toast(err.message);
       })
       .finally(() => {
         setLoading(false);

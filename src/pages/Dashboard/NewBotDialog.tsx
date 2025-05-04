@@ -21,16 +21,10 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
     e.preventDefault();
     setLoading(true);
     onCreate({ name, token, description });
-    setTimeout(() => {
-      resetForm();
-      modalRef.current?.close();
-      setLoading(false);
-    }, 1500);
   };
 
   return (
     <>
-      {/* Open button */}
       <button
         className="btn btn-primary"
         onClick={() => modalRef.current?.showModal()}

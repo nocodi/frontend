@@ -22,7 +22,7 @@ export default function CodeGeneration({ botId }: { botId: number }) {
         URL.revokeObjectURL(url);
       })
       .catch((error) => {
-        toast(error, { position: "top-left", autoClose: 3000 });
+        toast(error);
       })
       .finally(() => {
         setLoading(false);

@@ -126,7 +126,7 @@ const ComponentDetail = ({
               );
             })
             .catch((err) => {
-              toast(err.message, { position: "top-left", autoClose: 3000 });
+              toast(err.message);
             })
             .finally(() => {
               setLoading(false);
@@ -134,7 +134,7 @@ const ComponentDetail = ({
           setNode(undefined);
         })
         .catch((err) => {
-          toast(err.message, { position: "top-left", autoClose: 3000 });
+          toast(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -149,7 +149,7 @@ const ComponentDetail = ({
           setNode(undefined);
         })
         .catch((err) => {
-          toast(err.message, { position: "top-left", autoClose: 3000 });
+          toast(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -171,7 +171,7 @@ const ComponentDetail = ({
           setFormValues(rest);
         })
         .catch((err) => {
-          toast(err.message, { position: "top-left", autoClose: 3000 });
+          toast(err.message);
         })
         .finally(() => {
           setLoading(false);

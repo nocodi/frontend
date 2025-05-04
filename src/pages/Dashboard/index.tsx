@@ -28,7 +28,7 @@ const Dashboard = () => {
         setBots(res.data);
       })
       .catch((err) => {
-        toast(err.message, { position: "top-left", autoClose: 3000 });
+        toast(err.message);
       })
       .finally(() => {
         setLoading(false);
@@ -43,14 +43,11 @@ const Dashboard = () => {
     api
       .post("bot/create-bot/", newBot)
       .then(() => {
-        toast.success("Bot created successfully!", {
-          position: "top-left",
-          autoClose: 3000,
-        });
+        toast.success("Bot created successfully!");
         fetchBots();
       })
       .catch((err) => {
-        toast.error(err.message, { position: "top-left", autoClose: 3000 });
+        toast.error(err.message);
       });
   };
 
