@@ -56,7 +56,7 @@ const ComponentDetail = ({
       if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
         return "Please enter 'true' or 'false'.";
       }
-      if (type === "CharField" && !/^[a-zA-Z0-9]+$/.test(value)) {
+      if (type === "CharField" && !/^[\w\s/]+$/.test(value)) {
         return "Only letters and numbers are allowed.";
       }
     }

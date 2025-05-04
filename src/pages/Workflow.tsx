@@ -1,9 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DnDFlow from "../components/DndFlow";
 import { createContext, useContext, useState } from "react";
 import CodeGeneration from "../components/CodeGeneration";
 import Loading from "../components/Loading";
-import { Check } from "lucide-react";
+import { Check, Undo2 } from "lucide-react";
 
 type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -27,13 +27,18 @@ function Workflow() {
       : <div className="h-screen overflow-hidden">
           <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
             <div className="h-15 shrink-0 bg-base-200 px-5">
-              <div className="items-right flex h-full flex-row-reverse gap-3 text-primary">
-                <div className="my-auto">
-                  <CodeGeneration botId={Number(botId)} />
+              <div className="flex h-full items-center justify-between gap-3 text-primary">
+                <Link to="/dashboard" className="btn btn-outline">
+                  <Undo2 />
+                </Link>
+                <div className="flex items-center gap-3">
+                  <div className="my-auto">
+                    <CodeGeneration botId={Number(botId)} />
+                  </div>
+                  {loading ?
+                    <Loading size={30} />
+                  : <Check size={30} className="my-auto" />}
                 </div>
-                {loading ?
-                  <Loading size={30} />
-                : <Check size={30} className="my-auto" />}
               </div>
             </div>
             <loadingContext.Provider value={setLoading}>
