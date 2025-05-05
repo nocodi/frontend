@@ -1,6 +1,10 @@
 export type SchemaType = {
   type: string;
   required: boolean;
+  help_text: string;
+  max_length: number;
+  verbose_name: string;
+  choices: Record<string, string> | null;
 };
 
 export type ContentType = {
@@ -14,10 +18,8 @@ export type ContentType = {
 
 export type ComponentType = {
   id: number;
-  next_component: number | null;
-  name: string;
-  content_type: number;
-  object_id: number | null;
-  position_x: number;
-  position_y: number;
+  previous_component: number | null;
+  component_name: string;
+  component_content_type: number;
+  schema: Record<string, SchemaType>;
 };

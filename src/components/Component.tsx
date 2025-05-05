@@ -1,30 +1,31 @@
-import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
+import { Handle, Position, NodeProps } from "reactflow";
 import { ComponentType } from "../types/Component";
-import api from "../services/api";
-import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useLoading, WorkflowParams } from "../pages/Workflow";
+// import api from "../services/api";
+// import { useParams } from "react-router-dom";
+// import { useLoading, WorkflowParams } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
 
-function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
-  const flowInstance = useReactFlow();
-  const { botId } = useParams<WorkflowParams>();
+function Component({ data, isConnectable }: NodeProps<ComponentType>) {
+  // const flowInstance = useReactFlow();
+  // const { botId } = useParams<WorkflowParams>();
   const setUnattendedComponent = useUnattended()[1];
-  const setLoading = useLoading();
+  // const setLoading = useLoading();
 
   function deleteComponent() {
-    setLoading(true);
-    api
-      .delete(`flow/${botId}/component/${id}/`)
-      .then(() => {
-        flowInstance.deleteElements({ nodes: [{ id: id }] });
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // setLoading(true);
+    // api
+    //   .delete(
+    //     `${contentTypes[node.data.component_content_type - 11].path.split(".ir")[1]}/`,
+    //   )
+    //   .then(() => {
+    //     flowInstance.deleteElements({ nodes: [{ id: id }] });
+    //   })
+    //   .catch((err) => {
+    //     toast(err.message);
+    //   })
+    //   .finally(() => {
+    //     setLoading(false);
+    //   });
   }
 
   function editComponentDetails() {
@@ -94,7 +95,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           />
         </div>
         <div className="flex h-full items-center justify-center px-2">
-          <span className="text-[10px] font-medium">{data.name}</span>
+          <span className="text-[10px] font-medium">{data.component_name}</span>
         </div>
       </div>
     </div>

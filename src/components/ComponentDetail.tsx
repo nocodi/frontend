@@ -1,32 +1,30 @@
 import { ComponentType, ContentType, SchemaType } from "../types/Component";
 
-import { Node } from "reactflow";
+// import { Node } from "reactflow";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const ComponentDetail = ({
-  botId,
   node,
   setNode,
-  nodes,
-  setNodes,
+  // nodes,
+  // setNodes,
   contentTypes,
 }: {
-  botId: number;
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
-  nodes: Node<ComponentType, string | undefined>[];
-  setNodes: React.Dispatch<
-    React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >;
+  // nodes: Node<ComponentType, string | undefined>[];
+  // setNodes: React.Dispatch<
+  //   React.SetStateAction<Node<ComponentType, string | undefined>[]>
+  // >;
   contentTypes: ContentType[];
 }) => {
   const [formValues, setFormValues] = useState<{
     [key: string]: string | boolean;
   }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
@@ -34,7 +32,7 @@ const ComponentDetail = ({
   };
 
   const schemaOfComponent = contentTypes.find(
-    (contentType) => contentType.id == node.content_type,
+    (contentType) => contentType.id == node.component_content_type,
   )!;
 
   const validateField = (
@@ -100,61 +98,17 @@ const ComponentDetail = ({
       }
     });
     setLoading(true);
-    if (!node.object_id) {
-      api
-        .post(`${schemaOfComponent.path.split(".ir")[1]}`, processedValues)
-        .then((res) => {
-          const objId: number = res.data.id;
-          api
-            .patch(`flow/${botId}/component/${node.id}/`, {
-              object_id: objId,
-            })
-            .then((res) => {
-              const objId: number = res.data.object_id;
-              setNodes(() =>
-                nodes.map((item) =>
-                  item.id === node.id.toString() ?
-                    {
-                      ...item,
-                      data: {
-                        ...item.data,
-                        object_id: objId,
-                      },
-                    }
-                  : item,
-                ),
-              );
-            })
-            .catch((err) => {
-              toast(err.message);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-          setNode(undefined);
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      api
-        .patch(
-          `${schemaOfComponent.path.split(".ir")[1]}${node.object_id}/`,
-          formValues,
-        )
-        .then(() => {
-          setNode(undefined);
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+    api
+      .patch(`${schemaOfComponent.path.split(".ir")[1]}${node.id}/`, formValues)
+      .then(() => {
+        setNode(undefined);
+      })
+      .catch((err) => {
+        toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleCancel = () => {
     setNode(undefined);
@@ -162,24 +116,9 @@ const ComponentDetail = ({
     setErrors({});
   };
 
-  useEffect(() => {
-    if (node.object_id) {
-      api
-        .get(`${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`)
-        .then((res) => {
-          const { id, timestamp, ...rest } = res.data;
-          setFormValues(rest);
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
-  }, []);
+  // useEffect(() => {
+  //   setFormValues(node.schema);
+  // }, []);
 
   return (
     <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">

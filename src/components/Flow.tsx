@@ -1,9 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from "react";
-
 import Component from "./Component";
 import CustomEdge from "./EdgeComponent";
 import { ContentType, ComponentType } from "../types/Component";
-
 import ReactFlow, {
   useReactFlow,
   Edge,
@@ -17,19 +15,13 @@ import ReactFlow, {
   NodeDragHandler,
   DefaultEdgeOptions,
 } from "reactflow";
-
 import "reactflow/dist/style.css";
-
 import { useLoading } from "../pages/Workflow";
 import { useDnD } from "../components/DnDContext";
 import { useUnattended } from "./UnattendedComponentContext";
-
 import api from "../services/api";
-import getContentTypes from "../services/getContents";
-
 import ContentTypesList from "./ContentTypesList";
 import ComponentDetail from "./ComponentDetail";
-
 import { toast } from "react-toastify";
 
 const nodeTypes = { customNode: Component };
@@ -37,7 +29,6 @@ const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow({ botId }: { botId: number }) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [isFlowAvailable, setIsFlowAvailable] = useState(false); // checks if there are any components available, if not, means we should make a flow on first component creation
 
   const [draggingNodeXY, setDraggingNodeXY] = useState<{
     x: number;
@@ -60,75 +51,83 @@ export default function Flow({ botId }: { botId: number }) {
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
       setLoading(true);
-      if (connection.target) {
-        const nextComponentId: number = parseInt(connection.target);
-        api
-          .patch(`flow/${botId}/component/${connection.source}/`, {
-            next_component: nextComponentId,
-          })
-          .then(() => {
-            if (connection.source && connection.target) {
-              const newEdge: Edge<DefaultEdgeOptions> = {
-                id: `e${connection.source}-${connection.target}`,
-                source: connection.source,
-                target: connection.target,
-                type: "customEdge",
-              };
-              const exists = edges.some((edge) => edge.id === newEdge.id);
-              if (!exists) {
-                setEdges((eds) => eds.concat(newEdge));
+      console.log(connection);
+      if (connection.target && connection.source) {
+        const targetNode: undefined | Node<ComponentType> =
+          flowInstance.getNode(connection.target);
+        console.log(targetNode);
+        const prevComponentId: number = parseInt(connection.source);
+        if (targetNode) {
+          console.log("brrrrrrr");
+          console.log(
+            contentTypes[targetNode.data.component_content_type - 11],
+          );
+          api
+            .patch(
+              `${contentTypes[targetNode.data.component_content_type - 11].path.split(".ir")[1]}${connection.target}/`,
+              {
+                previous_component: prevComponentId,
+              },
+            )
+            .then(() => {
+              if (connection.source && connection.target) {
+                const newEdge: Edge<DefaultEdgeOptions> = {
+                  id: `e${connection.source}-${connection.target}`,
+                  source: connection.source,
+                  target: connection.target,
+                  type: "customEdge",
+                };
+                const exists = edges.some((edge) => edge.id === newEdge.id);
+                if (!exists) {
+                  setEdges((eds) => eds.concat(newEdge));
+                }
               }
-            }
-          })
-          .catch((err) => {
-            toast(err.message);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+            })
+            .catch((err) => {
+              toast(err.message);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
       }
     },
-    [setEdges, botId],
-  );
 
+    [setEdges, botId, contentTypes],
+  );
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) => {
-      setLoading(true);
-
       const position = flowInstance.screenToFlowPosition({
         x: x ?? window.innerWidth / 2,
         y: y ?? window.innerHeight / 2,
       });
       api
-        .post(`/flow/${botId}/component/`, {
-          content_type: content.id,
-          name: content.name,
+        .post(`${content.path.split(".ir")[1]}`, {
+          component_content_type: content.id,
+          component_name: content.name,
           position_x: position.x,
           position_y: position.y,
+          previous_component: null,
         })
         .then((res) => {
-          if (!isFlowAvailable) {
-            api
-              .post(`flow/${botId}/`, { start: res.data.id })
-              .then(() => {
-                setIsFlowAvailable(true);
-              })
-              .catch((err) => {
-                toast(err.message);
-              });
-          }
-
+          const {
+            id,
+            previous_component,
+            component_name,
+            component_content_type,
+            position_x,
+            position_y,
+            ...rest
+          } = res.data;
           const componentData: ComponentType = {
-            id: res.data.id,
-            object_id: null,
-            next_component: null,
-            name: res.data.name,
-            content_type: res.data.content_type,
-            position_x: position.x,
-            position_y: position.y,
+            id,
+            previous_component,
+            component_name,
+            component_content_type,
+            schema: rest,
           };
           const newNode: Node<ComponentType> = {
-            id: `${res.data.id}`,
+            id: `${componentData.id}`,
             type: "customNode",
             position: position,
             selected: false,
@@ -139,14 +138,10 @@ export default function Flow({ botId }: { botId: number }) {
         })
         .catch((err) => {
           toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
         });
     },
-    [flowInstance, botId, isFlowAvailable, setNodes],
+    [flowInstance, setNodes],
   );
-
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
@@ -185,10 +180,13 @@ export default function Flow({ botId }: { botId: number }) {
     ) {
       setLoading(true);
       api
-        .patch(`flow/${botId}/component/${node.id}/`, {
-          position_x: node.position.x,
-          position_y: node.position.y,
-        })
+        .patch(
+          `${contentTypes[node.data.component_content_type - 11].path.split(".ir")[1]}${node.id}/`,
+          {
+            position_x: node.position.x,
+            position_y: node.position.y,
+          },
+        )
         .then(() => {})
         .catch((err) => {
           setNodes(() =>
@@ -212,26 +210,16 @@ export default function Flow({ botId }: { botId: number }) {
   useEffect(() => {
     setLoading(true);
     if (contentTypes.length === 0) {
-      getContentTypes()
+      api
+        .get(`component/${botId}/content-type/`)
         .then((data) => {
-          setContentTypes(data);
+          setContentTypes(data.data);
+          console.log(data.data);
         })
         .catch((err) => {
           toast(err.message);
         });
     }
-
-    api
-      .get(`flow/${botId}/`)
-      .then((res) => {
-        if (res.data.length > 0) {
-          setIsFlowAvailable(true);
-        }
-      })
-      .catch((err) => {
-        toast(err.message);
-      });
-
     api
       .get(`flow/${botId}/component/`)
       .then((res) => {
@@ -244,8 +232,8 @@ export default function Flow({ botId }: { botId: number }) {
               nds.concat({
                 id: element.id.toString(),
                 position: flowInstance.screenToFlowPosition({
-                  x: element.position_x,
-                  y: element.position_y,
+                  x: res.data.position_x,
+                  y: res.data.position_y,
                 }),
                 type: "customNode",
                 selected: false,
@@ -253,13 +241,13 @@ export default function Flow({ botId }: { botId: number }) {
               }),
             );
 
-            if (element.next_component != null) {
-              const next_component: number = element.next_component;
+            if (element.previous_component != null) {
+              const previous_component: number = element.previous_component;
               setEdges((edg) =>
                 edg.concat({
-                  id: `e${element.id}-${element.next_component}`,
+                  id: `e${element.id}-${element.previous_component}`,
                   source: element.id.toString(),
-                  target: next_component.toString(),
+                  target: previous_component.toString(),
                   type: "customEdge",
                 }),
               );
@@ -341,11 +329,10 @@ export default function Flow({ botId }: { botId: number }) {
       {unattendedComponent && (
         <div className="absolute z-50 h-screen w-screen content-center p-4 backdrop-blur-xs">
           <ComponentDetail
-            botId={botId}
             node={unattendedComponent}
             setNode={setUnattendedComponent}
-            nodes={nodes}
-            setNodes={setNodes}
+            // nodes={nodes}
+            // setNodes={setNodes}
             contentTypes={contentTypes}
           />
         </div>
