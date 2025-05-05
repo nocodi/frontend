@@ -1,15 +1,20 @@
 import { useRef, useState } from "react";
 import { Plus } from "lucide-react";
+import { toast } from "react-toastify";
 
 type NewBotDialogProps = {
-  onCreate: (bot: { name: string; token: string; description: string }) => void;
+  onCreate: (bot: {
+    name: string;
+    token: string;
+    description: string;
+  }) => Promise<void>;
 };
 
 export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const resetForm = () => {
@@ -17,14 +22,25 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
     setToken("");
     setDescription("");
   };
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    onCreate({ name, token, description });
+    setIsSubmitting(true);
+    try {
+      await onCreate({ name, token, description });
+      resetForm();
+      modalRef.current?.close();
+    } catch (error) {
+      toast.error("Failed to create bot. Please try again.");
+      setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <>
+      {/* Open button */}
       <button
         className="btn btn-primary"
         onClick={() => modalRef.current?.showModal()}
@@ -69,6 +85,13 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
 
             <div className="modal-action">
               <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={!name || !token || isSubmitting}
+              >
+                {isSubmitting ? "Creating..." : "Create"}
+              </button>
+              <button
                 type="button"
                 className="btn"
                 onClick={() => {
@@ -77,13 +100,6 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
                 }}
               >
                 Cancel
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={!name || !token || loading}
-              >
-                {loading ? "Creating..." : "Create"}
               </button>
             </div>
           </form>
