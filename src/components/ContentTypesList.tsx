@@ -3,15 +3,14 @@ import { useDnD } from "./DnDContext";
 import { ContentType } from "../types/Component";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
+import { useContentTypes } from "./ContentTypesContext";
 
 function ContentTypesList({
   onClose,
   addSelectedComponent,
-  contentTypes,
 }: {
   onClose: () => void;
   addSelectedComponent: (component: ContentType) => void;
-  contentTypes: ContentType[];
 }) {
   const setContent = useDnD()[1];
 
@@ -29,8 +28,9 @@ function ContentTypesList({
   };
 
   const [query, setQuery] = useState("");
+  const contentTypes = useContentTypes()[0];
 
-  const filtered = contentTypes.filter((item) =>
+  const filtered = contentTypes?.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -69,8 +69,8 @@ function ContentTypesList({
         <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
       </div>
       <div className="flex flex-col gap-3">
-        {filtered.length > 0 ?
-          filtered.map((item, key) => (
+        {filtered ?
+          filtered?.map((item, key) => (
             <div
               key={`${key}`}
               onClick={() => clickedOnComponent(item)}

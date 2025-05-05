@@ -1,23 +1,23 @@
 import { ComponentType, ContentType, SchemaType } from "../types/Component";
 
-// import { Node } from "reactflow";
+import { Node } from "reactflow";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ComponentDetail = ({
   node,
   setNode,
-  // nodes,
-  // setNodes,
+  nodes,
+  setNodes,
   contentTypes,
 }: {
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
-  // nodes: Node<ComponentType, string | undefined>[];
-  // setNodes: React.Dispatch<
-  //   React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  // >;
+  nodes: Node<ComponentType, string | undefined>[];
+  setNodes: React.Dispatch<
+    React.SetStateAction<Node<ComponentType, string | undefined>[]>
+  >;
   contentTypes: ContentType[];
 }) => {
   const [formValues, setFormValues] = useState<{
@@ -31,7 +31,10 @@ const ComponentDetail = ({
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const schemaOfComponent = contentTypes.find(
+  const [schemaOfComponent, setSchemaOfComponent] = useState<
+    Record<string, SchemaType>
+  >({});
+  const contentOfComponent = contentTypes.find(
     (contentType) => contentType.id == node.component_content_type,
   )!;
 
@@ -71,44 +74,50 @@ const ComponentDetail = ({
   };
 
   const handleSubmit = () => {
-    const newErrors: { [key: string]: string } = {};
-    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
-      const error = validateField(
-        formValues[key]?.toString() || "",
-        value.type,
-        value.required,
-      );
-      if (error) newErrors[key] = error;
-    });
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    const processedValues = { ...formValues };
-
-    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
-      if (value.type === "BooleanField") {
-        if (processedValues[key]) {
-          if (processedValues[key] === "true") processedValues[key] = true;
-          else if (processedValues[key] === "false")
-            processedValues[key] = false;
-        } else {
-          delete processedValues[key];
-        }
-      }
-    });
-    setLoading(true);
-    api
-      .patch(`${schemaOfComponent.path.split(".ir")[1]}${node.id}/`, formValues)
-      .then(() => {
-        setNode(undefined);
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
+    if (schemaOfComponent) {
+      const newErrors: { [key: string]: string } = {};
+      Object.entries(schemaOfComponent).forEach(([key, value]) => {
+        const error = validateField(
+          formValues[key]?.toString() || "",
+          value.type,
+          value.required,
+        );
+        if (error) newErrors[key] = error;
       });
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+      const processedValues = { ...formValues };
+
+      Object.entries(schemaOfComponent).forEach(([key, value]) => {
+        if (value.type === "BooleanField") {
+          if (processedValues[key]) {
+            if (processedValues[key] === "true") processedValues[key] = true;
+            else if (processedValues[key] === "false")
+              processedValues[key] = false;
+          } else {
+            delete processedValues[key];
+          }
+        }
+      });
+      setLoading(true);
+
+      api
+        .patch(
+          `${contentOfComponent.path.split(".ir")[1]}${node.id}/`,
+          processedValues,
+        )
+        .then(() => {
+          setNode(undefined);
+        })
+        .catch((err) => {
+          toast(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
   const handleCancel = () => {
     setNode(undefined);
@@ -116,9 +125,40 @@ const ComponentDetail = ({
     setErrors({});
   };
 
-  // useEffect(() => {
-  //   setFormValues(node.schema);
-  // }, []);
+  useEffect(() => {
+    setLoading(true);
+    api
+      .get(`${contentOfComponent.path.split(".ir")[1]}${node.id}`)
+      .then((res) => {
+        const {
+          id,
+          previous_component,
+          component_name,
+          component_type,
+          component_content_type,
+          position_x,
+          position_y,
+          ...rest
+        } = res.data;
+
+        setFormValues(rest);
+
+        setSchemaOfComponent(
+          Object.fromEntries(
+            Object.entries(rest).map(([key, _]) => [
+              key,
+              contentOfComponent.schema[key],
+            ]),
+          ),
+        );
+      })
+      .catch((err) => {
+        toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
@@ -170,15 +210,15 @@ const ComponentDetail = ({
             </svg>
           </button>
           <h2 className="text-xl font-semibold text-base-content">
-            {schemaOfComponent.name}
+            {contentOfComponent.name}
           </h2>
-          <p className="text-gray-400">{schemaOfComponent.description}</p>
+          <p className="text-gray-400">{contentOfComponent.description}</p>
           <div>
             <h3 className="mb-2 text-lg font-semibold text-base-content">
               Schema
             </h3>
             <ul className="space-y-3">
-              {Object.entries(schemaOfComponent.schema).map(([key, value]) => (
+              {Object.entries(schemaOfComponent).map(([key, value]) => (
                 <li key={key} className="text-primary">
                   <label
                     className="mb-1 block border-primary font-medium"

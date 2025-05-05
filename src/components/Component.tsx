@@ -1,31 +1,34 @@
-import { Handle, Position, NodeProps } from "reactflow";
+import { Handle, Position, NodeProps, useReactFlow } from "reactflow";
 import { ComponentType } from "../types/Component";
-// import api from "../services/api";
-// import { useParams } from "react-router-dom";
-// import { useLoading, WorkflowParams } from "../pages/Workflow";
+import api from "../services/api";
+import { useLoading } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
+import { useContentTypes } from "./ContentTypesContext";
+import { toast } from "react-toastify";
 
-function Component({ data, isConnectable }: NodeProps<ComponentType>) {
-  // const flowInstance = useReactFlow();
-  // const { botId } = useParams<WorkflowParams>();
+function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
+  const flowInstance = useReactFlow();
   const setUnattendedComponent = useUnattended()[1];
-  // const setLoading = useLoading();
+  const setLoading = useLoading();
+  const contentTypes = useContentTypes()[0];
 
   function deleteComponent() {
-    // setLoading(true);
-    // api
-    //   .delete(
-    //     `${contentTypes[node.data.component_content_type - 11].path.split(".ir")[1]}/`,
-    //   )
-    //   .then(() => {
-    //     flowInstance.deleteElements({ nodes: [{ id: id }] });
-    //   })
-    //   .catch((err) => {
-    //     toast(err.message);
-    //   })
-    //   .finally(() => {
-    //     setLoading(false);
-    //   });
+    setLoading(true);
+    if (contentTypes) {
+      api
+        .delete(
+          `${contentTypes[data.component_content_type - 11].path.split(".ir")[1]}${id}/`,
+        )
+        .then(() => {
+          flowInstance.deleteElements({ nodes: [{ id: id }] });
+        })
+        .catch((err) => {
+          toast(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   function editComponentDetails() {

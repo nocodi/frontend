@@ -5,14 +5,10 @@ import {
   getBezierPath,
   useReactFlow,
 } from "reactflow";
-
-import { useLoading, WorkflowParams } from "../pages/Workflow";
-
+import { useLoading } from "../pages/Workflow";
 import api from "../services/api";
-
-import { useParams } from "react-router-dom";
-
 import { toast } from "react-toastify";
+import { useContentTypes } from "./ContentTypesContext";
 
 export default function CustomEdge({
   id,
@@ -26,8 +22,6 @@ export default function CustomEdge({
 }: EdgeProps) {
   const flowInstance = useReactFlow();
 
-  const { botId } = useParams<WorkflowParams>();
-
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -38,22 +32,29 @@ export default function CustomEdge({
   });
 
   const setLoading = useLoading();
+  const contentTypes = useContentTypes()[0];
 
   function deleteEdge() {
     setLoading(true);
-    api
-      .patch(`flow/${botId}/component/${id.split("-")[0].slice(1)}/`, {
-        next_component: null,
-      })
-      .then(() => {
-        flowInstance.deleteElements({ edges: [{ id: id }] });
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const targetNode = flowInstance.getNode(id.split("-")[1]);
+    if (contentTypes && targetNode) {
+      api
+        .patch(
+          `${contentTypes[targetNode.data.component_content_type - 11].path.split(".ir")[1]}${id.split("-")[1]}/`,
+          {
+            previous_component: null,
+          },
+        )
+        .then(() => {
+          flowInstance.deleteElements({ edges: [{ id: id }] });
+        })
+        .catch((err) => {
+          toast(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   return (

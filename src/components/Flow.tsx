@@ -23,6 +23,7 @@ import api from "../services/api";
 import ContentTypesList from "./ContentTypesList";
 import ComponentDetail from "./ComponentDetail";
 import { toast } from "react-toastify";
+import { useContentTypes } from "./ContentTypesContext";
 
 const nodeTypes = { customNode: Component };
 const edgeTypes = { customEdge: CustomEdge };
@@ -34,34 +35,27 @@ export default function Flow({ botId }: { botId: number }) {
     x: number;
     y: number;
   }>({ x: -1, y: -1 });
+  const [isFirstLoad, _setIsFirstLoad] = useState(true);
 
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-  const setLoading = useLoading();
 
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
-
-  const [isFirstLoad, _setIsFirstLoad] = useState(true);
+  const setLoading = useLoading();
+  const [contentTypes, setContentTypes] = useContentTypes();
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
       setLoading(true);
-      console.log(connection);
       if (connection.target && connection.source) {
         const targetNode: undefined | Node<ComponentType> =
           flowInstance.getNode(connection.target);
-        console.log(targetNode);
         const prevComponentId: number = parseInt(connection.source);
-        if (targetNode) {
-          console.log("brrrrrrr");
-          console.log(
-            contentTypes[targetNode.data.component_content_type - 11],
-          );
+        if (targetNode && contentTypes) {
           api
             .patch(
               `${contentTypes[targetNode.data.component_content_type - 11].path.split(".ir")[1]}${connection.target}/`,
@@ -118,7 +112,6 @@ export default function Flow({ botId }: { botId: number }) {
             component_content_type,
             position_x,
             position_y,
-            ...rest
           } = res.data;
           const componentData: ComponentType = {
             id,
@@ -128,7 +121,6 @@ export default function Flow({ botId }: { botId: number }) {
             component_type,
             position_x,
             position_y,
-            schema: rest,
           };
           const newNode: Node<ComponentType> = {
             id: `${componentData.id}`,
@@ -180,7 +172,8 @@ export default function Flow({ botId }: { botId: number }) {
   ) => {
     if (
       draggingNodeXY.x !== node.position.x &&
-      draggingNodeXY.y !== node.position.y
+      draggingNodeXY.y !== node.position.y &&
+      contentTypes
     ) {
       setLoading(true);
       api
@@ -213,16 +206,16 @@ export default function Flow({ botId }: { botId: number }) {
 
   useEffect(() => {
     setLoading(true);
-    if (contentTypes.length === 0) {
-      api
-        .get(`component/${botId}/content-type/`)
-        .then((data) => {
-          setContentTypes(data.data);
-        })
-        .catch((err) => {
-          toast(err.message);
-        });
-    }
+
+    api
+      .get(`/component/${botId}/content-type/`)
+      .then((data) => {
+        setContentTypes(data.data);
+      })
+      .catch((err) => {
+        toast(err.message);
+      });
+
     api
       .get(`/component/${botId}/schema/`)
       .then((res) => {
@@ -240,7 +233,7 @@ export default function Flow({ botId }: { botId: number }) {
                 }),
                 type: "customNode",
                 selected: false,
-                data: { ...element, schema: {} },
+                data: { ...element },
               }),
             );
 
@@ -302,7 +295,6 @@ export default function Flow({ botId }: { botId: number }) {
               <ContentTypesList
                 onClose={() => setIsPanelOpen(false)}
                 addSelectedComponent={addSelectedComponent}
-                contentTypes={contentTypes}
               />
             )}
           </div>
@@ -334,9 +326,9 @@ export default function Flow({ botId }: { botId: number }) {
           <ComponentDetail
             node={unattendedComponent}
             setNode={setUnattendedComponent}
-            // nodes={nodes}
-            // setNodes={setNodes}
-            contentTypes={contentTypes}
+            nodes={nodes}
+            setNodes={setNodes}
+            contentTypes={contentTypes ? contentTypes : []}
           />
         </div>
       )}

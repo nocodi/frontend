@@ -24,5 +24,4 @@ export type ComponentType = {
   component_content_type: number;
   position_x: number;
   position_y: number;
-  schema: Record<string, SchemaType>;
 };
