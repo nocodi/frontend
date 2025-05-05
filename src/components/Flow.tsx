@@ -114,6 +114,7 @@ export default function Flow({ botId }: { botId: number }) {
             id,
             previous_component,
             component_name,
+            component_type,
             component_content_type,
             position_x,
             position_y,
@@ -124,6 +125,9 @@ export default function Flow({ botId }: { botId: number }) {
             previous_component,
             component_name,
             component_content_type,
+            component_type,
+            position_x,
+            position_y,
             schema: rest,
           };
           const newNode: Node<ComponentType> = {
@@ -214,14 +218,13 @@ export default function Flow({ botId }: { botId: number }) {
         .get(`component/${botId}/content-type/`)
         .then((data) => {
           setContentTypes(data.data);
-          console.log(data.data);
         })
         .catch((err) => {
           toast(err.message);
         });
     }
     api
-      .get(`flow/${botId}/component/`)
+      .get(`/component/${botId}/schema/`)
       .then((res) => {
         setNodes([]);
         setEdges([]);
@@ -232,22 +235,22 @@ export default function Flow({ botId }: { botId: number }) {
               nds.concat({
                 id: element.id.toString(),
                 position: flowInstance.screenToFlowPosition({
-                  x: res.data.position_x,
-                  y: res.data.position_y,
+                  x: element.position_x,
+                  y: element.position_y,
                 }),
                 type: "customNode",
                 selected: false,
-                data: element,
+                data: { ...element, schema: {} },
               }),
             );
 
-            if (element.previous_component != null) {
+            if (element.previous_component) {
               const previous_component: number = element.previous_component;
               setEdges((edg) =>
                 edg.concat({
-                  id: `e${element.id}-${element.previous_component}`,
-                  source: element.id.toString(),
-                  target: previous_component.toString(),
+                  id: `e${previous_component}-${element.id}`,
+                  source: previous_component.toString(),
+                  target: element.id.toString(),
                   type: "customEdge",
                 }),
               );
