@@ -26,17 +26,14 @@ export default function ProfileDialog() {
         () => {
           resetForm();
           modalRef.current?.close();
-          toast.success("Password updated successfully!", {
-            position: "top-left",
-            autoClose: 3000,
-          });
+          toast.success("Password updated successfully!");
         },
         (err) => {
           const errorMessage =
             axios.isAxiosError(err) ?
               err.response?.data?.message || err.message
             : "An unexpected error occurred.";
-          toast.error(errorMessage, { position: "top-left", autoClose: 3000 });
+          toast.error(errorMessage);
         },
       )
       .finally(() => {
@@ -101,13 +98,6 @@ export default function ProfileDialog() {
                 Logout
               </button>
               <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? "Changing..." : "Change Password"}
-              </button>
-              <button
                 type="button"
                 className="btn"
                 onClick={() => {
@@ -116,6 +106,13 @@ export default function ProfileDialog() {
                 }}
               >
                 Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? "Changing..." : "Change Password"}
               </button>
             </div>
           </form>

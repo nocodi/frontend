@@ -44,7 +44,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           className="h-3 w-3 cursor-pointer hover:text-patina-400"
         />
       </div>
-      <div className="relative h-9 w-13 cursor-pointer rounded-lg border-2 border-base-content bg-primary text-center text-primary-content shadow-lg">
+      <div className="relative h-9 w-24 cursor-pointer rounded-lg border-2 border-base-content bg-primary text-center text-primary-content shadow-lg">
         <div>
           <Handle
             type="source"
@@ -68,7 +68,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             }}
           />
         </div>
-        <div className="inline-block align-middle text-[9px]">{data.name}</div>
+        <div className="flex h-full items-center justify-center px-2">
+          <span className="text-[10px] font-medium">{data.name}</span>
+        </div>
       </div>
     </div>
   );

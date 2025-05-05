@@ -37,13 +37,14 @@ export default function PasswordlessLogin() {
       const response = await api.post("iam/login/otp/send/", { email });
       localStorage.setItem("request_id", response.data.request_id);
       localStorage.setItem("request_type", "login");
+      toast.success("OTP sent to your email");
       await navigate("/verification");
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
           err.response?.data?.message || err.message
         : "An unexpected error occurred.";
-      toast.error(errorMessage, { position: "top-left", autoClose: 3000 });
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -44,16 +44,13 @@ export default function Verification() {
       localStorage.removeItem("request_id");
       localStorage.removeItem("request_type");
       login(response.data.access_token);
-      toast.success("You are successfully logged in", {
-        position: "top-left",
-        autoClose: 3000,
-      });
+      toast.success("You are successfully logged in");
     } catch (err) {
       const errorMessage =
         axios.isAxiosError(err) ?
           err.response?.data?.message || err.message
         : "An unexpected error occurred.";
-      toast.error(errorMessage, { position: "top-left", autoClose: 3000 });
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
