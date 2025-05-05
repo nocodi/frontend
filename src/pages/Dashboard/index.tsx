@@ -35,20 +35,14 @@ const Dashboard = () => {
       });
   };
 
-  const handleCreateBot = (newBot: {
+  const handleCreateBot = async (newBot: {
     name: string;
     token: string;
     description: string;
   }) => {
-    api
-      .post("bot/create-bot/", newBot)
-      .then(() => {
-        toast.success("Bot created successfully!");
-        fetchBots();
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+    await api.post("bot/create-bot/", newBot);
+    toast.success("Bot created successfully!");
+    fetchBots();
   };
 
   useEffect(fetchBots, []);
