@@ -1,7 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DnDFlow from "../components/DndFlow";
 import { createContext, useContext, useState } from "react";
 import CodeGeneration from "../components/CodeGeneration";
+import Loading from "../components/Loading";
+import { Check, Undo2 } from "lucide-react";
 
 type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -25,49 +27,18 @@ function Workflow() {
       : <div className="h-screen overflow-hidden">
           <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
             <div className="h-15 shrink-0 bg-base-200 px-5">
-              <div className="items-right flex h-full flex-row-reverse gap-3 text-primary">
-                <div className="my-auto">
-                  <CodeGeneration botId={Number(botId)} />
+              <div className="flex h-full items-center justify-between gap-3 text-primary">
+                <Link to="/dashboard" className="btn btn-outline">
+                  <Undo2 />
+                </Link>
+                <div className="flex items-center gap-3">
+                  <div className="my-auto">
+                    <CodeGeneration botId={Number(botId)} />
+                  </div>
+                  {loading ?
+                    <Loading size={30} />
+                  : <Check size={30} className="my-auto" />}
                 </div>
-                {loading ?
-                  <svg
-                    className="my-auto h-6 w-6 animate-spin"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                : <svg
-                    className="my-auto h-6 w-6"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 11.917 9.724 16.5 19 7.5"
-                    />
-                  </svg>
-                }
               </div>
             </div>
             <loadingContext.Provider value={setLoading}>

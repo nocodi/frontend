@@ -1,5 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 
+import { Plus } from "lucide-react";
+
 import Component from "./Component";
 import CustomEdge from "./EdgeComponent";
 import { ContentType, ComponentType } from "../types/Component";
@@ -283,23 +285,7 @@ export default function Flow({ botId }: { botId: number }) {
             onClick={() => setIsPanelOpen(true)}
             className="group btn absolute right-0 z-1 mt-5 mr-5 flex h-10 w-12 items-center justify-center rounded-xl border-2 btn-outline btn-primary"
           >
-            <svg
-              className="h-6 w-6"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="5"
-                d="M5 12h14m-7 7V5"
-              />
-            </svg>
+            <Plus strokeWidth={5} />
           </div>
 
           <div
