@@ -326,8 +326,6 @@ export default function Flow({ botId }: { botId: number }) {
           <ComponentDetail
             node={unattendedComponent}
             setNode={setUnattendedComponent}
-            nodes={nodes}
-            setNodes={setNodes}
             contentTypes={contentTypes ? contentTypes : []}
           />
         </div>

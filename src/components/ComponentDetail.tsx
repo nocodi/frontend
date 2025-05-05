@@ -1,6 +1,5 @@
 import { ComponentType, ContentType, SchemaType } from "../types/Component";
 
-import { Node } from "reactflow";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -8,16 +7,10 @@ import { useEffect, useState } from "react";
 const ComponentDetail = ({
   node,
   setNode,
-  nodes,
-  setNodes,
   contentTypes,
 }: {
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
-  nodes: Node<ComponentType, string | undefined>[];
-  setNodes: React.Dispatch<
-    React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >;
   contentTypes: ContentType[];
 }) => {
   const [formValues, setFormValues] = useState<{
