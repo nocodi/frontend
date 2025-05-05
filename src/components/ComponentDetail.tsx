@@ -157,7 +157,7 @@ const ComponentDetail = ({
   return (
     <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
       {loading ?
-        <Loading />
+        <Loading size={30} />
       : <>
           {/* <h1 className="text-2xl font-bold text-base-content">
               {node.name}
