@@ -29,7 +29,7 @@ function ContentTypesList({
   };
 
   const [query, setQuery] = useState("");
-  const contentTypes = useContentTypes()[0];
+  const { contentTypes } = useContentTypes();
 
   const filtered = contentTypes?.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase()),

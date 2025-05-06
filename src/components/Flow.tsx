@@ -36,7 +36,6 @@ export default function Flow({ botId }: { botId: number }) {
     x: number;
     y: number;
   }>({ x: -1, y: -1 });
-  const [isFirstLoad, _setIsFirstLoad] = useState(true);
 
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
@@ -47,7 +46,7 @@ export default function Flow({ botId }: { botId: number }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const setLoading = useLoading();
-  const [contentTypes, setContentTypes] = useContentTypes();
+  const { contentTypes, setContentTypes, getPathOfContent } = useContentTypes();
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
@@ -59,7 +58,7 @@ export default function Flow({ botId }: { botId: number }) {
         if (targetNode && contentTypes) {
           api
             .patch(
-              `${contentTypes[targetNode.data.component_content_type - 11].path.split(".ir")[1]}${connection.target}/`,
+              `${getPathOfContent(targetNode.data.component_content_type)}${connection.target}/`,
               {
                 previous_component: prevComponentId,
               },
@@ -179,7 +178,7 @@ export default function Flow({ botId }: { botId: number }) {
       setLoading(true);
       api
         .patch(
-          `${contentTypes[node.data.component_content_type - 11].path.split(".ir")[1]}${node.id}/`,
+          `${getPathOfContent(node.data.component_content_type)}${node.id}/`,
           {
             position_x: node.position.x,
             position_y: node.position.y,
@@ -293,7 +292,7 @@ export default function Flow({ botId }: { botId: number }) {
               onConnect={onConnect}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
-              fitView={isFirstLoad}
+              fitView={true}
               onDrop={onDrop}
               onDragOver={onDragOver}
               onNodeDragStart={nodeDragEnter}
@@ -311,7 +310,6 @@ export default function Flow({ botId }: { botId: number }) {
           <ComponentDetail
             node={unattendedComponent}
             setNode={setUnattendedComponent}
-            contentTypes={contentTypes ? contentTypes : []}
           />
         </div>
       )}

@@ -33,15 +33,16 @@ export default function CustomEdge({
   });
 
   const setLoading = useLoading();
-  const contentTypes = useContentTypes()[0];
+  const { contentTypes, getPathOfContent } = useContentTypes();
+  const targetId: string = id.split("-")[1];
 
   function deleteEdge() {
     setLoading(true);
-    const targetNode = flowInstance.getNode(id.split("-")[1]);
+    const targetNode = flowInstance.getNode(targetId);
     if (contentTypes && targetNode) {
       api
         .patch(
-          `${contentTypes[targetNode.data.component_content_type - 11].path.split(".ir")[1]}${id.split("-")[1]}/`,
+          `${getPathOfContent(targetNode.data.component_content_type)}${targetId}/`,
           {
             previous_component: null,
           },

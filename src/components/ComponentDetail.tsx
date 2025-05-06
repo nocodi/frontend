@@ -1,18 +1,17 @@
-import { ComponentType, ContentType, SchemaType } from "../types/Component";
+import { ComponentType, SchemaType } from "../types/Component";
 import { X } from "lucide-react";
 import Loading from "./Loading";
 import api from "../services/api";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { useContentTypes } from "./ContentTypesContext";
 
 const ComponentDetail = ({
   node,
   setNode,
-  contentTypes,
 }: {
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
-  contentTypes: ContentType[];
 }) => {
   const [formValues, setFormValues] = useState<{
     [key: string]: string | boolean;
@@ -25,12 +24,16 @@ const ComponentDetail = ({
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
+  const { contentTypes } = useContentTypes();
+
   const [schemaOfComponent, setSchemaOfComponent] = useState<
     Record<string, SchemaType>
   >({});
-  const contentOfComponent = contentTypes.find(
+  const contentOfComponent = contentTypes!.find(
     (contentType) => contentType.id == node.component_content_type,
   )!;
+
+  const pathOfComponent = contentOfComponent.path.split(".ir")[1];
 
   const validateField = (
     value: string,
@@ -98,10 +101,7 @@ const ComponentDetail = ({
       setLoading(true);
 
       api
-        .patch(
-          `${contentOfComponent.path.split(".ir")[1]}${node.id}/`,
-          processedValues,
-        )
+        .patch(`${pathOfComponent}${node.id}/`, processedValues)
         .then(() => {
           setNode(undefined);
         })
@@ -122,7 +122,7 @@ const ComponentDetail = ({
   useEffect(() => {
     setLoading(true);
     api
-      .get(`${contentOfComponent.path.split(".ir")[1]}${node.id}`)
+      .get(`${pathOfComponent}${node.id}`)
       .then((res) => {
         const {
           id,

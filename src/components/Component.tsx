@@ -11,15 +11,13 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
-  const contentTypes = useContentTypes()[0];
+  const { contentTypes, getPathOfContent } = useContentTypes();
 
   function deleteComponent() {
     setLoading(true);
     if (contentTypes) {
       api
-        .delete(
-          `${contentTypes[data.component_content_type - 11].path.split(".ir")[1]}${id}/`,
-        )
+        .delete(`${getPathOfContent(data.component_content_type)}${id}/`)
         .then(() => {
           flowInstance.deleteElements({ nodes: [{ id: id }] });
         })
