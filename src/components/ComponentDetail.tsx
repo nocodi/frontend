@@ -30,10 +30,9 @@ const ComponentDetail = ({
     Record<string, SchemaType>
   >({});
   const contentOfComponent = contentTypes!.find(
-    (contentType) => contentType.id == node.component_content_type,
-  )!;
-
-  const pathOfComponent = contentOfComponent.path.split(".ir")[1];
+    (contentType) => contentType.id === node.component_content_type,
+  );
+  const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
 
   const validateField = (
     value: string,
@@ -132,6 +131,9 @@ const ComponentDetail = ({
           component_content_type,
           position_x,
           position_y,
+          bot,
+          object_id,
+          content_type,
           ...rest
         } = res.data;
 
@@ -141,7 +143,7 @@ const ComponentDetail = ({
           Object.fromEntries(
             Object.entries(rest).map(([key, _]) => [
               key,
-              contentOfComponent.schema[key],
+              contentOfComponent!.schema[key],
             ]),
           ),
         );
@@ -169,9 +171,9 @@ const ComponentDetail = ({
             <X />
           </button>
           <h2 className="text-xl font-semibold text-base-content">
-            {contentOfComponent.name}
+            {contentOfComponent!.name}
           </h2>
-          <p className="text-gray-400">{contentOfComponent.description}</p>
+          <p className="text-gray-400">{contentOfComponent!.description}</p>
           <div>
             <h3 className="mb-2 text-lg font-semibold text-base-content">
               Schema

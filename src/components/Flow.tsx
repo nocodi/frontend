@@ -210,7 +210,34 @@ export default function Flow({ botId }: { botId: number }) {
     api
       .get(`/component/${botId}/content-type/`)
       .then((data) => {
-        setContentTypes(data.data);
+        const unwantedKeys = [
+          "bot",
+          "component_content_type",
+          "position_x",
+          "position_y",
+          "previous_component",
+          "id",
+          "component_name",
+          "component_type",
+          "object_id",
+          "content_type",
+        ];
+
+        const filteredContentTypes = (data.data as ContentType[]).map(
+          (item) => {
+            const filteredSchema = Object.fromEntries(
+              Object.entries(item.schema).filter(
+                ([key]) => !unwantedKeys.includes(key),
+              ),
+            );
+
+            return {
+              ...item,
+              schema: filteredSchema,
+            };
+          },
+        );
+        setContentTypes(filteredContentTypes);
       })
       .catch((err) => {
         toast(err.message);
