@@ -113,11 +113,12 @@ export default function Flow({ botId }: { botId: number }) {
             position_x,
             position_y,
           } = res.data;
+          const compo: number = component_content_type.id;
           const componentData: ComponentType = {
             id,
             previous_component,
             component_name,
-            component_content_type,
+            component_content_type: compo,
             component_type,
             position_x,
             position_y,
@@ -210,34 +211,7 @@ export default function Flow({ botId }: { botId: number }) {
     api
       .get(`/component/${botId}/content-type/`)
       .then((data) => {
-        const unwantedKeys = [
-          "bot",
-          "component_content_type",
-          "position_x",
-          "position_y",
-          "previous_component",
-          "id",
-          "component_name",
-          "component_type",
-          "object_id",
-          "content_type",
-        ];
-
-        const filteredContentTypes = (data.data as ContentType[]).map(
-          (item) => {
-            const filteredSchema = Object.fromEntries(
-              Object.entries(item.schema).filter(
-                ([key]) => !unwantedKeys.includes(key),
-              ),
-            );
-
-            return {
-              ...item,
-              schema: filteredSchema,
-            };
-          },
-        );
-        setContentTypes(filteredContentTypes);
+        setContentTypes(data.data);
       })
       .catch((err) => {
         toast(err.message);
