@@ -73,6 +73,13 @@ export default function Flow({ botId }: { botId: number }) {
                 };
                 const exists = edges.some((edge) => edge.id === newEdge.id);
                 if (!exists) {
+                  setEdges((edges) =>
+                    edges.filter((edge) => {
+                      const parts = edge.id.split("-");
+                      return parts[parts.length - 1] !== connection.target;
+                    }),
+                  );
+
                   setEdges((eds) => eds.concat(newEdge));
                 }
               }
