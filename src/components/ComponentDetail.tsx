@@ -5,6 +5,7 @@ import api from "../services/api";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useContentTypes } from "./ContentTypesContext";
+import CodeEditor from "./CodeEditor";
 
 const ComponentDetail = ({
   node,
@@ -18,6 +19,7 @@ const ComponentDetail = ({
   }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [isCodeEditorOpen, setIsCodeEditorOpen] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
@@ -221,6 +223,14 @@ const ComponentDetail = ({
                   {errors[key] && (
                     <p className="mt-1 text-sm text-red-500">{errors[key]}</p>
                   )}
+                  {value.verbose_name === "code" && (
+                    <button
+                      onClick={() => setIsCodeEditorOpen(true)}
+                      className="btn mt-2 btn-outline btn-secondary"
+                    >
+                      Open Code Editor
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -239,6 +249,27 @@ const ComponentDetail = ({
               </button>
             </div>
           </div>
+          {isCodeEditorOpen && (
+            <div className="modal-open modal">
+              <div className="modal-box max-w-4xl">
+                <CodeEditor
+                  onSubmit={(updatedCode: string) => {
+                    const codeFieldKey = Object.keys(schemaOfComponent).find(
+                      (key) => schemaOfComponent[key].verbose_name === "code",
+                    );
+                    if (codeFieldKey) {
+                      setFormValues((prev) => ({
+                        ...prev,
+                        [codeFieldKey]: updatedCode,
+                      }));
+                    }
+                    setIsCodeEditorOpen(false);
+                  }}
+                  onDiscard={() => setIsCodeEditorOpen(false)}
+                />
+              </div>
+            </div>
+          )}
         </>
       }
     </div>
