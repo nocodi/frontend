@@ -1,26 +1,37 @@
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useState, useContext } from "react";
 import { ContentType } from "../types/Component";
-import { ReactNode } from "react";
-import { useState } from "react";
 
-type ContentTypeContextType = [
-  ContentType[],
-  React.Dispatch<React.SetStateAction<ContentType[]>>,
-];
+type ContentTypesContextType = {
+  contentTypes: ContentType[] | undefined;
+  setContentTypes: React.Dispatch<
+    React.SetStateAction<ContentType[] | undefined>
+  >;
+  getPathOfContent: (id: number) => string | undefined;
+};
 
-const contentTypeContext = createContext<ContentTypeContextType>([
-  [],
-  () => {},
-]);
+const ContentTypesContext = createContext<ContentTypesContextType>({
+  contentTypes: undefined,
+  setContentTypes: () => {},
+  getPathOfContent: () => undefined,
+});
+
 export const ContentTypesProvider = ({ children }: { children: ReactNode }) => {
-  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
+  const [contentTypes, setContentTypes] = useState<ContentType[] | undefined>();
+
+  const getPathOfContent = (id: number): string | undefined => {
+    const content = contentTypes?.find((content) => content.id === id);
+    return content?.path?.split(".ir")[1];
+  };
 
   return (
-    <contentTypeContext.Provider value={[contentTypes, setContentTypes]}>
+    <ContentTypesContext.Provider
+      value={{ contentTypes, setContentTypes, getPathOfContent }}
+    >
       {children}
-    </contentTypeContext.Provider>
+    </ContentTypesContext.Provider>
   );
 };
+
 export const useContentTypes = () => {
-  return useContext(contentTypeContext);
+  return useContext(ContentTypesContext);
 };

@@ -5,14 +5,10 @@ import {
   getBezierPath,
   useReactFlow,
 } from "reactflow";
-
-import { useLoading, WorkflowParams } from "../pages/Workflow";
-
+import { useLoading } from "../pages/Workflow";
 import api from "../services/api";
-
-import { useParams } from "react-router-dom";
-
 import { toast } from "react-toastify";
+import { useContentTypes } from "./ContentTypesContext";
 import { Trash2 } from "lucide-react";
 
 export default function CustomEdge({
@@ -27,8 +23,6 @@ export default function CustomEdge({
 }: EdgeProps) {
   const flowInstance = useReactFlow();
 
-  const { botId } = useParams<WorkflowParams>();
-
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -39,22 +33,30 @@ export default function CustomEdge({
   });
 
   const setLoading = useLoading();
+  const { contentTypes, getPathOfContent } = useContentTypes();
+  const targetId: string = id.split("-")[1];
 
   function deleteEdge() {
     setLoading(true);
-    api
-      .patch(`flow/${botId}/component/${id.split("-")[0].slice(1)}/`, {
-        next_component: null,
-      })
-      .then(() => {
-        flowInstance.deleteElements({ edges: [{ id: id }] });
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const targetNode = flowInstance.getNode(targetId);
+    if (contentTypes && targetNode) {
+      api
+        .patch(
+          `${getPathOfContent(targetNode.data.component_content_type)}${targetId}/`,
+          {
+            previous_component: null,
+          },
+        )
+        .then(() => {
+          flowInstance.deleteElements({ edges: [{ id: id }] });
+        })
+        .catch((err) => {
+          toast(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   return (

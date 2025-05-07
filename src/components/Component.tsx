@@ -1,31 +1,33 @@
-import { Handle, Position, useReactFlow, NodeProps } from "reactflow";
+import { Handle, Position, NodeProps, useReactFlow } from "reactflow";
 import { ComponentType } from "../types/Component";
 import api from "../services/api";
-import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useLoading, WorkflowParams } from "../pages/Workflow";
+import { useLoading } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
+import { useContentTypes } from "./ContentTypesContext";
+import { toast } from "react-toastify";
 import { Trash, Ellipsis } from "lucide-react";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
-  const { botId } = useParams<WorkflowParams>();
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
+  const { contentTypes, getPathOfContent } = useContentTypes();
 
   function deleteComponent() {
     setLoading(true);
-    api
-      .delete(`flow/${botId}/component/${id}/`)
-      .then(() => {
-        flowInstance.deleteElements({ nodes: [{ id: id }] });
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (contentTypes) {
+      api
+        .delete(`${getPathOfContent(data.component_content_type)}${id}/`)
+        .then(() => {
+          flowInstance.deleteElements({ nodes: [{ id: id }] });
+        })
+        .catch((err) => {
+          toast(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   function editComponentDetails() {
@@ -69,7 +71,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           />
         </div>
         <div className="flex h-full items-center justify-center px-2">
-          <span className="text-[10px] font-medium">{data.name}</span>
+          <span className="text-[10px] font-medium">{data.component_name}</span>
         </div>
       </div>
     </div>

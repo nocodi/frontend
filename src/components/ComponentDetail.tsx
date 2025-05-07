@@ -1,44 +1,38 @@
-import { ComponentType, ContentType, SchemaType } from "../types/Component";
-
+import { ComponentType, SchemaType } from "../types/Component";
 import { X } from "lucide-react";
 import Loading from "./Loading";
-
-import { Node } from "reactflow";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useContentTypes } from "./ContentTypesContext";
 
 const ComponentDetail = ({
-  botId,
   node,
   setNode,
-  nodes,
-  setNodes,
-  contentTypes,
 }: {
-  botId: number;
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
-  nodes: Node<ComponentType, string | undefined>[];
-  setNodes: React.Dispatch<
-    React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >;
-  contentTypes: ContentType[];
 }) => {
   const [formValues, setFormValues] = useState<{
     [key: string]: string | boolean;
   }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const schemaOfComponent = contentTypes.find(
-    (contentType) => contentType.id == node.content_type,
-  )!;
+  const { contentTypes } = useContentTypes();
+
+  const [schemaOfComponent, setSchemaOfComponent] = useState<
+    Record<string, SchemaType>
+  >({});
+  const contentOfComponent = contentTypes!.find(
+    (contentType) => contentType.id === node.component_content_type,
+  );
+  const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
 
   const validateField = (
     value: string,
@@ -76,78 +70,37 @@ const ComponentDetail = ({
   };
 
   const handleSubmit = () => {
-    const newErrors: { [key: string]: string } = {};
-    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
-      const error = validateField(
-        formValues[key]?.toString() || "",
-        value.type,
-        value.required,
-      );
-      if (error) newErrors[key] = error;
-    });
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    const processedValues = { ...formValues };
-
-    Object.entries(schemaOfComponent.schema).forEach(([key, value]) => {
-      if (value.type === "BooleanField") {
-        if (processedValues[key]) {
-          if (processedValues[key] === "true") processedValues[key] = true;
-          else if (processedValues[key] === "false")
-            processedValues[key] = false;
-        } else {
-          delete processedValues[key];
-        }
+    if (schemaOfComponent) {
+      const newErrors: { [key: string]: string } = {};
+      Object.entries(schemaOfComponent).forEach(([key, value]) => {
+        const error = validateField(
+          formValues[key]?.toString() || "",
+          value.type,
+          value.required,
+        );
+        if (error) newErrors[key] = error;
+      });
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
       }
-    });
-    setLoading(true);
-    if (!node.object_id) {
+      const processedValues = { ...formValues };
+
+      Object.entries(schemaOfComponent).forEach(([key, value]) => {
+        if (value.type === "BooleanField") {
+          if (processedValues[key]) {
+            if (processedValues[key] === "true") processedValues[key] = true;
+            else if (processedValues[key] === "false")
+              processedValues[key] = false;
+          } else {
+            delete processedValues[key];
+          }
+        }
+      });
+      setLoading(true);
+
       api
-        .post(`${schemaOfComponent.path.split(".ir")[1]}`, processedValues)
-        .then((res) => {
-          const objId: number = res.data.id;
-          api
-            .patch(`flow/${botId}/component/${node.id}/`, {
-              object_id: objId,
-            })
-            .then((res) => {
-              const objId: number = res.data.object_id;
-              setNodes(() =>
-                nodes.map((item) =>
-                  item.id === node.id.toString() ?
-                    {
-                      ...item,
-                      data: {
-                        ...item.data,
-                        object_id: objId,
-                      },
-                    }
-                  : item,
-                ),
-              );
-            })
-            .catch((err) => {
-              toast(err.message);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-          setNode(undefined);
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      api
-        .patch(
-          `${schemaOfComponent.path.split(".ir")[1]}${node.object_id}/`,
-          formValues,
-        )
+        .patch(`${pathOfComponent}${node.id}/`, processedValues)
         .then(() => {
           setNode(undefined);
         })
@@ -166,28 +119,47 @@ const ComponentDetail = ({
   };
 
   useEffect(() => {
-    if (node.object_id) {
-      api
-        .get(`${schemaOfComponent.path.split(".ir")[1]}${node.object_id}`)
-        .then((res) => {
-          const { id, timestamp, ...rest } = res.data;
-          setFormValues(rest);
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
+    setLoading(true);
+    api
+      .get(`${pathOfComponent}${node.id}`)
+      .then((res) => {
+        const {
+          id,
+          previous_component,
+          component_name,
+          component_type,
+          component_content_type,
+          position_x,
+          position_y,
+          bot,
+          object_id,
+          content_type,
+          ...rest
+        } = res.data;
+
+        setFormValues(rest);
+
+        setSchemaOfComponent(
+          Object.fromEntries(
+            Object.entries(rest).map(([key, _]) => [
+              key,
+              contentOfComponent!.schema[key],
+            ]),
+          ),
+        );
+      })
+      .catch((err) => {
+        toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (
     <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
       {loading ?
-        <Loading />
+        <Loading size={30} />
       : <>
           {/* <h1 className="text-2xl font-bold text-base-content">
               {node.name}
@@ -199,15 +171,15 @@ const ComponentDetail = ({
             <X />
           </button>
           <h2 className="text-xl font-semibold text-base-content">
-            {schemaOfComponent.name}
+            {contentOfComponent!.name}
           </h2>
-          <p className="text-gray-400">{schemaOfComponent.description}</p>
+          <p className="text-gray-400">{contentOfComponent!.description}</p>
           <div>
             <h3 className="mb-2 text-lg font-semibold text-base-content">
               Schema
             </h3>
             <ul className="space-y-3">
-              {Object.entries(schemaOfComponent.schema).map(([key, value]) => (
+              {Object.entries(schemaOfComponent).map(([key, value]) => (
                 <li key={key} className="text-primary">
                   <label
                     className="mb-1 block border-primary font-medium"
