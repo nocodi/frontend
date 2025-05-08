@@ -1,11 +1,15 @@
-import { ComponentType, SchemaType } from "../types/Component";
+import { ComponentType, ContentType, SchemaType } from "../types/Component";
 import { useEffect, useState } from "react";
-
 import Loading from "./Loading";
 import { X } from "lucide-react";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useContentTypes } from "../services/getQueries";
+import { useComponentDetails } from "../services/getQueries";
+import { useQueryClient } from "@tanstack/react-query";
+
+export type formValuesType = {
+  [key: string]: string | boolean;
+};
 
 const ComponentDetail = ({
   node,
@@ -14,19 +18,13 @@ const ComponentDetail = ({
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
 }) => {
-  const [formValues, setFormValues] = useState<{
-    [key: string]: string | boolean;
-  }>({});
+  const [formValues, setFormValues] = useState<formValuesType>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (key: string, value: string) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: "" }));
-  };
-
-  const { contentTypes } = useContentTypes();
-
+  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const contentTypes: ContentType[] | undefined = queryClient.getQueryData([
+    "contentTypes",
+  ]);
   const [schemaOfComponent, setSchemaOfComponent] = useState<
     Record<string, SchemaType>
   >({});
@@ -34,6 +32,12 @@ const ComponentDetail = ({
     (contentType) => contentType.id === node.component_content_type,
   );
   const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
+  const { details, isFetching } = useComponentDetails(pathOfComponent, node.id);
+
+  const handleChange = (key: string, value: string) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
 
   const validateField = (
     value: string,
@@ -120,42 +124,19 @@ const ComponentDetail = ({
   };
 
   useEffect(() => {
-    setLoading(true);
-    api
-      .get(`${pathOfComponent}${node.id}`)
-      .then((res) => {
-        const {
-          id,
-          previous_component,
-          component_name,
-          component_type,
-          component_content_type,
-          position_x,
-          position_y,
-          bot,
-          object_id,
-          content_type,
-          ...rest
-        } = res.data;
+    setLoading(isFetching);
 
-        setFormValues(rest);
+    setFormValues(details ?? {});
 
-        setSchemaOfComponent(
-          Object.fromEntries(
-            Object.entries(rest).map(([key, _]) => [
-              key,
-              contentOfComponent!.schema[key],
-            ]),
-          ),
-        );
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+    setSchemaOfComponent(
+      Object.fromEntries(
+        Object.entries(details ?? {}).map(([key, _]) => [
+          key,
+          contentOfComponent!.schema[key],
+        ]),
+      ),
+    );
+  }, [isFetching]);
 
   return (
     <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
