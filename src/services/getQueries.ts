@@ -1,11 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import api from "./api";
 import { ComponentType, ContentType } from "../types/Component";
-import { useParams } from "react-router-dom";
-import { WorkflowParams } from "../pages/Workflow";
-import { formValuesType } from "../components/ComponentDetail";
 import { Edge, Node, useReactFlow } from "reactflow";
+
+import { BotData } from "../pages/Dashboard";
 import React from "react";
+import { WorkflowParams } from "../pages/Workflow";
+import api from "./api";
+import { formValuesType } from "../components/ComponentDetail";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export const useContentTypes = () => {
   const { botId } = useParams<WorkflowParams>();
@@ -98,4 +100,17 @@ export const useBotSchema = (
   });
 
   return { isFetchingData };
+};
+
+export const useBots = () => {
+  const {
+    data: bots,
+    isFetching,
+    refetch,
+  } = useQuery<BotData[]>({
+    queryKey: ["bots"],
+    queryFn: () => api.get<BotData[]>(`bot/my-bots/`).then((res) => res.data),
+  });
+
+  return { bots, isFetching, refetch };
 };

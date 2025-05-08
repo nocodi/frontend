@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
-import api from "../../services/api";
-import { toast } from "react-toastify";
-import SearchBar from "../../components/searchBar";
+import { LoaderCircle } from "lucide-react";
 import NewBotDialog from "./NewBotDialog";
 import ProfileDialog from "./ProfileDialog";
-import { LoaderCircle } from "lucide-react";
+import SearchBar from "../../components/searchBar";
+import api from "../../services/api";
+import { toast } from "react-toastify";
+import { useBots } from "../../services/getQueries";
 
-type BotData = {
+export type BotData = {
   id: string;
   name: string;
   description: string;
@@ -17,23 +19,10 @@ type BotData = {
 };
 
 const Dashboard = () => {
-  const [bots, setBots] = useState<BotData[]>();
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
 
-  const fetchBots = () => {
-    api
-      .get<BotData[]>("bot/my-bots/")
-      .then((res) => {
-        setBots(res.data);
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  const { bots, isFetching, refetch } = useBots();
 
   const handleCreateBot = async (newBot: {
     name: string;
@@ -42,10 +31,14 @@ const Dashboard = () => {
   }) => {
     await api.post("bot/create-bot/", newBot);
     toast.success("Bot created successfully!");
-    fetchBots();
+    refetch().catch((err) => {
+      toast(err.message);
+    });
   };
 
-  useEffect(fetchBots, []);
+  useEffect(() => {
+    setLoading(isFetching);
+  }, [isFetching]);
 
   const filtered =
     query == "" ? bots : (
