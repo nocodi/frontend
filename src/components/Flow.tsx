@@ -24,12 +24,13 @@ import api from "../services/api";
 import ContentTypesList from "./ContentTypesList";
 import ComponentDetail from "./ComponentDetail";
 import { toast } from "react-toastify";
-import { useContentTypes } from "./ContentTypesContext";
+import { getPathOfContent } from "../utils/freqFuncs";
+import { useContentTypes } from "../services/getQueries";
 
 const nodeTypes = { customNode: Component };
 const edgeTypes = { customEdge: CustomEdge };
 
-export default function Flow({ botId }: { botId: number }) {
+export default function Flow() {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   const [draggingNodeXY, setDraggingNodeXY] = useState<{
@@ -46,7 +47,7 @@ export default function Flow({ botId }: { botId: number }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const setLoading = useLoading();
-  const { contentTypes, setContentTypes, getPathOfContent } = useContentTypes();
+  const { contentTypes, isLoading } = useContentTypes();
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
@@ -58,7 +59,7 @@ export default function Flow({ botId }: { botId: number }) {
         if (targetNode && contentTypes) {
           api
             .patch(
-              `${getPathOfContent(targetNode.data.component_content_type)}${connection.target}/`,
+              `${getPathOfContent(targetNode.data.component_content_type, contentTypes)}${connection.target}/`,
               {
                 previous_component: prevComponentId,
               },
@@ -87,7 +88,7 @@ export default function Flow({ botId }: { botId: number }) {
       }
     },
 
-    [setEdges, botId, contentTypes],
+    [setEdges, contentTypes],
   );
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) => {
@@ -179,7 +180,7 @@ export default function Flow({ botId }: { botId: number }) {
       setLoading(true);
       api
         .patch(
-          `${getPathOfContent(node.data.component_content_type)}${node.id}/`,
+          `${getPathOfContent(node.data.component_content_type, contentTypes)}${node.id}/`,
           {
             position_x: node.position.x,
             position_y: node.position.y,
@@ -206,59 +207,47 @@ export default function Flow({ botId }: { botId: number }) {
   };
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(isLoading);
 
-    api
-      .get(`/component/${botId}/content-type/`)
-      .then((data) => {
-        setContentTypes(data.data);
-      })
-      .catch((err) => {
-        toast(err.message);
-      });
+    // api
+    //   .get(`/component/${botId}/schema/`)
+    //   .then((res) => {
+    //     setNodes([]);
+    //     setEdges([]);
+    //     const components: ComponentType[] = res.data;
+    //     if (res.data.length > 0) {
+    //       components.forEach((element: ComponentType) => {
+    //         setNodes((nds) =>
+    //           nds.concat({
+    //             id: element.id.toString(),
+    //             position: flowInstance.screenToFlowPosition({
+    //               x: element.position_x,
+    //               y: element.position_y,
+    //             }),
+    //             type: "customNode",
+    //             selected: false,
+    //             data: { ...element },
+    //           }),
+    //         );
 
-    api
-      .get(`/component/${botId}/schema/`)
-      .then((res) => {
-        setNodes([]);
-        setEdges([]);
-        const components: ComponentType[] = res.data;
-        if (res.data.length > 0) {
-          components.forEach((element: ComponentType) => {
-            setNodes((nds) =>
-              nds.concat({
-                id: element.id.toString(),
-                position: flowInstance.screenToFlowPosition({
-                  x: element.position_x,
-                  y: element.position_y,
-                }),
-                type: "customNode",
-                selected: false,
-                data: { ...element },
-              }),
-            );
-
-            if (element.previous_component) {
-              const previous_component: number = element.previous_component;
-              setEdges((edg) =>
-                edg.concat({
-                  id: `e${previous_component}-${element.id}`,
-                  source: previous_component.toString(),
-                  target: element.id.toString(),
-                  type: "customEdge",
-                }),
-              );
-            }
-          });
-        }
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [botId]);
+    //         if (element.previous_component) {
+    //           const previous_component: number = element.previous_component;
+    //           setEdges((edg) =>
+    //             edg.concat({
+    //               id: `e${previous_component}-${element.id}`,
+    //               source: previous_component.toString(),
+    //               target: element.id.toString(),
+    //               type: "customEdge",
+    //             }),
+    //           );
+    //         }
+    //       });
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     toast(err.message);
+    //   })
+  }, [isLoading]);
 
   return (
     <>
