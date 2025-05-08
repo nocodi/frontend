@@ -1,9 +1,9 @@
 import { ComponentType, SchemaType } from "../types/Component";
-import { X } from "lucide-react";
+// import { X } from "lucide-react";
 import Loading from "./Loading";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useContentTypes } from "./ContentTypesContext";
 
 const ComponentDetail = ({
@@ -18,6 +18,7 @@ const ComponentDetail = ({
   }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   const handleChange = (key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
@@ -103,6 +104,7 @@ const ComponentDetail = ({
         .patch(`${pathOfComponent}${node.id}/`, processedValues)
         .then(() => {
           setNode(undefined);
+          modalRef.current?.close();
         })
         .catch((err) => {
           toast(err.message);
@@ -112,10 +114,12 @@ const ComponentDetail = ({
         });
     }
   };
+
   const handleCancel = () => {
     setNode(undefined);
     setFormValues({});
     setErrors({});
+    modalRef.current?.close();
   };
 
   useEffect(() => {
@@ -156,39 +160,31 @@ const ComponentDetail = ({
       });
   }, []);
 
+  useEffect(() => {
+    modalRef.current?.showModal();
+  }, []);
+
   return (
-    <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
-      {loading ?
-        <Loading size={30} />
-      : <>
-          {/* <h1 className="text-2xl font-bold text-base-content">
-              {node.name}
-            </h1> */}
-          <button
-            onClick={handleCancel}
-            className="btn float-right cursor-pointer p-2 btn-outline btn-primary"
+    <dialog ref={modalRef} className="modal">
+      <div className="modal-box bg-base-100">
+        <h3 className="text-lg font-bold text-base-content">
+          {contentOfComponent!.name}
+        </h3>
+
+        {loading ?
+          <Loading size={30} />
+        : <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
           >
-            <X />
-          </button>
-          <h2 className="text-xl font-semibold text-base-content">
-            {contentOfComponent!.name}
-          </h2>
-          <p className="text-gray-400">{contentOfComponent!.description}</p>
-          <div>
-            <h3 className="mb-2 text-lg font-semibold text-base-content">
-              Schema
-            </h3>
-            <ul className="space-y-3">
+            <div className="mt-4 grid w-full grid-cols-1 sm:grid-cols-3 sm:gap-4">
               {Object.entries(schemaOfComponent).map(([key, value]) => (
-                <li key={key} className="text-primary">
-                  <label
-                    className="mb-1 block border-primary font-medium"
-                    htmlFor={key}
-                  >
-                    {key}{" "}
-                    {value.required ?
-                      <span className="text-red-500">*</span>
-                    : <></>}
+                <div key={key} className="sm:col-span-3">
+                  <label className="label mt-4 mb-2 text-base-content sm:mt-0">
+                    {key}
+                    {value.required && <span className="text-error">*</span>}
                   </label>
                   {value.type === "BooleanField" ?
                     <select
@@ -197,8 +193,8 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`w-full rounded-lg border bg-base-300 px-3 py-2 text-base-content ${
-                        errors[key] ? "border-red-500" : "border-primary"
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
+                        errors[key] ? "border-error" : ""
                       }`}
                     >
                       <option value="">Select an option</option>
@@ -213,35 +209,37 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`w-full rounded-lg border bg-base-300 px-3 py-2 text-base-content ${
-                        errors[key] ? "border-red-500" : "border-primary"
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
+                        errors[key] ? "border-error" : ""
                       }`}
                     />
                   }
                   {errors[key] && (
-                    <p className="mt-1 text-sm text-red-500">{errors[key]}</p>
+                    <p className="mt-1 text-sm text-error">{errors[key]}</p>
                   )}
-                </li>
+                </div>
               ))}
-            </ul>
-            <div className="mt-6 flex space-x-4">
+            </div>
+
+            <div className="modal-action">
               <button
-                onClick={handleSubmit}
-                className="btn float-right cursor-pointer p-3 btn-primary"
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
               >
-                Submit
+                {loading ? "Saving..." : "Save"}
               </button>
-              <button
-                onClick={handleCancel}
-                className="btn float-right cursor-pointer p-2 btn-outline btn-primary"
-              >
+              <button type="button" className="btn" onClick={handleCancel}>
                 Cancel
               </button>
             </div>
-          </div>
-        </>
-      }
-    </div>
+          </form>
+        }
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   );
 };
 

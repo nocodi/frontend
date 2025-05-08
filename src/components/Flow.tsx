@@ -307,7 +307,7 @@ export default function Flow({ botId }: { botId: number }) {
         </div>
       </div>
       {unattendedComponent && (
-        <div className="absolute z-50 h-screen w-screen content-center p-4 backdrop-blur-xs">
+        <div className="absolute z-50 flex h-screen w-screen items-center justify-center">
           <ComponentDetail
             node={unattendedComponent}
             setNode={setUnattendedComponent}
