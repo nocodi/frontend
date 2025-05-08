@@ -42,7 +42,7 @@ function Workflow() {
               </div>
             </div>
             <loadingContext.Provider value={setLoading}>
-              <DnDFlow botId={Number(botId)} />
+              <DnDFlow />
             </loadingContext.Provider>
           </div>
         </div>
