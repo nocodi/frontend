@@ -4,8 +4,8 @@ import { ContentType } from "../types/Component";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
 import { X } from "lucide-react";
-import { useContentTypes } from "../services/getQueries";
 import { useDnD } from "./DnDContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 function ContentTypesList({
   onClose,
@@ -30,7 +30,11 @@ function ContentTypesList({
   };
 
   const [query, setQuery] = useState("");
-  const { contentTypes } = useContentTypes();
+
+  const queryClient = useQueryClient();
+  const contentTypes: ContentType[] | undefined = queryClient.getQueryData([
+    "contentTypes",
+  ]);
 
   const filtered = contentTypes?.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase()),
