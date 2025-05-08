@@ -1,23 +1,26 @@
-import { Handle, Position, NodeProps, useReactFlow } from "reactflow";
+import { Ellipsis, Trash } from "lucide-react";
+import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
+
 import { ComponentType } from "../types/Component";
 import api from "../services/api";
+import { getPathOfContent } from "../utils/freqFuncs";
+import { toast } from "react-toastify";
+import { useContentTypes } from "../services/getQueries";
 import { useLoading } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
-import { useContentTypes } from "./ContentTypesContext";
-import { toast } from "react-toastify";
-import { Trash, Ellipsis } from "lucide-react";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
-  const { contentTypes, getPathOfContent } = useContentTypes();
-
+  const { contentTypes } = useContentTypes();
   function deleteComponent() {
     setLoading(true);
     if (contentTypes) {
       api
-        .delete(`${getPathOfContent(data.component_content_type)}${id}/`)
+        .delete(
+          `${getPathOfContent(data.component_content_type, contentTypes)}${id}/`,
+        )
         .then(() => {
           flowInstance.deleteElements({ nodes: [{ id: id }] });
         })

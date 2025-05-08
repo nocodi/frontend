@@ -1,10 +1,11 @@
 import { ComponentType, SchemaType } from "../types/Component";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import Loading from "./Loading";
+import { X } from "lucide-react";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
-import { useContentTypes } from "./ContentTypesContext";
+import { useContentTypes } from "../services/getQueries";
 
 const ComponentDetail = ({
   node,

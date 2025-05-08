@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useDnD } from "./DnDContext";
+
 import { ContentType } from "../types/Component";
 import SearchBar from "./searchBar";
 import Tooltip from "./Tooltip";
-import { useContentTypes } from "./ContentTypesContext";
 import { X } from "lucide-react";
+import { useContentTypes } from "../services/getQueries";
+import { useDnD } from "./DnDContext";
 
 function ContentTypesList({
   onClose,
