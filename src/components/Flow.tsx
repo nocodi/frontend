@@ -25,7 +25,7 @@ import ContentTypesList from "./ContentTypesList";
 import ComponentDetail from "./ComponentDetail";
 import { toast } from "react-toastify";
 import { getPathOfContent } from "../utils/freqFuncs";
-import { useContentTypes } from "../services/getQueries";
+import { useBotSchema, useContentTypes } from "../services/getQueries";
 
 const nodeTypes = { customNode: Component };
 const edgeTypes = { customEdge: CustomEdge };
@@ -47,7 +47,8 @@ export default function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const setLoading = useLoading();
-  const { contentTypes, isLoading } = useContentTypes();
+  const { isFetchingData } = useBotSchema(setNodes, setEdges);
+  const { contentTypes, isFetchingContents } = useContentTypes();
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
@@ -207,47 +208,8 @@ export default function Flow() {
   };
 
   useEffect(() => {
-    setLoading(isLoading);
-
-    // api
-    //   .get(`/component/${botId}/schema/`)
-    //   .then((res) => {
-    //     setNodes([]);
-    //     setEdges([]);
-    //     const components: ComponentType[] = res.data;
-    //     if (res.data.length > 0) {
-    //       components.forEach((element: ComponentType) => {
-    //         setNodes((nds) =>
-    //           nds.concat({
-    //             id: element.id.toString(),
-    //             position: flowInstance.screenToFlowPosition({
-    //               x: element.position_x,
-    //               y: element.position_y,
-    //             }),
-    //             type: "customNode",
-    //             selected: false,
-    //             data: { ...element },
-    //           }),
-    //         );
-
-    //         if (element.previous_component) {
-    //           const previous_component: number = element.previous_component;
-    //           setEdges((edg) =>
-    //             edg.concat({
-    //               id: `e${previous_component}-${element.id}`,
-    //               source: previous_component.toString(),
-    //               target: element.id.toString(),
-    //               type: "customEdge",
-    //             }),
-    //           );
-    //         }
-    //       });
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     toast(err.message);
-    //   })
-  }, [isLoading]);
+    setLoading(isFetchingContents || isFetchingData);
+  }, [isFetchingContents, isFetchingData]);
 
   return (
     <>
