@@ -73,13 +73,8 @@ export default function Flow({ botId }: { botId: number }) {
                 };
                 const exists = edges.some((edge) => edge.id === newEdge.id);
                 if (!exists) {
-                  setEdges((edges) =>
-                    edges.filter((edge) => {
-                      const targetId = edge.id.split("-")[1];
-                      return targetId !== connection.target;
-                    }),
-                  );
-
+                  const edgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
+                  flowInstance.deleteElements({ edges: [{ id: edgeId }] });
                   setEdges((eds) => eds.concat(newEdge));
                 }
               }
