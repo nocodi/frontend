@@ -240,14 +240,6 @@ const ComponentDetail = ({
                     >
                       Open Code Editor
                     </button>
-                  : value.verbose_name === "code" ?
-                    <button
-                      type="button"
-                      onClick={() => setIsCodeEditorOpen(true)}
-                      className="btn w-full btn-outline btn-secondary sm:col-span-2"
-                    >
-                      Open Code Editor
-                    </button>
                   : <input
                       id={key}
                       type="text"
