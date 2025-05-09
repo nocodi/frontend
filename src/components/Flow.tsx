@@ -120,12 +120,12 @@ export default function Flow({ botId }: { botId: number }) {
             position_x,
             position_y,
           } = res.data;
-          const compo: number = component_content_type.id;
+
           const componentData: ComponentType = {
             id,
             previous_component,
             component_name,
-            component_content_type: compo,
+            component_content_type,
             component_type,
             position_x,
             position_y,
