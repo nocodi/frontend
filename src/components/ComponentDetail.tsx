@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 import Loading from "./Loading";
 import api from "../services/api";
-import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 
 const ComponentDetail = ({
@@ -14,7 +13,9 @@ const ComponentDetail = ({
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
 }) => {
-  const [formValues, setFormValues] = useState<formValuesType>({});
+  const [formValues, setFormValues] = useState<{
+    [key: string]: string | boolean | null | File;
+  }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const { contentTypes } = useContentTypes();
@@ -26,11 +27,6 @@ const ComponentDetail = ({
   );
   const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
   const { details, isFetching } = useComponentDetails(pathOfComponent, node.id);
-
-  const handleChange = (key: string, value: string) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: "" }));
-  };
 
   const validateField = (
     value: string,
@@ -56,12 +52,31 @@ const ComponentDetail = ({
     return "";
   };
 
+  const handleChange = (key: string, value: File | string | null) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
+
   const handleBlur = (key: string, schemanode: SchemaType) => {
+    const rawValue = formValues[key];
+    let stringValue = "";
+
+    if (typeof rawValue === "string") {
+      stringValue = rawValue;
+    } else if (rawValue instanceof File) {
+      stringValue = rawValue.name;
+    } else if (typeof rawValue === "number" || typeof rawValue === "boolean") {
+      stringValue = rawValue.toString();
+    } else if (rawValue != null) {
+      stringValue = JSON.stringify(rawValue);
+    }
+
     const error = validateField(
-      formValues[key]?.toString() || "",
+      stringValue,
       schemanode.type,
       schemanode.required,
     );
+
     if (error) {
       setErrors((prev) => ({ ...prev, [key]: error }));
     }
@@ -70,13 +85,22 @@ const ComponentDetail = ({
   const handleSubmit = () => {
     const newErrors: { [key: string]: string } = {};
     Object.entries(schemaOfComponent).forEach(([key, value]) => {
-      const error = validateField(
-        formValues[key]?.toString() || "",
-        value.type,
-        value.required,
-      );
+      const rawValue = formValues[key];
+      let stringValue = "";
+
+      if (typeof rawValue === "string") {
+        stringValue = rawValue;
+      } else if (rawValue instanceof File) {
+        stringValue = rawValue.name; // Or use "" if you want to skip validating file names
+      } else if (rawValue != null) {
+        stringValue = JSON.stringify(rawValue);
+      }
+
+      const error = validateField(stringValue, value.type, value.required);
+
       if (error) newErrors[key] = error;
     });
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -99,8 +123,14 @@ const ComponentDetail = ({
           val instanceof File
         ) {
           formData.append(key, val);
-        } else {
+        } else if (
+          typeof val === "string" ||
+          typeof val === "number" ||
+          typeof val === "boolean"
+        ) {
           formData.append(key, val.toString());
+        } else {
+          formData.append(key, JSON.stringify(val)); // fallback for objects/arrays
         }
       }
     });
@@ -167,7 +197,7 @@ const ComponentDetail = ({
                   {value.type === "BooleanField" ?
                     <select
                       id={key}
-                      value={formValues[key]?.toString() || ""}
+                      value={(formValues[key] as string) || ""}
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
@@ -180,23 +210,36 @@ const ComponentDetail = ({
                       <option value="false">False</option>
                     </select>
                   : value.type === "FileField" ?
-                    <input
-                      id={key}
-                      type="file"
-                      onChange={(e) =>
-                        handleChange(key, e.target.files?.[0] || null)
-                      }
-                      onBlur={() => handleBlur(key, value)}
-                      required={value.required}
-                      className={`file-input-bordered file-input w-full file-input-primary text-base-content placeholder:text-base-content/50 sm:col-span-2 ${
-                        errors[key] ? "border-error" : ""
-                      }`}
-                    />
+                    <div className="flex flex-col gap-2 sm:col-span-2">
+                      {typeof formValues[key] === "string" &&
+                        formValues[key].length > 0 && (
+                          <a
+                            href={formValues[key]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="link text-sm link-primary"
+                          >
+                            View uploaded file
+                          </a>
+                        )}
+                      <input
+                        id={key}
+                        type="file"
+                        onChange={(e) =>
+                          handleChange(key, e.target.files?.[0] || null)
+                        }
+                        onBlur={() => handleBlur(key, value)}
+                        required={value.required}
+                        className={`file-input-bordered file-input w-full file-input-primary text-base-content file:ml-auto placeholder:text-base-content/50 ${
+                          errors[key] ? "border-error" : ""
+                        }`}
+                      />
+                    </div>
                   : <input
                       id={key}
                       type="text"
                       placeholder={key}
-                      value={formValues[key]?.toString() || ""}
+                      value={(formValues[key] as string) || ""}
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
