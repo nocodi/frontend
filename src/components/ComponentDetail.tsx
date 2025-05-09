@@ -27,13 +27,10 @@ const ComponentDetail = ({
   const contentOfComponent = contentTypes!.find(
     (contentType) => contentType.id === node.component_content_type,
   );
+
+  console.log(contentOfComponent);
   const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
   const { details, isFetching } = useComponentDetails(pathOfComponent, node.id);
-
-  const handleChange = (key: string, value: string) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: "" }));
-  };
 
   const validateField = (
     value: string,
@@ -59,12 +56,31 @@ const ComponentDetail = ({
     return "";
   };
 
+  const handleChange = (key: string, value: File | string | null) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
+
   const handleBlur = (key: string, schemanode: SchemaType) => {
+    const rawValue = formValues[key];
+    let stringValue = "";
+
+    if (typeof rawValue === "string") {
+      stringValue = rawValue;
+    } else if (rawValue instanceof File) {
+      stringValue = rawValue.name;
+    } else if (typeof rawValue === "number" || typeof rawValue === "boolean") {
+      stringValue = rawValue.toString();
+    } else if (rawValue != null) {
+      stringValue = JSON.stringify(rawValue);
+    }
+
     const error = validateField(
-      formValues[key]?.toString() || "",
+      stringValue,
       schemanode.type,
       schemanode.required,
     );
+
     if (error) {
       setErrors((prev) => ({ ...prev, [key]: error }));
     }
@@ -73,13 +89,22 @@ const ComponentDetail = ({
   const handleSubmit = () => {
     const newErrors: { [key: string]: string } = {};
     Object.entries(schemaOfComponent).forEach(([key, value]) => {
-      const error = validateField(
-        formValues[key]?.toString() || "",
-        value.type,
-        value.required,
-      );
+      const rawValue = formValues[key];
+      let stringValue = "";
+
+      if (typeof rawValue === "string") {
+        stringValue = rawValue;
+      } else if (rawValue instanceof File) {
+        stringValue = rawValue.name; // Or use "" if you want to skip validating file names
+      } else if (rawValue != null) {
+        stringValue = JSON.stringify(rawValue);
+      }
+
+      const error = validateField(stringValue, value.type, value.required);
+
       if (error) newErrors[key] = error;
     });
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -94,12 +119,31 @@ const ComponentDetail = ({
       }
     });
 
+    const formData = new FormData();
+    Object.entries(processedValues).forEach(([key, val]) => {
+      if (val !== null && val !== undefined) {
+        if (
+          schemaOfComponent[key]?.type === "FileField" &&
+          val instanceof File
+        ) {
+          formData.append(key, val);
+        } else if (
+          typeof val === "string" ||
+          typeof val === "number" ||
+          typeof val === "boolean"
+        ) {
+          formData.append(key, val.toString());
+        } else {
+          formData.append(key, JSON.stringify(val)); // fallback for objects/arrays
+        }
+      }
+    });
+
     setLoading(true);
     api
-      .patch(`${pathOfComponent}${node.id}/`, processedValues)
+      .patch(`${pathOfComponent}${node.id}/`, formData)
       .then(() => {
         setNode(undefined);
-        // setIsOpen(false);
       })
       .catch((err) => {
         toast(err.message);
@@ -113,12 +157,9 @@ const ComponentDetail = ({
     setNode(undefined);
     setFormValues({});
     setErrors({});
-    // setIsOpen(false);
   };
 
   useEffect(() => {
-    setFormValues(details ?? {});
-
     setSchemaOfComponent(
       Object.fromEntries(
         Object.entries(details ?? {}).map(([key, _]) => [
@@ -127,9 +168,8 @@ const ComponentDetail = ({
         ]),
       ),
     );
+    setFormValues(details ?? {});
   }, [isFetching]);
-
-  // if (!isOpen) return null;
 
   return (
     <dialog className="modal-open modal">
@@ -138,7 +178,7 @@ const ComponentDetail = ({
           {contentOfComponent!.name}
         </h3>
 
-        {loading ?
+        {loading || isFetching ?
           <Loading size={30} />
         : <form
             onSubmit={(e) => {
@@ -150,13 +190,13 @@ const ComponentDetail = ({
               {Object.entries(schemaOfComponent).map(([key, value]) => (
                 <div key={key} className="sm:col-span-3">
                   <label className="label mt-4 mb-2 text-base-content sm:mt-0">
-                    {key}
-                    {value.required && <span className="text-error">*</span>}
+                    {value?.verbose_name}
+                    {value?.required && <span className="text-error">*</span>}
                   </label>
-                  {value.type === "BooleanField" ?
+                  {value?.type === "BooleanField" ?
                     <select
                       id={key}
-                      value={formValues[key]?.toString() || ""}
+                      value={(formValues[key] as string) || ""}
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
@@ -166,6 +206,40 @@ const ComponentDetail = ({
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
+                  : value?.type === "FileField" ?
+                    <div className="flex flex-col gap-2 sm:col-span-2">
+                      {typeof formValues[key] === "string" &&
+                        formValues[key].length > 0 && (
+                          <a
+                            href={formValues[key]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="link text-sm link-primary"
+                          >
+                            View uploaded file
+                          </a>
+                        )}
+                      <input
+                        id={key}
+                        type="file"
+                        onChange={(e) =>
+                          handleChange(key, e.target.files?.[0] || null)
+                        }
+                        onBlur={() => handleBlur(key, value)}
+                        required={value.required}
+                        className={`file-input-bordered file-input w-full file-input-primary text-base-content file:ml-auto placeholder:text-base-content/50 ${
+                          errors[key] ? "border-error" : ""
+                        }`}
+                      />
+                    </div>
+                  : value.verbose_name === "code" ?
+                    <button
+                      type="button"
+                      onClick={() => setIsCodeEditorOpen(true)}
+                      className="btn w-full btn-outline btn-secondary sm:col-span-2"
+                    >
+                      Open Code Editor
+                    </button>
                   : value.verbose_name === "code" ?
                     <button
                       type="button"
@@ -178,10 +252,10 @@ const ComponentDetail = ({
                       id={key}
                       type="text"
                       placeholder={key}
-                      value={formValues[key]?.toString() || ""}
+                      value={(formValues[key] as string) || ""}
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
-                      required={value.required}
+                      required={value?.required}
                       className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
                     />
                   }
