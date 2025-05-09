@@ -25,6 +25,8 @@ const ComponentDetail = ({
   const contentOfComponent = contentTypes!.find(
     (contentType) => contentType.id === node.component_content_type,
   );
+
+  console.log(contentOfComponent);
   const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
   const { details, isFetching } = useComponentDetails(pathOfComponent, node.id);
 
@@ -158,8 +160,6 @@ const ComponentDetail = ({
   };
 
   useEffect(() => {
-    setFormValues(details ?? {});
-
     setSchemaOfComponent(
       Object.fromEntries(
         Object.entries(details ?? {}).map(([key, _]) => [
@@ -168,6 +168,7 @@ const ComponentDetail = ({
         ]),
       ),
     );
+    setFormValues(details ?? {});
   }, [isFetching]);
 
   // if (!isOpen) return null;
@@ -192,9 +193,9 @@ const ComponentDetail = ({
                 <div key={key} className="sm:col-span-3">
                   <label className="label mt-4 mb-2 text-base-content sm:mt-0">
                     {key}
-                    {value.required && <span className="text-error">*</span>}
+                    {value?.required && <span className="text-error">*</span>}
                   </label>
-                  {value.type === "BooleanField" ?
+                  {value?.type === "BooleanField" ?
                     <select
                       id={key}
                       value={(formValues[key] as string) || ""}
@@ -209,7 +210,7 @@ const ComponentDetail = ({
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
-                  : value.type === "FileField" ?
+                  : value?.type === "FileField" ?
                     <div className="flex flex-col gap-2 sm:col-span-2">
                       {typeof formValues[key] === "string" &&
                         formValues[key].length > 0 && (
@@ -242,7 +243,7 @@ const ComponentDetail = ({
                       value={(formValues[key] as string) || ""}
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
-                      required={value.required}
+                      required={value?.required}
                       className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
                         errors[key] ? "border-error" : ""
                       }`}
