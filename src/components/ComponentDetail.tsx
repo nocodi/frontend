@@ -160,14 +160,20 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
-                        errors[key] ? "border-error" : ""
-                      }`}
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
                     >
                       <option value="">Select an option</option>
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
+                  : value.verbose_name === "code" ?
+                    <button
+                      type="button"
+                      onClick={() => setIsCodeEditorOpen(true)}
+                      className="btn w-full btn-outline btn-secondary sm:col-span-2"
+                    >
+                      Open Code Editor
+                    </button>
                   : <input
                       id={key}
                       type="text"
@@ -176,21 +182,11 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
-                        errors[key] ? "border-error" : ""
-                      }`}
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
                     />
                   }
                   {errors[key] && (
                     <p className="mt-1 text-sm text-error">{errors[key]}</p>
-                  )}
-                  {value.verbose_name === "code" && (
-                    <button
-                      onClick={() => setIsCodeEditorOpen(true)}
-                      className="btn mt-2 btn-outline btn-secondary"
-                    >
-                      Open Code Editor
-                    </button>
                   )}
                 </div>
               ))}
@@ -210,28 +206,26 @@ const ComponentDetail = ({
             </div>
           </form>
         }
-        {isCodeEditorOpen && (
-          <div className="modal-open modal">
-            <div className="modal-box max-w-4xl">
-              <CodeEditor
-                onSubmit={(updatedCode: string) => {
-                  const codeFieldKey = Object.keys(schemaOfComponent).find(
-                    (key) => schemaOfComponent[key].verbose_name === "code",
-                  );
-                  if (codeFieldKey) {
-                    setFormValues((prev) => ({
-                      ...prev,
-                      [codeFieldKey]: updatedCode,
-                    }));
-                  }
-                  setIsCodeEditorOpen(false);
-                }}
-                onDiscard={() => setIsCodeEditorOpen(false)}
-              />
-            </div>
-          </div>
-        )}
       </div>
+      {isCodeEditorOpen && (
+        <div className="modal-box max-w-4xl p-0">
+          <CodeEditor
+            onSubmit={(updatedCode: string) => {
+              const codeFieldKey = Object.keys(schemaOfComponent).find(
+                (key) => schemaOfComponent[key].verbose_name === "code",
+              );
+              if (codeFieldKey) {
+                setFormValues((prev) => ({
+                  ...prev,
+                  [codeFieldKey]: updatedCode,
+                }));
+              }
+              setIsCodeEditorOpen(false);
+            }}
+            onDiscard={() => setIsCodeEditorOpen(false)}
+          />
+        </div>
+      )}
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>

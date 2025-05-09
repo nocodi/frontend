@@ -32,7 +32,7 @@ function CodeEditor({ onSubmit, onDiscard }: CodeEditorProps) {
   return (
     <div className="w-full max-w-4xl">
       <div className="flex items-center justify-between bg-base-300 p-4">
-        <h1 className="text-lg font-bold">Code Editor</h1>
+        <h1 className="text-lg font-bold text-base-content">Code Editor</h1>
         <div className="flex gap-2">
           <button
             className="btn flex items-center gap-1 btn-sm btn-success"
