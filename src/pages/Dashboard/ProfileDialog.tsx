@@ -110,7 +110,9 @@ export default function ProfileDialog() {
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={loading}
+                disabled={
+                  loading || !pass || !passConfirm || pass !== passConfirm
+                }
               >
                 {loading ? "Changing..." : "Change Password"}
               </button>

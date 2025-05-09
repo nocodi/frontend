@@ -6,6 +6,7 @@ import Loading from "./Loading";
 import api from "../services/api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
+import CodeEditor from "./CodeEditor";
 
 const ComponentDetail = ({
   node,
@@ -17,6 +18,8 @@ const ComponentDetail = ({
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [isCodeEditorOpen, setIsCodeEditorOpen] = useState(false);
+
   const { contentTypes } = useContentTypes();
   const [schemaOfComponent, setSchemaOfComponent] = useState<
     Record<string, SchemaType>
@@ -197,9 +200,7 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
-                        errors[key] ? "border-error" : ""
-                      }`}
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
                     >
                       <option value="">Select an option</option>
                       <option value="true">True</option>
@@ -231,6 +232,14 @@ const ComponentDetail = ({
                         }`}
                       />
                     </div>
+                  : value?.verbose_name === "code" ?
+                    <button
+                      type="button"
+                      onClick={() => setIsCodeEditorOpen(true)}
+                      className="btn w-full btn-outline btn-secondary sm:col-span-2"
+                    >
+                      Open Code Editor
+                    </button>
                   : <input
                       id={key}
                       type="text"
@@ -239,12 +248,9 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value?.required}
-                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
-                        errors[key] ? "border-error" : ""
-                      }`}
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
                     />
                   }
-
                   {errors[key] && (
                     <p className="mt-1 text-sm text-error">{errors[key]}</p>
                   )}
@@ -267,6 +273,32 @@ const ComponentDetail = ({
           </form>
         }
       </div>
+      {isCodeEditorOpen && (
+        <div className="modal-box max-w-4xl p-0">
+          <CodeEditor
+            initialValue={(() => {
+              const codeFieldKey = Object.keys(schemaOfComponent).find(
+                (key) => schemaOfComponent[key].verbose_name === "code",
+              );
+              if (!codeFieldKey || !formValues[codeFieldKey]) return "";
+              return formValues[codeFieldKey] as string;
+            })()}
+            onSubmit={(updatedCode: string) => {
+              const codeFieldKey = Object.keys(schemaOfComponent).find(
+                (key) => schemaOfComponent[key].verbose_name === "code",
+              );
+              if (codeFieldKey) {
+                setFormValues((prev) => ({
+                  ...prev,
+                  [codeFieldKey]: updatedCode,
+                }));
+              }
+              setIsCodeEditorOpen(false);
+            }}
+            onDiscard={() => setIsCodeEditorOpen(false)}
+          />
+        </div>
+      )}
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>

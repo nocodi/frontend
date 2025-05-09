@@ -19,6 +19,7 @@
     "axios": "^1.8.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.487.0",
+    "monaco-editor": "^0.52.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
