@@ -15,7 +15,6 @@ import ReactFlow, {
   Node,
   NodeDragHandler,
   DefaultEdgeOptions,
-  getIncomers,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useLoading } from "../pages/Workflow";
