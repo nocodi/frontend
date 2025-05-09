@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import Loading from "./Loading";
 import api from "../services/api";
+import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 
 const ComponentDetail = ({
@@ -13,9 +14,7 @@ const ComponentDetail = ({
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
 }) => {
-  const [formValues, setFormValues] = useState<{
-    [key: string]: string | boolean | null | File;
-  }>({});
+  const [formValues, setFormValues] = useState<formValuesType>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const { contentTypes } = useContentTypes();
