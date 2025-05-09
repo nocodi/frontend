@@ -188,7 +188,7 @@ const ComponentDetail = ({
               {Object.entries(schemaOfComponent).map(([key, value]) => (
                 <div key={key} className="sm:col-span-3">
                   <label className="label mt-4 mb-2 text-base-content sm:mt-0">
-                    {key}
+                    {value?.verbose_name}
                     {value?.required && <span className="text-error">*</span>}
                   </label>
                   {value?.type === "BooleanField" ?
