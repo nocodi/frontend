@@ -17,7 +17,7 @@ const ComponentDetail = ({
   }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  // const [isOpen, setIsOpen] = useState(true);
 
   const { contentTypes } = useContentTypes();
 
@@ -98,7 +98,7 @@ const ComponentDetail = ({
       .patch(`${pathOfComponent}${node.id}/`, processedValues)
       .then(() => {
         setNode(undefined);
-        setIsOpen(false);
+        // setIsOpen(false);
       })
       .catch((err) => {
         toast(err.message);
@@ -112,7 +112,7 @@ const ComponentDetail = ({
     setNode(undefined);
     setFormValues({});
     setErrors({});
-    setIsOpen(false);
+    // setIsOpen(false);
   };
 
   useEffect(() => {
@@ -152,7 +152,7 @@ const ComponentDetail = ({
       });
   }, []);
 
-  if (!isOpen) return null;
+  // if (!isOpen) return null;
 
   return (
     <dialog className="modal-open modal">
