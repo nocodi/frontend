@@ -232,7 +232,7 @@ const ComponentDetail = ({
                         }`}
                       />
                     </div>
-                  : value.verbose_name === "code" ?
+                  : value?.verbose_name === "code" ?
                     <button
                       type="button"
                       onClick={() => setIsCodeEditorOpen(true)}
@@ -276,6 +276,13 @@ const ComponentDetail = ({
       {isCodeEditorOpen && (
         <div className="modal-box max-w-4xl p-0">
           <CodeEditor
+            initialValue={(() => {
+              const codeFieldKey = Object.keys(schemaOfComponent).find(
+                (key) => schemaOfComponent[key].verbose_name === "code",
+              );
+              if (!codeFieldKey || !formValues[codeFieldKey]) return "";
+              return formValues[codeFieldKey] as string;
+            })()}
             onSubmit={(updatedCode: string) => {
               const codeFieldKey = Object.keys(schemaOfComponent).find(
                 (key) => schemaOfComponent[key].verbose_name === "code",

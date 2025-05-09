@@ -3,21 +3,29 @@ import * as monaco from "monaco-editor";
 import { Check, X } from "lucide-react";
 
 type CodeEditorProps = {
+  initialValue: string;
   onSubmit: (code: string) => void;
   onDiscard: () => void;
 };
 
-function CodeEditor({ onSubmit, onDiscard }: CodeEditorProps) {
+function CodeEditor({
+  onSubmit,
+  onDiscard,
+  initialValue = "",
+}: CodeEditorProps) {
   const editorContainer = useRef<HTMLDivElement>(null);
   const editor = useRef<monaco.editor.IStandaloneCodeEditor>(undefined);
 
   const [code, setCode] = useState<string>("");
   useEffect(() => {
     if (!editorContainer.current) return;
+    if (editor.current) return;
     editor.current = monaco.editor.create(editorContainer.current, {
       language: "python",
       automaticLayout: true,
     });
+
+    editor.current.setValue(initialValue);
 
     editor.current.onDidChangeModelContent(() => {
       setCode(editor.current?.getValue() ?? "");
@@ -27,7 +35,7 @@ function CodeEditor({ onSubmit, onDiscard }: CodeEditorProps) {
       editor.current?.dispose();
       editor.current = undefined;
     };
-  }, []);
+  }, [initialValue]);
 
   return (
     <div className="w-full max-w-4xl">
