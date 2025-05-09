@@ -180,7 +180,7 @@ const ComponentDetail = ({
           {contentOfComponent!.name}
         </h3>
 
-        {loading ?
+        {loading || isFetching ?
           <Loading size={30} />
         : <form
             onSubmit={(e) => {
