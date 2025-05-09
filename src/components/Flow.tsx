@@ -75,8 +75,8 @@ export default function Flow({ botId }: { botId: number }) {
                 if (!exists) {
                   setEdges((edges) =>
                     edges.filter((edge) => {
-                      const parts = edge.id.split("-");
-                      return parts[parts.length - 1] !== connection.target;
+                      const targetId = edge.id.split("-")[1];
+                      return targetId !== connection.target;
                     }),
                   );
 
