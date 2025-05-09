@@ -9,17 +9,7 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useBots } from "../../services/getQueries";
 
-export type BotData = {
-  id: string;
-  name: string;
-  description: string;
-  created_at: string;
-  user: string;
-  token: string;
-};
-
 const Dashboard = () => {
-  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
 
   const { bots, isFetching, refetch } = useBots();
@@ -35,10 +25,6 @@ const Dashboard = () => {
       toast(err.message);
     });
   };
-
-  useEffect(() => {
-    setLoading(isFetching);
-  }, [isFetching]);
 
   const filtered =
     query == "" ? bots : (
@@ -57,7 +43,7 @@ const Dashboard = () => {
           <NewBotDialog onCreate={handleCreateBot} />
           <ProfileDialog />
         </div>
-        {loading ?
+        {isFetching ?
           <LoaderCircle className="m-auto size-10 animate-spin" />
         : bots ?
           bots.length ?

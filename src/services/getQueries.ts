@@ -1,13 +1,13 @@
 import { ComponentType, ContentType } from "../types/Component";
 import { Edge, Node, useReactFlow } from "reactflow";
 
-import { BotData } from "../pages/Dashboard";
+import { BotData } from "../types/BotData";
 import React from "react";
 import { WorkflowParams } from "../pages/Workflow";
 import api from "./api";
-import { formValuesType } from "../components/ComponentDetail";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { formValuesType } from "../types/ComponentDetailForm";
 
 export const useContentTypes = () => {
   const { botId } = useParams<WorkflowParams>();
@@ -63,9 +63,6 @@ export const useBotSchema = (
     queryKey: ["botSchema"],
     queryFn: () =>
       api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
-        setNodes([]);
-        setEdges([]);
-
         const components: ComponentType[] = res.data;
         if (res.data.length > 0) {
           components.forEach((element: ComponentType) => {

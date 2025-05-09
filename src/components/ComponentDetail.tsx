@@ -6,10 +6,7 @@ import api from "../services/api";
 import { toast } from "react-toastify";
 import { useComponentDetails } from "../services/getQueries";
 import { useQueryClient } from "@tanstack/react-query";
-
-export type formValuesType = {
-  [key: string]: string | boolean;
-};
+import { formValuesType } from "../types/ComponentDetailForm";
 
 const ComponentDetail = ({
   node,
@@ -20,7 +17,7 @@ const ComponentDetail = ({
 }) => {
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
   const contentTypes: ContentType[] | undefined = queryClient.getQueryData([
     "contentTypes",
@@ -124,8 +121,6 @@ const ComponentDetail = ({
   };
 
   useEffect(() => {
-    setLoading(isFetching);
-
     setFormValues(details ?? {});
 
     setSchemaOfComponent(
@@ -140,7 +135,7 @@ const ComponentDetail = ({
 
   return (
     <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
-      {loading ?
+      {loading || isFetching ?
         <Loading size={30} />
       : <>
           {/* <h1 className="text-2xl font-bold text-base-content">
