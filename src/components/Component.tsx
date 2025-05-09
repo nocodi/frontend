@@ -57,18 +57,19 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               height: 7,
             }}
           ></Handle>
-
-          <Handle
-            type="target"
-            position={Position.Left}
-            isConnectable={isConnectable}
-            isConnectableStart={false}
-            style={{
-              width: 1,
-              height: 8,
-              borderRadius: 1,
-            }}
-          />
+          {data.component_type != "TRIGGER" && (
+            <Handle
+              type="target"
+              position={Position.Left}
+              isConnectable={isConnectable}
+              isConnectableStart={false}
+              style={{
+                width: 1,
+                height: 8,
+                borderRadius: 1,
+              }}
+            />
+          )}
         </div>
         <div className="flex h-full items-center justify-center px-2">
           <span className="text-[10px] font-medium">{data.component_name}</span>
