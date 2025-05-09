@@ -5,11 +5,11 @@ import { BotData } from "../types/BotData";
 import React from "react";
 import { WorkflowParams } from "../pages/Workflow";
 import api from "./api";
+import { formValuesType } from "../types/ComponentDetailForm";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { formValuesType } from "../types/ComponentDetailForm";
 
-export const useContentTypes = () => {
+export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
 
   const { data: contentTypes, isFetching: isFetchingContents } = useQuery<
@@ -20,6 +20,7 @@ export const useContentTypes = () => {
       api
         .get<ContentType[]>(`/component/${botId}/content-type/`)
         .then((res) => res.data),
+    staleTime: fetchTime,
   });
 
   return { contentTypes, isFetchingContents };

@@ -1,21 +1,19 @@
 import { Ellipsis, Trash } from "lucide-react";
 import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
-import { ComponentType, ContentType } from "../types/Component";
+
+import { ComponentType } from "../types/Component";
 import api from "../services/api";
 import { getPathOfContent } from "../utils/freqFuncs";
 import { toast } from "react-toastify";
+import { useContentTypes } from "../services/getQueries";
 import { useLoading } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
-import { useQueryClient } from "@tanstack/react-query";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
-  const queryClient = useQueryClient();
-  const contentTypes: ContentType[] | undefined = queryClient.getQueryData([
-    "contentTypes",
-  ]);
+  const { contentTypes } = useContentTypes();
   function deleteComponent() {
     setLoading(true);
     if (contentTypes) {

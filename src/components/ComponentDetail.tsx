@@ -1,12 +1,11 @@
-import { ComponentType, ContentType, SchemaType } from "../types/Component";
+import { ComponentType, SchemaType } from "../types/Component";
+import { useComponentDetails, useContentTypes } from "../services/getQueries";
 import { useEffect, useState } from "react";
 
 import Loading from "./Loading";
 import api from "../services/api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
-import { useComponentDetails } from "../services/getQueries";
-import { useQueryClient } from "@tanstack/react-query";
 
 const ComponentDetail = ({
   node,
@@ -18,10 +17,7 @@ const ComponentDetail = ({
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const queryClient = useQueryClient();
-  const contentTypes: ContentType[] | undefined = queryClient.getQueryData([
-    "contentTypes",
-  ]);
+  const { contentTypes } = useContentTypes();
   const [schemaOfComponent, setSchemaOfComponent] = useState<
     Record<string, SchemaType>
   >({});

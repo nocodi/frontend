@@ -1,31 +1,33 @@
-import { useCallback, useRef, useState, useEffect } from "react";
-import { Plus } from "lucide-react";
-import Component from "./Component";
-import CustomEdge from "./EdgeComponent";
-import { ContentType, ComponentType } from "../types/Component";
+import "reactflow/dist/style.css";
+
+import { ComponentType, ContentType } from "../types/Component";
 import ReactFlow, {
-  useReactFlow,
-  Edge,
-  Connection,
   Background,
+  Connection,
   Controls,
+  DefaultEdgeOptions,
+  Edge,
   MiniMap,
-  useEdgesState,
-  useNodesState,
   Node,
   NodeDragHandler,
-  DefaultEdgeOptions,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
 } from "reactflow";
-import "reactflow/dist/style.css";
-import { useLoading } from "../pages/Workflow";
-import { useDnD } from "../components/DnDContext";
-import { useUnattended } from "./UnattendedComponentContext";
-import api from "../services/api";
-import ContentTypesList from "./ContentTypesList";
-import ComponentDetail from "./ComponentDetail";
-import { toast } from "react-toastify";
-import { getPathOfContent } from "../utils/freqFuncs";
 import { useBotSchema, useContentTypes } from "../services/getQueries";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import Component from "./Component";
+import ComponentDetail from "./ComponentDetail";
+import ContentTypesList from "./ContentTypesList";
+import CustomEdge from "./EdgeComponent";
+import { Plus } from "lucide-react";
+import api from "../services/api";
+import { getPathOfContent } from "../utils/freqFuncs";
+import { toast } from "react-toastify";
+import { useDnD } from "../components/DnDContext";
+import { useLoading } from "../pages/Workflow";
+import { useUnattended } from "./UnattendedComponentContext";
 
 const nodeTypes = { customNode: Component };
 const edgeTypes = { customEdge: CustomEdge };
@@ -48,7 +50,7 @@ export default function Flow() {
 
   const setLoading = useLoading();
   const { isFetchingData } = useBotSchema(setNodes, setEdges);
-  const { contentTypes, isFetchingContents } = useContentTypes();
+  const { contentTypes, isFetchingContents } = useContentTypes(0);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
