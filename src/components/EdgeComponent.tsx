@@ -5,11 +5,13 @@ import {
   getBezierPath,
   useReactFlow,
 } from "reactflow";
-import { useLoading } from "../pages/Workflow";
-import api from "../services/api";
-import { toast } from "react-toastify";
-import { useContentTypes } from "./ContentTypesContext";
+
 import { Trash2 } from "lucide-react";
+import api from "../services/api";
+import { getPathOfContent } from "../utils/freqFuncs";
+import { toast } from "react-toastify";
+import { useContentTypes } from "../services/getQueries";
+import { useLoading } from "../pages/Workflow";
 
 export default function CustomEdge({
   id,
@@ -33,7 +35,7 @@ export default function CustomEdge({
   });
 
   const setLoading = useLoading();
-  const { contentTypes, getPathOfContent } = useContentTypes();
+  const { contentTypes } = useContentTypes();
   const targetId: string = id.split("-")[1];
 
   function deleteEdge() {
@@ -42,7 +44,7 @@ export default function CustomEdge({
     if (contentTypes && targetNode) {
       api
         .patch(
-          `${getPathOfContent(targetNode.data.component_content_type)}${targetId}/`,
+          `${getPathOfContent(targetNode.data.component_content_type, contentTypes)}${targetId}/`,
           {
             previous_component: null,
           },

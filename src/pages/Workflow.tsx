@@ -1,9 +1,11 @@
-import { useParams, Link } from "react-router-dom";
-import DnDFlow from "../components/DndFlow";
-import { createContext, useContext, useState } from "react";
-import CodeGeneration from "../components/CodeGeneration";
-import Loading from "../components/Loading";
 import { Check, Undo2 } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { createContext, useContext, useState } from "react";
+
+import CodeGeneration from "../components/CodeGeneration";
+import DnDFlow from "../components/DndFlow";
+import Loading from "../components/Loading";
+import { useIsFetching } from "@tanstack/react-query";
 
 type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -20,6 +22,7 @@ export type WorkflowParams = {
 function Workflow() {
   const { botId } = useParams<WorkflowParams>();
   const [loading, setLoading] = useState(false);
+  const isFetching = useIsFetching();
   return (
     <>
       {!botId || isNaN(Number(botId)) ?
@@ -35,14 +38,14 @@ function Workflow() {
                   <div className="my-auto">
                     <CodeGeneration botId={Number(botId)} />
                   </div>
-                  {loading ?
+                  {loading || isFetching ?
                     <Loading size={30} />
                   : <Check size={30} className="my-auto" />}
                 </div>
               </div>
             </div>
             <loadingContext.Provider value={setLoading}>
-              <DnDFlow botId={Number(botId)} />
+              <DnDFlow />
             </loadingContext.Provider>
           </div>
         </div>
