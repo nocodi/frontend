@@ -91,9 +91,23 @@ const ComponentDetail = ({
       }
     });
 
+    const formData = new FormData();
+    Object.entries(processedValues).forEach(([key, val]) => {
+      if (val !== null && val !== undefined) {
+        if (
+          schemaOfComponent[key]?.type === "FileField" &&
+          val instanceof File
+        ) {
+          formData.append(key, val);
+        } else {
+          formData.append(key, val.toString());
+        }
+      }
+    });
+
     setLoading(true);
     api
-      .patch(`${pathOfComponent}${node.id}/`, processedValues)
+      .patch(`${pathOfComponent}${node.id}/`, formData)
       .then(() => {
         setNode(undefined);
         // setIsOpen(false);
@@ -165,6 +179,19 @@ const ComponentDetail = ({
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
+                  : value.type === "FileField" ?
+                    <input
+                      id={key}
+                      type="file"
+                      onChange={(e) =>
+                        handleChange(key, e.target.files?.[0] || null)
+                      }
+                      onBlur={() => handleBlur(key, value)}
+                      required={value.required}
+                      className={`file-input-bordered file-input w-full file-input-primary text-base-content placeholder:text-base-content/50 sm:col-span-2 ${
+                        errors[key] ? "border-error" : ""
+                      }`}
+                    />
                   : <input
                       id={key}
                       type="text"
@@ -178,6 +205,7 @@ const ComponentDetail = ({
                       }`}
                     />
                   }
+
                   {errors[key] && (
                     <p className="mt-1 text-sm text-error">{errors[key]}</p>
                   )}
