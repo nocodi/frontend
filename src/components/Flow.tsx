@@ -15,6 +15,7 @@ import ReactFlow, {
   Node,
   NodeDragHandler,
   DefaultEdgeOptions,
+  getIncomers,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useLoading } from "../pages/Workflow";
@@ -73,12 +74,15 @@ export default function Flow({ botId }: { botId: number }) {
                 };
                 const exists = edges.some((edge) => edge.id === newEdge.id);
                 if (!exists) {
-                  setEdges((edges) =>
-                    edges.filter((edge) => {
-                      const targetId = edge.id.split("-")[1];
-                      return targetId !== connection.target;
-                    }),
-                  );
+                  const incomers = getIncomers(targetNode, nodes, edges);
+                  if (incomers.length > 0) {
+                    const prevEdge: string = `e${
+                      incomers[0].id
+                    }-${connection.target}`;
+                    flowInstance.deleteElements({
+                      edges: [{ id: prevEdge }],
+                    });
+                  }
 
                   setEdges((eds) => eds.concat(newEdge));
                 }
