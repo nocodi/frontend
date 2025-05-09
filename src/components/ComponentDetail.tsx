@@ -1,12 +1,12 @@
 import { ComponentType, ContentType, SchemaType } from "../types/Component";
 import { useEffect, useState } from "react";
+
 import Loading from "./Loading";
-import { X } from "lucide-react";
 import api from "../services/api";
+import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import { useComponentDetails } from "../services/getQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import { formValuesType } from "../types/ComponentDetailForm";
 
 const ComponentDetail = ({
   node,
@@ -72,52 +72,49 @@ const ComponentDetail = ({
   };
 
   const handleSubmit = () => {
-    if (schemaOfComponent) {
-      const newErrors: { [key: string]: string } = {};
-      Object.entries(schemaOfComponent).forEach(([key, value]) => {
-        const error = validateField(
-          formValues[key]?.toString() || "",
-          value.type,
-          value.required,
-        );
-        if (error) newErrors[key] = error;
-      });
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        return;
-      }
-      const processedValues = { ...formValues };
-
-      Object.entries(schemaOfComponent).forEach(([key, value]) => {
-        if (value.type === "BooleanField") {
-          if (processedValues[key]) {
-            if (processedValues[key] === "true") processedValues[key] = true;
-            else if (processedValues[key] === "false")
-              processedValues[key] = false;
-          } else {
-            delete processedValues[key];
-          }
-        }
-      });
-      setLoading(true);
-
-      api
-        .patch(`${pathOfComponent}${node.id}/`, processedValues)
-        .then(() => {
-          setNode(undefined);
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    const newErrors: { [key: string]: string } = {};
+    Object.entries(schemaOfComponent).forEach(([key, value]) => {
+      const error = validateField(
+        formValues[key]?.toString() || "",
+        value.type,
+        value.required,
+      );
+      if (error) newErrors[key] = error;
+    });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
+
+    const processedValues = { ...formValues };
+    Object.entries(schemaOfComponent).forEach(([key, value]) => {
+      if (value.type === "BooleanField") {
+        if (processedValues[key] === "true") processedValues[key] = true;
+        else if (processedValues[key] === "false") processedValues[key] = false;
+        else delete processedValues[key];
+      }
+    });
+
+    setLoading(true);
+    api
+      .patch(`${pathOfComponent}${node.id}/`, processedValues)
+      .then(() => {
+        setNode(undefined);
+        // setIsOpen(false);
+      })
+      .catch((err) => {
+        toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
   const handleCancel = () => {
     setNode(undefined);
     setFormValues({});
     setErrors({});
+    // setIsOpen(false);
   };
 
   useEffect(() => {
@@ -133,39 +130,29 @@ const ComponentDetail = ({
     );
   }, [isFetching]);
 
+  // if (!isOpen) return null;
+
   return (
-    <div className="m-auto max-h-[calc(100vh-2rem)] max-w-3xl space-y-4 overflow-y-auto rounded-2xl bg-base-100 p-6 text-base-300 shadow">
-      {loading || isFetching ?
-        <Loading size={30} />
-      : <>
-          {/* <h1 className="text-2xl font-bold text-base-content">
-              {node.name}
-            </h1> */}
-          <button
-            onClick={handleCancel}
-            className="btn float-right cursor-pointer p-2 btn-outline btn-primary"
+    <dialog className="modal-open modal">
+      <div className="modal-box bg-base-100">
+        <h3 className="text-lg font-bold text-base-content">
+          {contentOfComponent!.name}
+        </h3>
+
+        {loading ?
+          <Loading size={30} />
+        : <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
           >
-            <X />
-          </button>
-          <h2 className="text-xl font-semibold text-base-content">
-            {contentOfComponent!.name}
-          </h2>
-          <p className="text-gray-400">{contentOfComponent!.description}</p>
-          <div>
-            <h3 className="mb-2 text-lg font-semibold text-base-content">
-              Schema
-            </h3>
-            <ul className="space-y-3">
+            <div className="mt-4 grid w-full grid-cols-1 sm:grid-cols-3 sm:gap-4">
               {Object.entries(schemaOfComponent).map(([key, value]) => (
-                <li key={key} className="text-primary">
-                  <label
-                    className="mb-1 block border-primary font-medium"
-                    htmlFor={key}
-                  >
-                    {key}{" "}
-                    {value.required ?
-                      <span className="text-red-500">*</span>
-                    : <></>}
+                <div key={key} className="sm:col-span-3">
+                  <label className="label mt-4 mb-2 text-base-content sm:mt-0">
+                    {key}
+                    {value.required && <span className="text-error">*</span>}
                   </label>
                   {value.type === "BooleanField" ?
                     <select
@@ -174,8 +161,8 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`w-full rounded-lg border bg-base-300 px-3 py-2 text-base-content ${
-                        errors[key] ? "border-red-500" : "border-primary"
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
+                        errors[key] ? "border-error" : ""
                       }`}
                     >
                       <option value="">Select an option</option>
@@ -190,35 +177,37 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`w-full rounded-lg border bg-base-300 px-3 py-2 text-base-content ${
-                        errors[key] ? "border-red-500" : "border-primary"
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${
+                        errors[key] ? "border-error" : ""
                       }`}
                     />
                   }
                   {errors[key] && (
-                    <p className="mt-1 text-sm text-red-500">{errors[key]}</p>
+                    <p className="mt-1 text-sm text-error">{errors[key]}</p>
                   )}
-                </li>
+                </div>
               ))}
-            </ul>
-            <div className="mt-6 flex space-x-4">
+            </div>
+
+            <div className="modal-action">
               <button
-                onClick={handleSubmit}
-                className="btn float-right cursor-pointer p-3 btn-primary"
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
               >
-                Submit
+                {loading ? "Saving..." : "Save"}
               </button>
-              <button
-                onClick={handleCancel}
-                className="btn float-right cursor-pointer p-2 btn-outline btn-primary"
-              >
+              <button type="button" className="btn" onClick={handleCancel}>
                 Cancel
               </button>
             </div>
-          </div>
-        </>
-      }
-    </div>
+          </form>
+        }
+      </div>
+      <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
+        <button>close</button>
+      </form>
+    </dialog>
   );
 };
 

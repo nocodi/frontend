@@ -75,6 +75,13 @@ export default function Flow() {
                 };
                 const exists = edges.some((edge) => edge.id === newEdge.id);
                 if (!exists) {
+                  setEdges((edges) =>
+                    edges.filter((edge) => {
+                      const targetId = edge.id.split("-")[1];
+                      return targetId !== connection.target;
+                    }),
+                  );
+
                   setEdges((eds) => eds.concat(newEdge));
                 }
               }
@@ -258,7 +265,7 @@ export default function Flow() {
         </div>
       </div>
       {unattendedComponent && (
-        <div className="absolute z-50 h-screen w-screen content-center p-4 backdrop-blur-xs">
+        <div className="absolute z-50 flex h-screen w-screen items-center justify-center">
           <ComponentDetail
             node={unattendedComponent}
             setNode={setUnattendedComponent}

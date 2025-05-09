@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import NewBotDialog from "./NewBotDialog";
@@ -8,6 +6,7 @@ import SearchBar from "../../components/searchBar";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useBots } from "../../services/getQueries";
+import { useState } from "react";
 
 const Dashboard = () => {
   const [query, setQuery] = useState("");
