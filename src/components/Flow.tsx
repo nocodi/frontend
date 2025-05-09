@@ -74,15 +74,13 @@ export default function Flow({ botId }: { botId: number }) {
                 };
                 const exists = edges.some((edge) => edge.id === newEdge.id);
                 if (!exists) {
-                  const incomers = getIncomers(targetNode, nodes, edges);
-                  if (incomers.length > 0) {
-                    const prevEdge: string = `e${
-                      incomers[0].id
-                    }-${connection.target}`;
-                    flowInstance.deleteElements({
-                      edges: [{ id: prevEdge }],
-                    });
-                  }
+                  flowInstance.deleteElements({
+                    edges: [
+                      {
+                        id: `e${targetNode.data.previous_component}-${newEdge.target}`,
+                      },
+                    ],
+                  });
 
                   setEdges((eds) => eds.concat(newEdge));
                 }
