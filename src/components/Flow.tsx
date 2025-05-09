@@ -15,7 +15,7 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import { useBotSchema, useContentTypes } from "../services/getQueries";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import Component from "./Component";
 import ComponentDetail from "./ComponentDetail";
@@ -49,8 +49,8 @@ export default function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const setLoading = useLoading();
-  const { isFetchingData } = useBotSchema(setNodes, setEdges);
-  const { contentTypes, isFetchingContents } = useContentTypes(0);
+  useBotSchema(setNodes, setEdges);
+  const { contentTypes } = useContentTypes(0);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
@@ -215,10 +215,6 @@ export default function Flow() {
         });
     }
   };
-
-  useEffect(() => {
-    setLoading(isFetchingContents || isFetchingData);
-  }, [isFetchingContents, isFetchingData]);
 
   return (
     <>

@@ -12,9 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
 
-  const { data: contentTypes, isFetching: isFetchingContents } = useQuery<
-    ContentType[]
-  >({
+  const { data: contentTypes } = useQuery<ContentType[]>({
     queryKey: ["contentTypes"],
     queryFn: () =>
       api
@@ -23,7 +21,7 @@ export const useContentTypes = (fetchTime: number = Infinity) => {
     staleTime: fetchTime,
   });
 
-  return { contentTypes, isFetchingContents };
+  return { contentTypes };
 };
 
 export const useComponentDetails = (pathOfComponent: string, id: number) => {
@@ -60,7 +58,7 @@ export const useBotSchema = (
   const { botId } = useParams<WorkflowParams>();
   const flowInstance = useReactFlow();
 
-  const { isFetching: isFetchingData } = useQuery({
+  useQuery({
     queryKey: ["botSchema"],
     queryFn: () =>
       api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
@@ -96,8 +94,6 @@ export const useBotSchema = (
         return true;
       }),
   });
-
-  return { isFetchingData };
 };
 
 export const useBots = () => {
