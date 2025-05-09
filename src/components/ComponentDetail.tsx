@@ -1,9 +1,11 @@
 import { ComponentType, SchemaType } from "../types/Component";
+import { useComponentDetails, useContentTypes } from "../services/getQueries";
+import { useEffect, useState } from "react";
+
 import Loading from "./Loading";
 import api from "../services/api";
+import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
-import { useContentTypes } from "./ContentTypesContext";
 
 const ComponentDetail = ({
   node,
@@ -12,15 +14,10 @@ const ComponentDetail = ({
   node: ComponentType;
   setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
 }) => {
-  const [formValues, setFormValues] = useState<{
-    [key: string]: string | boolean;
-  }>({});
+  const [formValues, setFormValues] = useState<formValuesType>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  // const [isOpen, setIsOpen] = useState(true);
-
   const { contentTypes } = useContentTypes();
-
   const [schemaOfComponent, setSchemaOfComponent] = useState<
     Record<string, SchemaType>
   >({});
@@ -28,6 +25,12 @@ const ComponentDetail = ({
     (contentType) => contentType.id === node.component_content_type,
   );
   const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
+  const { details, isFetching } = useComponentDetails(pathOfComponent, node.id);
+
+  const handleChange = (key: string, value: string) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
 
   const validateField = (
     value: string,
@@ -51,11 +54,6 @@ const ComponentDetail = ({
     }
 
     return "";
-  };
-
-  const handleChange = (key: string, value: string) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
   const handleBlur = (key: string, schemanode: SchemaType) => {
@@ -116,41 +114,17 @@ const ComponentDetail = ({
   };
 
   useEffect(() => {
-    setLoading(true);
-    api
-      .get(`${pathOfComponent}${node.id}`)
-      .then((res) => {
-        const {
-          id,
-          previous_component,
-          component_name,
-          component_type,
-          component_content_type,
-          position_x,
-          position_y,
-          bot,
-          object_id,
-          content_type,
-          ...rest
-        } = res.data;
+    setFormValues(details ?? {});
 
-        setFormValues(rest);
-        setSchemaOfComponent(
-          Object.fromEntries(
-            Object.entries(rest).map(([key, _]) => [
-              key,
-              contentOfComponent!.schema[key],
-            ]),
-          ),
-        );
-      })
-      .catch((err) => {
-        toast(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+    setSchemaOfComponent(
+      Object.fromEntries(
+        Object.entries(details ?? {}).map(([key, _]) => [
+          key,
+          contentOfComponent!.schema[key],
+        ]),
+      ),
+    );
+  }, [isFetching]);
 
   // if (!isOpen) return null;
 
