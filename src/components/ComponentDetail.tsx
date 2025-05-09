@@ -142,7 +142,6 @@ const ComponentDetail = ({
       .patch(`${pathOfComponent}${node.id}/`, formData)
       .then(() => {
         setNode(undefined);
-        // setIsOpen(false);
       })
       .catch((err) => {
         toast(err.message);
@@ -156,7 +155,6 @@ const ComponentDetail = ({
     setNode(undefined);
     setFormValues({});
     setErrors({});
-    // setIsOpen(false);
   };
 
   useEffect(() => {
@@ -170,8 +168,6 @@ const ComponentDetail = ({
     );
     setFormValues(details ?? {});
   }, [isFetching]);
-
-  // if (!isOpen) return null;
 
   return (
     <dialog className="modal-open modal">
