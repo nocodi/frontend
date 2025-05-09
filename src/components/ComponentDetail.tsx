@@ -1,9 +1,8 @@
 import { ComponentType, SchemaType } from "../types/Component";
-// import { X } from "lucide-react";
 import Loading from "./Loading";
 import api from "../services/api";
 import { toast } from "react-toastify";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useContentTypes } from "./ContentTypesContext";
 
 const ComponentDetail = ({
@@ -18,12 +17,7 @@ const ComponentDetail = ({
   }>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const modalRef = useRef<HTMLDialogElement>(null);
-
-  const handleChange = (key: string, value: string) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: "" }));
-  };
+  const [isOpen, setIsOpen] = useState(true);
 
   const { contentTypes } = useContentTypes();
 
@@ -59,6 +53,11 @@ const ComponentDetail = ({
     return "";
   };
 
+  const handleChange = (key: string, value: string) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
+
   const handleBlur = (key: string, schemanode: SchemaType) => {
     const error = validateField(
       formValues[key]?.toString() || "",
@@ -71,55 +70,49 @@ const ComponentDetail = ({
   };
 
   const handleSubmit = () => {
-    if (schemaOfComponent) {
-      const newErrors: { [key: string]: string } = {};
-      Object.entries(schemaOfComponent).forEach(([key, value]) => {
-        const error = validateField(
-          formValues[key]?.toString() || "",
-          value.type,
-          value.required,
-        );
-        if (error) newErrors[key] = error;
-      });
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        return;
-      }
-      const processedValues = { ...formValues };
-
-      Object.entries(schemaOfComponent).forEach(([key, value]) => {
-        if (value.type === "BooleanField") {
-          if (processedValues[key]) {
-            if (processedValues[key] === "true") processedValues[key] = true;
-            else if (processedValues[key] === "false")
-              processedValues[key] = false;
-          } else {
-            delete processedValues[key];
-          }
-        }
-      });
-      setLoading(true);
-
-      api
-        .patch(`${pathOfComponent}${node.id}/`, processedValues)
-        .then(() => {
-          setNode(undefined);
-          modalRef.current?.close();
-        })
-        .catch((err) => {
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    const newErrors: { [key: string]: string } = {};
+    Object.entries(schemaOfComponent).forEach(([key, value]) => {
+      const error = validateField(
+        formValues[key]?.toString() || "",
+        value.type,
+        value.required,
+      );
+      if (error) newErrors[key] = error;
+    });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
+
+    const processedValues = { ...formValues };
+    Object.entries(schemaOfComponent).forEach(([key, value]) => {
+      if (value.type === "BooleanField") {
+        if (processedValues[key] === "true") processedValues[key] = true;
+        else if (processedValues[key] === "false") processedValues[key] = false;
+        else delete processedValues[key];
+      }
+    });
+
+    setLoading(true);
+    api
+      .patch(`${pathOfComponent}${node.id}/`, processedValues)
+      .then(() => {
+        setNode(undefined);
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        toast(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleCancel = () => {
     setNode(undefined);
     setFormValues({});
     setErrors({});
-    modalRef.current?.close();
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -142,7 +135,6 @@ const ComponentDetail = ({
         } = res.data;
 
         setFormValues(rest);
-
         setSchemaOfComponent(
           Object.fromEntries(
             Object.entries(rest).map(([key, _]) => [
@@ -160,12 +152,10 @@ const ComponentDetail = ({
       });
   }, []);
 
-  useEffect(() => {
-    modalRef.current?.showModal();
-  }, []);
+  if (!isOpen) return null;
 
   return (
-    <dialog ref={modalRef} className="modal">
+    <dialog className="modal-open modal">
       <div className="modal-box bg-base-100">
         <h3 className="text-lg font-bold text-base-content">
           {contentOfComponent!.name}
@@ -236,7 +226,7 @@ const ComponentDetail = ({
           </form>
         }
       </div>
-      <form method="dialog" className="modal-backdrop">
+      <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>
     </dialog>
