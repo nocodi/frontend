@@ -1,5 +1,13 @@
 export type SchemaType = {
-  type: string;
+  type:
+    | "BooleanField"
+    | "CharField"
+    | "IntegerField"
+    | "FloatField"
+    | "FileField"
+    | "TextField"
+    | "ArrayField"
+    | "OneToOneField";
   required: boolean;
   help_text: string;
   max_length: number;
