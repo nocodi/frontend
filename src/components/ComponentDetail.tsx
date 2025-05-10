@@ -32,6 +32,10 @@ const validateField = (
 
   if (!value.toString().trim()) return "";
 
+  if (type === "FileField" && value === null) {
+    return "Please provide a file";
+  }
+
   if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
     return "Please select 'true' or 'false'.";
   }
@@ -192,10 +196,8 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                           handleChange(key, e.target.files?.[0] || null)
                         }
                         onBlur={() => handleBlur(key, value)}
-                        required={value.required}
-                        className={`file-input w-full file-input-primary text-base-content file:ml-auto placeholder:text-base-content/50 ${
-                          formErrors[key] ?? "border-error"
-                        }`}
+                        required={value.required && formValues[key] === null}
+                        className={`file-input w-full file-input-primary text-base-content file:ml-auto placeholder:text-base-content/50 ${formErrors[key] && "border-error"}`}
                       />
                     </div>
                   : <input

@@ -1,4 +1,4 @@
-import { Ellipsis, Trash } from "lucide-react";
+import { Cog, Trash2 } from "lucide-react";
 import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
 
 import { ComponentType } from "../types/Component";
@@ -39,17 +39,17 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
 
   return (
     <div className="group flex flex-col items-center gap-1">
-      <div className="invisible flex h-3 w-10 flex-row justify-end gap-0.5 text-base-content opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
-        <Trash
+      <div className="invisible flex h-3 flex-row justify-center gap-1 text-base-content opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
+        <Trash2
           onClick={() => deleteComponent()}
-          className="h-2.5 w-2.5 cursor-pointer hover:text-patina-400"
+          className="size-3 cursor-pointer hover:text-patina-400"
         />
-        <Ellipsis
+        <Cog
           onClick={() => editComponentDetails()}
-          className="h-3 w-3 cursor-pointer hover:text-patina-400"
+          className="size-3 cursor-pointer hover:text-patina-400"
         />
       </div>
-      <div className="relative h-9 w-24 cursor-pointer rounded-lg border-2 border-base-content bg-primary text-center text-primary-content shadow-lg">
+      <div className="relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
         <div>
           <Handle
             type="source"
@@ -74,9 +74,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             />
           )}
         </div>
-        <div className="flex h-full items-center justify-center px-2">
-          <span className="text-[10px] font-medium">{data.component_name}</span>
-        </div>
+        <span className="text-[10px] font-medium">{data.component_name}</span>
       </div>
     </div>
   );
