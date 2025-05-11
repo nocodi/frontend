@@ -127,10 +127,7 @@ export default function Flow() {
           previous_component: null,
         })
         .then((res) => {
-          const newNode: Node<ComponentType> = makeNode(
-            res.data as ComponentType,
-            position,
-          );
+          const newNode = makeNode(res.data as ComponentType, position);
           flowInstance.addNodes(newNode);
           setUnattendedComponent(newNode.data);
         })
@@ -148,10 +145,7 @@ export default function Flow() {
   const onDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-
-      if (!content) {
-        return;
-      }
+      if (!content) return;
 
       makeNewComponent(content, event.clientX, event.clientY);
     },
