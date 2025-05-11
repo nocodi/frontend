@@ -23,7 +23,7 @@ import ContentTypesList from "./ContentTypesList";
 import CustomEdge from "./EdgeComponent";
 import { Plus } from "lucide-react";
 import api from "../services/api";
-import { getPathOfContent } from "../utils/freqFuncs";
+import { getPathOfContent, makeNode } from "../utils/freqFuncs";
 import { toast } from "react-toastify";
 import { useDnD } from "../components/DnDContext";
 import { useLoading } from "../pages/Workflow";
@@ -58,37 +58,54 @@ export default function Flow() {
       if (connection.target && connection.source) {
         const targetNode: undefined | Node<ComponentType> =
           flowInstance.getNode(connection.target);
+
         const prevComponentId: number = parseInt(connection.source);
         if (targetNode && contentTypes) {
-          api
-            .patch(
-              `${getPathOfContent(targetNode.data.component_content_type, contentTypes)}${connection.target}/`,
-              {
-                previous_component: prevComponentId,
-              },
-            )
-            .then(() => {
-              if (connection.source && connection.target) {
-                const newEdge: Edge<DefaultEdgeOptions> = {
-                  id: `e${connection.source}-${connection.target}`,
-                  source: connection.source,
-                  target: connection.target,
-                  type: "customEdge",
-                };
-                const exists = edges.some((edge) => edge.id === newEdge.id);
-                if (!exists) {
+          const newEdgeId: string = `e${connection.source}-${connection.target}`;
+          const exists = flowInstance.getEdge(newEdgeId);
+          if (!exists) {
+            api
+              .patch(
+                `${getPathOfContent(targetNode.data.component_content_type, contentTypes)}${connection.target}/`,
+                {
+                  previous_component: prevComponentId,
+                },
+              )
+              .then(() => {
+                if (connection.source && connection.target) {
+                  const newEdge: Edge<DefaultEdgeOptions> = {
+                    id: newEdgeId,
+                    source: connection.source,
+                    target: connection.target,
+                    type: "customEdge",
+                  };
+
                   const edgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
+                  // update previous_component of targetNode
+                  flowInstance.deleteElements({
+                    nodes: [{ id: targetNode.id }],
+                  });
+                  flowInstance.addNodes({
+                    ...targetNode,
+                    data: {
+                      ...targetNode.data,
+                      previous_component: connection.source,
+                    },
+                  });
+                  // update new edge
                   flowInstance.deleteElements({ edges: [{ id: edgeId }] });
-                  setEdges((eds) => eds.concat(newEdge));
+                  flowInstance.addEdges(newEdge);
                 }
-              }
-            })
-            .catch((err) => {
-              toast(err.message);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
+              })
+              .catch((err) => {
+                toast(err.message);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+          } else {
+            setLoading(false);
+          }
         }
       }
     },
@@ -98,8 +115,8 @@ export default function Flow() {
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) => {
       const position = flowInstance.screenToFlowPosition({
-        x: x ?? window.innerWidth / 2,
-        y: y ?? window.innerHeight / 2,
+        x: x ?? window.innerWidth / 2 + Math.random() * 50 + 1,
+        y: y ?? window.innerHeight / 2 + Math.random() * 50 + 1,
       });
       api
         .post(`${content.path.split(".ir")[1]}`, {
@@ -110,32 +127,11 @@ export default function Flow() {
           previous_component: null,
         })
         .then((res) => {
-          const {
-            id,
-            previous_component,
-            component_name,
-            component_type,
-            component_content_type,
-            position_x,
-            position_y,
-          } = res.data;
-
-          const componentData: ComponentType = {
-            id,
-            previous_component,
-            component_name,
-            component_content_type,
-            component_type,
-            position_x,
-            position_y,
-          };
-          const newNode: Node<ComponentType> = {
-            id: `${componentData.id}`,
-            type: "customNode",
-            position: position,
-            selected: false,
-            data: componentData,
-          };
+          const newNode: Node<ComponentType> = makeNode(
+            res.data as ComponentType,
+            position,
+          );
+          //flowInstance.addNodes(newNode);
           setNodes((nds) => nds.concat(newNode));
           setUnattendedComponent(newNode.data);
         })
