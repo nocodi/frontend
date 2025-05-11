@@ -131,8 +131,7 @@ export default function Flow() {
             res.data as ComponentType,
             position,
           );
-          //flowInstance.addNodes(newNode);
-          setNodes((nds) => nds.concat(newNode));
+          flowInstance.addNodes(newNode);
           setUnattendedComponent(newNode.data);
         })
         .catch((err) => {
