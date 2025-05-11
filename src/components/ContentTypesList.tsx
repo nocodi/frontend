@@ -61,7 +61,7 @@ function ContentTypesList({
             <div
               key={`${key}`}
               onClick={() => clickedOnComponent(item)}
-              className="tansition-all group/component relative flex h-15 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
+              className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
               onDragStart={(event) => onDragStart(event, item)}
               draggable
             >
@@ -71,9 +71,9 @@ function ContentTypesList({
 
                 <Tooltip content={item.description}>
                   <div className="ml-4 text-xs">
-                    {item.description.length < 80 ?
+                    {item.description.length < 100 ?
                       item.description
-                    : item.description.slice(0, 80) + " ..."}
+                    : item.description.slice(0, 96) + "..."}
                   </div>
                 </Tooltip>
               </div>

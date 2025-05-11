@@ -17,9 +17,12 @@ function CodeEditor({
   const editor = useRef<monaco.editor.IStandaloneCodeEditor>(undefined);
 
   const [code, setCode] = useState<string>("");
+
   useEffect(() => {
     if (!editorContainer.current) return;
     if (editor.current) return;
+
+    // Create the editor instance
     editor.current = monaco.editor.create(editorContainer.current, {
       language: "python",
       automaticLayout: true,
@@ -36,6 +39,32 @@ function CodeEditor({
       editor.current = undefined;
     };
   }, [initialValue]);
+
+  useEffect(() => {
+    // Function to set the editor theme based on the color scheme
+    const setEditorTheme = (theme: string) => {
+      if (theme === "dark") {
+        monaco.editor.setTheme("vs-dark");
+      } else {
+        monaco.editor.setTheme("vs-light");
+      }
+    };
+
+    // Detect the initial color scheme
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setEditorTheme(mediaQuery.matches ? "dark" : "light");
+
+    // Listen for changes in the color scheme
+    const handleChange = (e: MediaQueryListEvent) => {
+      setEditorTheme(e.matches ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
 
   return (
     <div className="w-full max-w-4xl">

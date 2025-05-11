@@ -261,7 +261,7 @@ export default function Flow() {
         <div className="absolute z-50 flex h-screen w-screen items-center justify-center">
           <ComponentDetail
             node={unattendedComponent}
-            setNode={setUnattendedComponent}
+            onClose={() => setUnattendedComponent(undefined)}
           />
         </div>
       )}

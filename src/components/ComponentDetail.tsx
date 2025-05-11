@@ -8,142 +8,114 @@ import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
 
-const ComponentDetail = ({
-  node,
-  setNode,
-}: {
+const parseRewValue = (rawValue: formValuesType[string]) => {
+  if (typeof rawValue === "string") {
+    return rawValue;
+  } else if (rawValue instanceof File) {
+    return rawValue.name;
+  } else if (typeof rawValue === "number" || typeof rawValue === "boolean") {
+    return rawValue.toString();
+  } else if (rawValue != null) {
+    return JSON.stringify(rawValue);
+  }
+  return "";
+};
+
+const validateField = (
+  value: string,
+  type: SchemaType["type"],
+  required: boolean,
+): string => {
+  if (required && !value.toString().trim()) {
+    return "This field is required.";
+  }
+
+  if (!value.toString().trim()) return "";
+
+  if (type === "FileField" && value === null) {
+    return "Please provide a file";
+  }
+
+  if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
+    return "Please select 'true' or 'false'.";
+  }
+  if (type === "CharField" && !/^[\w\s/]+$/.test(value)) {
+    return "Only letters and numbers are allowed.";
+  }
+  if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
+    return "Please enter a valid integer.";
+  }
+  // TODO FloatField
+
+  return "";
+};
+
+type PropsType = {
   node: ComponentType;
-  setNode: React.Dispatch<React.SetStateAction<ComponentType | undefined>>;
-}) => {
-  const [formValues, setFormValues] = useState<formValuesType>({});
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  onClose: () => unknown;
+};
+
+const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [loading, setLoading] = useState(false);
-  const [isCodeEditorOpen, setIsCodeEditorOpen] = useState(false);
+  const [formValues, setFormValues] = useState<formValuesType>({});
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const { contentTypes } = useContentTypes();
-  const [schemaOfComponent, setSchemaOfComponent] = useState<
-    Record<string, SchemaType>
-  >({});
-  const contentOfComponent = contentTypes!.find(
-    (contentType) => contentType.id === node.component_content_type,
+  const contentType = contentTypes!.find(
+    (i) => i.id === node.component_content_type,
+  )!;
+
+  const componentPath = contentType.path.split(".ir")[1];
+  const { details, isFetching } = useComponentDetails(componentPath, node.id);
+
+  const componentSchema = Object.fromEntries(
+    Object.keys(details ?? {}).map((key) => [key, contentType.schema[key]]),
   );
-
-  console.log(contentOfComponent);
-  const pathOfComponent = contentOfComponent!.path.split(".ir")[1];
-  const { details, isFetching } = useComponentDetails(pathOfComponent, node.id);
-
-  const validateField = (
-    value: string,
-    type: string,
-    required: boolean,
-  ): string => {
-    if (required && !value.toString().trim()) {
-      return "This field is required.";
-    }
-
-    if (value.toString().trim()) {
-      if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
-        return "Please enter a valid integer.";
-      }
-      if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
-        return "Please enter 'true' or 'false'.";
-      }
-      if (type === "CharField" && !/^[\w\s/]+$/.test(value)) {
-        return "Only letters and numbers are allowed.";
-      }
-    }
-
-    return "";
-  };
+  useEffect(() => {
+    setFormValues(details ?? {});
+  }, [details]);
 
   const handleChange = (key: string, value: File | string | null) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
-    setErrors((prev) => ({ ...prev, [key]: "" }));
+    setFormErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const handleBlur = (key: string, schemanode: SchemaType) => {
-    const rawValue = formValues[key];
-    let stringValue = "";
-
-    if (typeof rawValue === "string") {
-      stringValue = rawValue;
-    } else if (rawValue instanceof File) {
-      stringValue = rawValue.name;
-    } else if (typeof rawValue === "number" || typeof rawValue === "boolean") {
-      stringValue = rawValue.toString();
-    } else if (rawValue != null) {
-      stringValue = JSON.stringify(rawValue);
-    }
-
+  const handleBlur = (key: string, fieldSchema: SchemaType) => {
     const error = validateField(
-      stringValue,
-      schemanode.type,
-      schemanode.required,
+      parseRewValue(formValues[key]),
+      fieldSchema.type,
+      fieldSchema.required,
     );
 
-    if (error) {
-      setErrors((prev) => ({ ...prev, [key]: error }));
-    }
+    setFormErrors((prev) => ({ ...prev, [key]: error }));
   };
 
-  const handleSubmit = () => {
-    const newErrors: { [key: string]: string } = {};
-    Object.entries(schemaOfComponent).forEach(([key, value]) => {
-      const rawValue = formValues[key];
-      let stringValue = "";
-
-      if (typeof rawValue === "string") {
-        stringValue = rawValue;
-      } else if (rawValue instanceof File) {
-        stringValue = rawValue.name; // Or use "" if you want to skip validating file names
-      } else if (rawValue != null) {
-        stringValue = JSON.stringify(rawValue);
-      }
-
-      const error = validateField(stringValue, value.type, value.required);
-
-      if (error) newErrors[key] = error;
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    const processedValues = { ...formValues };
-    Object.entries(schemaOfComponent).forEach(([key, value]) => {
-      if (value.type === "BooleanField") {
-        if (processedValues[key] === "true") processedValues[key] = true;
-        else if (processedValues[key] === "false") processedValues[key] = false;
-        else delete processedValues[key];
-      }
-    });
-
+  const handleSubmit = (override?: formValuesType) => {
     const formData = new FormData();
-    Object.entries(processedValues).forEach(([key, val]) => {
-      if (val !== null && val !== undefined) {
-        if (
-          schemaOfComponent[key]?.type === "FileField" &&
-          val instanceof File
-        ) {
-          formData.append(key, val);
-        } else if (
-          typeof val === "string" ||
-          typeof val === "number" ||
-          typeof val === "boolean"
-        ) {
-          formData.append(key, val.toString());
-        } else {
-          formData.append(key, JSON.stringify(val)); // fallback for objects/arrays
-        }
+    Object.entries(componentSchema).forEach(([key, schema]) => {
+      const value = override?.[key] ?? formValues[key];
+      if (value === null || value === undefined || !schema) return;
+
+      if (schema.type === "FileField") {
+        if (value instanceof File) formData.append(key, value);
+      } else if (schema.type === "BooleanField") {
+        if (value == "true" || value == "false") formData.append(key, value);
+      } else if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+      ) {
+        formData.append(key, value.toString());
+      } else {
+        formData.append(key, JSON.stringify(value)); // fallback for objects/arrays
       }
     });
 
     setLoading(true);
     api
-      .patch(`${pathOfComponent}${node.id}/`, formData)
+      .patch(`${componentPath}${node.id}/`, formData)
       .then(() => {
-        setNode(undefined);
+        onClose();
       })
       .catch((err) => {
         toast(err.message);
@@ -154,31 +126,29 @@ const ComponentDetail = ({
   };
 
   const handleCancel = () => {
-    setNode(undefined);
+    onClose();
     setFormValues({});
-    setErrors({});
+    setFormErrors({});
   };
 
-  useEffect(() => {
-    setSchemaOfComponent(
-      Object.fromEntries(
-        Object.entries(details ?? {}).map(([key, _]) => [
-          key,
-          contentOfComponent!.schema[key],
-        ]),
-      ),
-    );
-    setFormValues(details ?? {});
-  }, [isFetching]);
-
-  return (
-    <dialog className="modal-open modal">
-      <div className="modal-box bg-base-100">
+  const modalBox =
+    "code" in contentType.schema ?
+      <div className="modal-box max-w-4xl p-0">
+        <CodeEditor
+          initialValue={(details?.code ?? "") as string}
+          onSubmit={(updatedCode: string) => {
+            handleSubmit({ code: updatedCode });
+            onClose();
+          }}
+          onDiscard={onClose}
+        />
+      </div>
+    : <div className="modal-box bg-base-100">
         <h3 className="text-lg font-bold text-base-content">
-          {contentOfComponent!.name}
+          {contentType.name}
         </h3>
 
-        {loading || isFetching ?
+        {isFetching ?
           <Loading size={30} />
         : <form
             onSubmit={(e) => {
@@ -187,7 +157,7 @@ const ComponentDetail = ({
             }}
           >
             <div className="mt-4 grid w-full grid-cols-1 sm:grid-cols-3 sm:gap-4">
-              {Object.entries(schemaOfComponent).map(([key, value]) => (
+              {Object.entries(componentSchema).map(([key, value]) => (
                 <div key={key} className="sm:col-span-3">
                   <label className="label mt-4 mb-2 text-base-content sm:mt-0">
                     {value?.verbose_name}
@@ -200,7 +170,7 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value.required}
-                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${formErrors[key] && "border-error"}`}
                     >
                       <option value="">Select an option</option>
                       <option value="true">True</option>
@@ -226,20 +196,10 @@ const ComponentDetail = ({
                           handleChange(key, e.target.files?.[0] || null)
                         }
                         onBlur={() => handleBlur(key, value)}
-                        required={value.required}
-                        className={`file-input-bordered file-input w-full file-input-primary text-base-content file:ml-auto placeholder:text-base-content/50 ${
-                          errors[key] ? "border-error" : ""
-                        }`}
+                        required={value.required && formValues[key] === null}
+                        className={`file-input w-full file-input-primary text-base-content file:ml-auto placeholder:text-base-content/50 ${formErrors[key] && "border-error"}`}
                       />
                     </div>
-                  : value?.verbose_name === "code" ?
-                    <button
-                      type="button"
-                      onClick={() => setIsCodeEditorOpen(true)}
-                      className="btn w-full btn-outline btn-secondary sm:col-span-2"
-                    >
-                      Open Code Editor
-                    </button>
                   : <input
                       id={key}
                       type="text"
@@ -248,11 +208,11 @@ const ComponentDetail = ({
                       onChange={(e) => handleChange(key, e.target.value)}
                       onBlur={() => handleBlur(key, value)}
                       required={value?.required}
-                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${errors[key] && "border-error"}`}
+                      className={`input-bordered input w-full text-base-content input-primary placeholder:text-base-content/50 sm:col-span-2 ${formErrors[key] && "border-error"}`}
                     />
                   }
-                  {errors[key] && (
-                    <p className="mt-1 text-sm text-error">{errors[key]}</p>
+                  {formErrors[key] && (
+                    <p className="mt-1 text-sm text-error">{formErrors[key]}</p>
                   )}
                 </div>
               ))}
@@ -272,33 +232,11 @@ const ComponentDetail = ({
             </div>
           </form>
         }
-      </div>
-      {isCodeEditorOpen && (
-        <div className="modal-box max-w-4xl p-0">
-          <CodeEditor
-            initialValue={(() => {
-              const codeFieldKey = Object.keys(schemaOfComponent).find(
-                (key) => schemaOfComponent[key].verbose_name === "code",
-              );
-              if (!codeFieldKey || !formValues[codeFieldKey]) return "";
-              return formValues[codeFieldKey] as string;
-            })()}
-            onSubmit={(updatedCode: string) => {
-              const codeFieldKey = Object.keys(schemaOfComponent).find(
-                (key) => schemaOfComponent[key].verbose_name === "code",
-              );
-              if (codeFieldKey) {
-                setFormValues((prev) => ({
-                  ...prev,
-                  [codeFieldKey]: updatedCode,
-                }));
-              }
-              setIsCodeEditorOpen(false);
-            }}
-            onDiscard={() => setIsCodeEditorOpen(false)}
-          />
-        </div>
-      )}
+      </div>;
+
+  return (
+    <dialog className="modal-open modal">
+      {modalBox}
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>
