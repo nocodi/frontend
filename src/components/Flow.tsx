@@ -98,8 +98,8 @@ export default function Flow() {
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) => {
       const position = flowInstance.screenToFlowPosition({
-        x: x ?? window.innerWidth / 2,
-        y: y ?? window.innerHeight / 2,
+        x: x ?? window.innerWidth / 2 + Math.random() * 50 + 1,
+        y: y ?? window.innerHeight / 2 + Math.random() * 50 + 1,
       });
       api
         .post(`${content.path.split(".ir")[1]}`, {
