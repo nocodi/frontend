@@ -80,20 +80,23 @@ export default function Flow() {
                     type: "customEdge",
                   };
 
-                  const edgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
+                  const prevEdgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
                   // update previous_component of targetNode
-                  flowInstance.deleteElements({
-                    nodes: [{ id: targetNode.id }],
-                  });
-                  flowInstance.addNodes({
-                    ...targetNode,
-                    data: {
-                      ...targetNode.data,
-                      previous_component: connection.source,
-                    },
-                  });
+                  setNodes(() =>
+                    nodes.map((item) =>
+                      item.id === targetNode.id ?
+                        {
+                          ...item,
+                          data: {
+                            ...item.data,
+                            previous_component: parseInt(connection.source!),
+                          },
+                        }
+                      : item,
+                    ),
+                  );
                   // update new edge
-                  flowInstance.deleteElements({ edges: [{ id: edgeId }] });
+                  flowInstance.deleteElements({ edges: [{ id: prevEdgeId }] });
                   flowInstance.addEdges(newEdge);
                 }
               })
