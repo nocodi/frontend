@@ -34,10 +34,6 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
     }
   }
 
-  function editComponentDetails() {
-    setUnattendedComponent(data);
-  }
-
   if (data.component_type === "BUTTON") {
     return (
       <div className="relative flex h-fit min-h-9 w-10 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
@@ -65,7 +61,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             className="size-3 cursor-pointer hover:text-patina-400"
           />
           <Cog
-            onClick={() => editComponentDetails()}
+            onClick={() => setUnattendedComponent(data)}
             className="size-3 cursor-pointer hover:text-patina-400"
           />
         </div>
