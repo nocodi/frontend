@@ -121,14 +121,19 @@ export default function Flow() {
         x: x ?? window.innerWidth / 2 + Math.random() * 50 + 1,
         y: y ?? window.innerHeight / 2 + Math.random() * 50 + 1,
       });
+      const dataPayload = {
+        component_content_type: content.id,
+        component_name: content.name,
+        position_x: position.x,
+        position_y: position.y,
+        previous_component: null,
+      };
+
+      if (content.schema && "chat_id" in content.schema) {
+        dataPayload.chat_id = ".chat.id";
+      }
       api
-        .post(`${content.path.split(".ir")[1]}`, {
-          component_content_type: content.id,
-          component_name: content.name,
-          position_x: position.x,
-          position_y: position.y,
-          previous_component: null,
-        })
+        .post(`${content.path.split(".ir")[1]}`, dataPayload)
         .then((res) => {
           const newNode = makeNode(res.data as ComponentType, position);
           flowInstance.addNodes(newNode);
