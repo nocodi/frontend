@@ -90,6 +90,134 @@ export const useBotSchema = (
               );
             }
           });
+        } else {
+          const defaultTemplate: Node<ComponentType>[] = [
+            {
+              id: "1",
+              position: flowInstance.screenToFlowPosition({
+                x: window.innerWidth / 2 - 300,
+                y: window.innerHeight / 2 - 100,
+              }),
+              type: "customNode",
+              selected: false,
+              data: {
+                id: 1,
+                component_name: "Start Chat",
+                component_type: "TRIGGER",
+                component_content_type: 1,
+                position_x: window.innerWidth / 2 - 300,
+                position_y: window.innerHeight / 2 - 100,
+                previous_component: null,
+              },
+            },
+            {
+              id: "2",
+              position: flowInstance.screenToFlowPosition({
+                x: window.innerWidth / 2 - 100,
+                y: window.innerHeight / 2 - 100,
+              }),
+              type: "customNode",
+              selected: false,
+              data: {
+                id: 2,
+                component_name: "Welcome Message",
+                component_type: "TELEGRAM",
+                component_content_type: 2,
+                position_x: window.innerWidth / 2 - 100,
+                position_y: window.innerHeight / 2 - 100,
+                previous_component: 1,
+              },
+            },
+            {
+              id: "3",
+              position: flowInstance.screenToFlowPosition({
+                x: window.innerWidth / 2 + 100,
+                y: window.innerHeight / 2 - 100,
+              }),
+              type: "customNode",
+              selected: false,
+              data: {
+                id: 3,
+                component_name: "Check User Input",
+                component_type: "CONDITIONAL",
+                component_content_type: 3,
+                position_x: window.innerWidth / 2 + 100,
+                position_y: window.innerHeight / 2 - 100,
+                previous_component: 2,
+              },
+            },
+            {
+              id: "4",
+              position: flowInstance.screenToFlowPosition({
+                x: window.innerWidth / 2 + 100,
+                y: window.innerHeight / 2 + 100,
+              }),
+              type: "customNode",
+              selected: false,
+              data: {
+                id: 4,
+                component_name: "Process Response",
+                component_type: "CODE",
+                component_content_type: 4,
+                position_x: window.innerWidth / 2 + 100,
+                position_y: window.innerHeight / 2 + 100,
+                previous_component: 3,
+              },
+            },
+            {
+              id: "5",
+              position: flowInstance.screenToFlowPosition({
+                x: window.innerWidth / 2 + 300,
+                y: window.innerHeight / 2 + 100,
+              }),
+              type: "customNode",
+              selected: false,
+              data: {
+                id: 5,
+                component_name: "Send Reply",
+                component_type: "TELEGRAM",
+                component_content_type: 5,
+                position_x: window.innerWidth / 2 + 300,
+                position_y: window.innerHeight / 2 + 100,
+                previous_component: 4,
+              },
+            },
+          ];
+
+          // Add default nodes
+          defaultTemplate.forEach((node) => {
+            setNodes((nds) => nds.concat(node));
+          });
+
+          // Add default edges
+          setEdges((edg) =>
+            edg.concat(
+              {
+                id: "e1-2",
+                source: "1",
+                target: "2",
+                type: "customEdge",
+              },
+              {
+                id: "e2-3",
+                source: "2",
+                target: "3",
+                type: "customEdge",
+              },
+              {
+                id: "e3-4",
+                source: "3",
+                target: "4",
+                type: "customEdge",
+              },
+              {
+                id: "e4-5",
+                source: "4",
+                target: "5",
+                type: "customEdge",
+              },
+            ),
+          );
         }
         return true;
       }),

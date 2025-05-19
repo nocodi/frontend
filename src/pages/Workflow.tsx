@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { createContext, useContext, useState } from "react";
 
 import CodeGeneration from "../components/CodeGeneration";
-import DeployCode from "../components/DeployCode";
 import DnDFlow from "../components/DndFlow";
 import Loading from "../components/Loading";
 import { useIsFetching } from "@tanstack/react-query";
@@ -36,9 +35,6 @@ function Workflow() {
                   <Undo2 />
                 </Link>
                 <div className="flex items-center gap-3">
-                  <div className="my-auto">
-                    <DeployCode botId={Number(botId)} />
-                  </div>
                   <div className="my-auto">
                     <CodeGeneration botId={Number(botId)} />
                   </div>
