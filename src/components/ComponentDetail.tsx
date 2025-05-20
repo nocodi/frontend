@@ -7,6 +7,7 @@ import api from "../services/api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
+import FlexMatrix from "./FlexBox";
 
 const parseRewValue = (rawValue: formValuesType[string]) => {
   if (typeof rawValue === "string") {
@@ -232,6 +233,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
             </div>
           </form>
         }
+        <FlexMatrix />
       </div>;
 
   return (
