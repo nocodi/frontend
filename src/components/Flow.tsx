@@ -82,8 +82,9 @@ export default function Flow() {
 
                   const prevEdgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
                   // update previous_component of targetNode
-                  setNodes(() =>
-                    nodes.map((item) =>
+
+                  setNodes((nds) =>
+                    nds.map((item) =>
                       item.id === targetNode.id ?
                         {
                           ...item,
