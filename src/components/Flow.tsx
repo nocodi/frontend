@@ -186,8 +186,8 @@ export default function Flow() {
         )
         .then(() => {})
         .catch((err) => {
-          setNodes(() =>
-            nodes.map((item) =>
+          setNodes((nds) =>
+            nds.map((item) =>
               item.id === node.id ?
                 {
                   ...item,
