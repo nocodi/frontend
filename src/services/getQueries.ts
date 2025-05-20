@@ -9,6 +9,19 @@ import { formValuesType } from "../types/ComponentDetailForm";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+export const useBotData = (botId: string) => {
+  const { data, refetch, isFetching } = useQuery<BotData>({
+    enabled: false,
+    queryKey: ["botData"],
+    queryFn: () =>
+      api
+        .get<BotData>(`/component/${botId}/content-type/`)
+        .then((res) => res.data),
+  });
+
+  return { data, refetch, isFetching };
+};
+
 export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
 

@@ -1,5 +1,7 @@
+import { LoaderCircle, Trash2 } from "lucide-react";
+
+import EditBotDialog from "./EditBotDialog";
 import { Link } from "react-router-dom";
-import { LoaderCircle } from "lucide-react";
 import NewBotDialog from "./NewBotDialog";
 import ProfileDialog from "./ProfileDialog";
 import SearchBar from "../../components/searchBar";
@@ -10,7 +12,6 @@ import { useState } from "react";
 
 const Dashboard = () => {
   const [query, setQuery] = useState("");
-
   const { bots, isFetching, refetch } = useBots();
 
   const handleCreateBot = async (newBot: {
@@ -19,6 +20,18 @@ const Dashboard = () => {
     description: string;
   }) => {
     await api.post("bot/create-bot/", newBot);
+    toast.success("Bot created successfully!");
+    refetch().catch((err) => {
+      toast(err.message);
+    });
+  };
+
+  const handleEditBot = async (newBot: {
+    name: string;
+    token: string;
+    description: string;
+  }) => {
+    await api.patch("bot/create-bot/", newBot);
     toast.success("Bot created successfully!");
     refetch().catch((err) => {
       toast(err.message);
@@ -42,6 +55,7 @@ const Dashboard = () => {
           <NewBotDialog onCreate={handleCreateBot} />
           <ProfileDialog />
         </div>
+
         {isFetching ?
           <LoaderCircle className="m-auto size-10 animate-spin" />
         : bots ?
@@ -61,12 +75,22 @@ const Dashboard = () => {
                       <div className="card-body">
                         <h3 className="card-title">{item.name}</h3>
                         <p>{item.description}</p>
-                        <Link
-                          to={`bot/${item.id}`}
-                          className="btn mt-4 btn-primary"
-                        >
-                          Open Bot
-                        </Link>
+                        <div className="flex w-full flex-row gap-3">
+                          <Link
+                            to={`bot/${item.id}`}
+                            className="btn mt-4 w-1/2 btn-primary"
+                          >
+                            Open Bot
+                          </Link>
+                          <EditBotDialog
+                            onCreate={handleEditBot}
+                            botId={item.id}
+                          />
+
+                          <div className="btn mt-4 btn-error">
+                            <Trash2 />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
