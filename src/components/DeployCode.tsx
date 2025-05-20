@@ -9,7 +9,7 @@ export default function DeployCode({ botId }: { botId: number }) {
   const handleDownload = () => {
     setLoading(true);
     api
-      .get(`/bot/${botId}/generate-code`)
+      .get(`/bot/${botId}/deploy`)
       .then((response) => {
         const blob = new Blob([response.data], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
