@@ -1,5 +1,6 @@
 import { LoaderCircle, Trash2 } from "lucide-react";
 
+import DeleteBotDialog from "./DeleteBotDialog";
 import EditBotDialog from "./EditBotDialog";
 import { Link } from "react-router-dom";
 import NewBotDialog from "./NewBotDialog";
@@ -33,6 +34,14 @@ const Dashboard = () => {
   }) => {
     await api.patch("bot/create-bot/", newBot);
     toast.success("Bot created successfully!");
+    refetch().catch((err) => {
+      toast(err.message);
+    });
+  };
+
+  const handleDeleteBot = async (botId: string) => {
+    await api.delete(`bot/${botId}/`);
+    toast.success("Bot deleted successfully!");
     refetch().catch((err) => {
       toast(err.message);
     });
@@ -86,10 +95,10 @@ const Dashboard = () => {
                             onCreate={handleEditBot}
                             botId={item.id}
                           />
-
-                          <div className="btn mt-4 btn-error">
-                            <Trash2 />
-                          </div>
+                          <DeleteBotDialog
+                            onDelete={handleDeleteBot}
+                            botId={item.id}
+                          />
                         </div>
                       </div>
                     </div>
