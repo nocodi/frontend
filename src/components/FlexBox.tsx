@@ -1,96 +1,115 @@
 import { useState } from "react";
+import GridLayout, { Layout } from "react-grid-layout";
+import { Plus, X } from "lucide-react";
 import { ComponentType } from "../types/Component";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 
 const MAX_ROWS = 5;
-const MAX_COLS = 5;
+const MAX_COLS = 4;
+const TOTAL_CELLS = MAX_ROWS * MAX_COLS;
+const BOX_WIDTH = 1;
+const BOX_HEIGHT = 1;
 
-type ComponentFlex = { rowIdx: number; component: ComponentType };
-
-type Matrix = ComponentFlex[][];
+type GridItem = {
+  id: string;
+  component: ComponentType;
+};
 
 const FlexMatrix = () => {
-  const [matrix, setMatrix] = useState<Matrix>([[]]);
+  const [items, setItems] = useState<GridItem[]>([]);
+  const [layout, setLayout] = useState<Layout[]>([]);
 
-  const addRow = () => {
-    if (matrix.length < MAX_ROWS) {
-      setMatrix((prev) => [...prev, []]);
-    }
+  const addBox = () => {
+    if (items.length >= TOTAL_CELLS) return;
+
+    const id = Date.now().toString();
+    const x = items.length % MAX_COLS;
+    const y = Math.floor(items.length / MAX_COLS);
+
+    const newItem: GridItem = {
+      id,
+      component: {
+        id: 0,
+        previous_component: null,
+        component_name: "",
+        component_type: "TELEGRAM",
+        component_content_type: 0,
+        position_x: x,
+        position_y: y,
+      },
+    };
+
+    setItems((prev) => [...prev, newItem]);
+    setLayout((prev) => [
+      ...prev,
+      {
+        i: id,
+        x,
+        y,
+        w: BOX_WIDTH,
+        h: BOX_HEIGHT,
+        static: false,
+      },
+    ]);
   };
 
-  const addBox = (rowIndex: number, component: ComponentType) => {
-    setMatrix((prev) =>
-      prev.map((row, i) =>
-        i === rowIndex && row.length < MAX_COLS ?
-          [
-            ...row,
-            {
-              rowIdx: rowIndex,
-              component: component,
-            },
-          ]
-        : row,
-      ),
-    );
-  };
+  const deleteBox = (idToDelete: string) => {
+    const updatedItems = items.filter((item) => item.id !== idToDelete);
+    // const updatedLayout = layout.filter((l) => l.i !== idToDelete);
 
-  const deleteBox = (rowIndex: number, colIndex: number) => {
-    setMatrix((prev) =>
-      prev.map((row, i) =>
-        i === rowIndex ? row.filter((_, j) => j !== colIndex) : row,
-      ),
-    );
+    const newLayout = updatedItems.map((item, idx) => ({
+      i: item.id,
+      x: idx % MAX_COLS,
+      y: Math.floor(idx / MAX_COLS),
+      w: BOX_WIDTH,
+      h: BOX_HEIGHT,
+      static: false,
+    }));
+
+    setItems(updatedItems);
+    setLayout(newLayout);
   };
 
   return (
     <div className="p-4">
-      {matrix.map((row, rowIndex) => (
-        <div key={rowIndex} className="mb-4 flex items-center gap-2">
-          <div className="flex gap-2">
-            {row.map((_, colIndex) => (
-              <div
-                key={colIndex}
-                className="relative flex h-16 w-16 items-center justify-center rounded bg-blue-500 text-white"
-              >
-                {colIndex + 1}
-                <button
-                  onClick={() => deleteBox(rowIndex, colIndex)}
-                  className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-
-            {row.length < MAX_COLS && (
-              <button
-                onClick={() =>
-                  addBox(rowIndex, {
-                    id: 0,
-                    previous_component: null,
-                    component_name: "",
-                    component_type: "TELEGRAM",
-                    component_content_type: 0,
-                    position_x: 0,
-                    position_y: 0,
-                  })
-                }
-                className="h-16 w-16 rounded bg-green-600 text-white"
-              >
-                +
-              </button>
-            )}
-          </div>
-
-          {rowIndex === matrix.length - 1 && matrix.length < MAX_ROWS && (
+      <GridLayout
+        className="layout"
+        layout={layout}
+        cols={MAX_COLS}
+        rowHeight={80}
+        width={MAX_COLS * 100}
+        compactType="vertical"
+        isResizable={false}
+        onLayoutChange={setLayout}
+      >
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="group btn relative items-center justify-center btn-primary"
+          >
+            {item.component.id}
             <button
-              onClick={addRow}
-              className="ml-4 rounded bg-purple-700 px-4 py-2 text-white"
+              type="button"
+              onClick={() => deleteBox(item.id)}
+              className="invisible absolute top-1 right-1 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:bg-red-500 group-hover:opacity-100 hover:bg-red-300"
             >
-              + Row
+              <X size={16} />
             </button>
-          )}
-        </div>
-      ))}
+          </div>
+        ))}
+      </GridLayout>
+
+      <div className="mt-4 flex gap-4">
+        <button
+          type="button"
+          onClick={addBox}
+          className="btn btn-secondary"
+          disabled={items.length >= TOTAL_CELLS}
+        >
+          <Plus /> Add Button
+        </button>
+      </div>
     </div>
   );
 };

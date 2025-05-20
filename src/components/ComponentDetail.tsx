@@ -218,7 +218,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                 </div>
               ))}
             </div>
-
+            <FlexMatrix />
             <div className="modal-action">
               <button
                 type="submit"
@@ -233,7 +233,6 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
             </div>
           </form>
         }
-        <FlexMatrix />
       </div>;
 
   return (
