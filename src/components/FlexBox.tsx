@@ -1,137 +1,99 @@
-import { useState } from "react";
-import GridLayout, { Layout } from "react-grid-layout";
 import { Plus, X } from "lucide-react";
-import { ComponentType } from "../types/Component";
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
-
-const MAX_ROWS = 5;
-const MAX_COLS = 4;
-const TOTAL_CELLS = MAX_ROWS * MAX_COLS;
-const BOX_WIDTH = 1;
-const BOX_HEIGHT = 1;
+import { useState } from "react";
 
 type GridItem = {
   id: string;
-  component: ComponentType;
+  label: string;
 };
 
-const FlexMatrix = () => {
-  const [items, setItems] = useState<GridItem[]>([]);
-  const [layout, setLayout] = useState<Layout[]>([]);
+export default function FlexibleButtonGrid() {
+  const MAX_ROWS = 5;
+  const MAX_COLS = 4;
 
-  const recalculateLayout = (updatedItems: GridItem[]) => {
-    const rows: Record<number, GridItem[]> = {};
+  const [rows, setRows] = useState<GridItem[][]>([
+    [{ id: crypto.randomUUID(), label: "Item 1" }],
+  ]);
 
-    updatedItems.forEach((item, index) => {
-      const row = Math.floor(index / MAX_COLS);
-      if (!rows[row]) rows[row] = [];
-      rows[row].push(item);
-    });
-
-    const newLayout: Layout[] = [];
-    Object.entries(rows).forEach(([rowStr, rowItems]) => {
-      const row = Number(rowStr);
-      const boxWidth = Math.floor(MAX_COLS / rowItems.length);
-
-      rowItems.forEach((item, index) => {
-        newLayout.push({
-          i: item.id,
-          x: index * boxWidth,
-          y: row,
-          w: boxWidth,
-          h: BOX_HEIGHT,
-          static: false,
-        });
-      });
-    });
-
-    return newLayout;
+  const addItemToRow = (rowIndex: number) => {
+    setRows((prev) =>
+      prev.map((row, idx) =>
+        idx === rowIndex && row.length < MAX_COLS ?
+          [...row, { id: crypto.randomUUID(), label: "Item" }]
+        : row,
+      ),
+    );
   };
 
-  const addBox = () => {
-    if (items.length >= TOTAL_CELLS) return;
-
-    const id = Date.now().toString();
-    const x = 0;
-    const y = 0;
-
-    const newItem: GridItem = {
-      id,
-      component: {
-        id: 0,
-        previous_component: null,
-        component_name: "",
-        component_type: "TELEGRAM",
-        component_content_type: 0,
-        position_x: x,
-        position_y: y,
-      },
-    };
-
-    const updatedItems = [...items, newItem];
-    setItems(updatedItems);
-    setLayout(recalculateLayout(updatedItems));
+  const addRow = () => {
+    setRows((prev) => {
+      if (prev.length >= MAX_ROWS) return prev;
+      const lastRow = prev[prev.length - 1];
+      if (lastRow.length === 0) return prev;
+      return [...prev, []];
+    });
   };
 
-  const deleteBox = (idToDelete: string) => {
-    const updatedItems = items.filter((item) => item.id !== idToDelete);
+  const removeItem = (rowIndex: number, itemIndex: number) => {
+    setRows((prev) => {
+      const newRows = prev.map((row) => [...row]);
+      newRows[rowIndex].splice(itemIndex, 1);
 
-    const newLayout = updatedItems.map((item, idx) => ({
-      i: item.id,
-      x: idx % MAX_COLS,
-      y: Math.floor(idx / MAX_COLS),
-      w: BOX_WIDTH,
-      h: BOX_HEIGHT,
-      static: false,
-    }));
+      if (
+        newRows[rowIndex].length === 0 &&
+        rowIndex + 1 < newRows.length &&
+        newRows[rowIndex + 1].length > 0
+      ) {
+        newRows[rowIndex].push(newRows[rowIndex + 1].shift()!);
+      }
 
-    setItems(updatedItems);
-    setLayout(newLayout);
+      if (newRows[newRows.length - 1].length === 0 && newRows.length > 1) {
+        newRows.pop();
+      }
+
+      return newRows;
+    });
   };
 
   return (
-    <div className="p-4">
-      <GridLayout
-        className="layout"
-        layout={layout}
-        cols={MAX_COLS}
-        rowHeight={80}
-        width={MAX_COLS * 100}
-        compactType="vertical"
-        isResizable={false}
-        onLayoutChange={setLayout}
-        draggableCancel=".no-drag"
-      >
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="group btn relative items-center justify-center btn-primary"
-          >
-            {item.component.id}
+    <div className="mt-5 mb-15 space-y-6 p-4 text-primary-content">
+      {rows.map((row, rowIndex) => (
+        <div key={rowIndex} className="relative flex flex-wrap gap-2">
+          {row.map((item, itemIndex) => (
+            <div key={item.id} className="flex items-center gap-1">
+              <div className="group card relative h-15 w-20 bg-primary hover:bg-patina-500">
+                <div className="mx-auto my-auto">{item.label}</div>
+
+                <button
+                  className="invisible absolute top-0.5 right-0.5 cursor-pointer rounded-full bg-red-500 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 hover:bg-red-300"
+                  onClick={() => removeItem(rowIndex, itemIndex)}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {row.length < MAX_COLS && (
             <button
               type="button"
-              onClick={() => deleteBox(item.id)}
-              className="no-drag invisible absolute top-1 right-1 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:bg-red-500 group-hover:opacity-100 hover:bg-red-300"
+              onClick={() => addItemToRow(rowIndex)}
+              className="btn absolute right-0 rounded-full btn-secondary"
             >
-              <X size={16} />
+              <Plus size={20} />
             </button>
-          </div>
-        ))}
-      </GridLayout>
+          )}
+        </div>
+      ))}
 
-      <div className="mt-4 flex gap-4">
+      {rows.length < MAX_ROWS && rows[rows.length - 1].length > 0 && (
         <button
           type="button"
-          onClick={addBox}
-          className="btn btn-secondary"
-          disabled={items.length >= TOTAL_CELLS}
+          onClick={addRow}
+          className="btn mt-2 rounded-xl btn-accent"
         >
-          <Plus /> Add Button
+          <Plus />
         </button>
-      </div>
+      )}
     </div>
   );
-};
-
-export default FlexMatrix;
+}
