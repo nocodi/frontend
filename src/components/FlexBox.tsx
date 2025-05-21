@@ -20,12 +20,41 @@ const FlexMatrix = () => {
   const [items, setItems] = useState<GridItem[]>([]);
   const [layout, setLayout] = useState<Layout[]>([]);
 
+  const recalculateLayout = (updatedItems: GridItem[]) => {
+    const rows: Record<number, GridItem[]> = {};
+
+    updatedItems.forEach((item, index) => {
+      const row = Math.floor(index / MAX_COLS);
+      if (!rows[row]) rows[row] = [];
+      rows[row].push(item);
+    });
+
+    const newLayout: Layout[] = [];
+    Object.entries(rows).forEach(([rowStr, rowItems]) => {
+      const row = Number(rowStr);
+      const boxWidth = Math.floor(MAX_COLS / rowItems.length);
+
+      rowItems.forEach((item, index) => {
+        newLayout.push({
+          i: item.id,
+          x: index * boxWidth,
+          y: row,
+          w: boxWidth,
+          h: BOX_HEIGHT,
+          static: false,
+        });
+      });
+    });
+
+    return newLayout;
+  };
+
   const addBox = () => {
     if (items.length >= TOTAL_CELLS) return;
 
     const id = Date.now().toString();
-    const x = items.length % MAX_COLS;
-    const y = Math.floor(items.length / MAX_COLS);
+    const x = 0;
+    const y = 0;
 
     const newItem: GridItem = {
       id,
@@ -40,18 +69,9 @@ const FlexMatrix = () => {
       },
     };
 
-    setItems((prev) => [...prev, newItem]);
-    setLayout((prev) => [
-      ...prev,
-      {
-        i: id,
-        x,
-        y,
-        w: BOX_WIDTH,
-        h: BOX_HEIGHT,
-        static: false,
-      },
-    ]);
+    const updatedItems = [...items, newItem];
+    setItems(updatedItems);
+    setLayout(recalculateLayout(updatedItems));
   };
 
   const deleteBox = (idToDelete: string) => {
