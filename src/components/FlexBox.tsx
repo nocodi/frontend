@@ -6,6 +6,8 @@ type GridItem = {
   label: string;
 };
 
+const SIZES = [0, 90, 45, 30, 25];
+
 export default function FlexibleButtonGrid() {
   const MAX_ROWS = 5;
   const MAX_COLS = 4;
@@ -80,48 +82,56 @@ export default function FlexibleButtonGrid() {
   return (
     <div className="mt-5 mb-15 space-y-6 p-4 text-primary-content">
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="relative flex flex-wrap gap-2">
-          {row.map((item, itemIndex) => (
-            <div key={item.id} className="flex items-center gap-1">
-              <div className="group card relative h-15 w-20 bg-primary p-2 hover:bg-patina-500">
-                {editingItemId === item.id ?
-                  <input
-                    autoFocus
-                    type="text"
-                    value={editingLabel}
-                    onChange={(e) => setEditingLabel(e.target.value)}
-                    onBlur={() => saveEdit(item.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") saveEdit(item.id);
-                    }}
-                    className="mx-auto my-auto w-full text-center outline-none input-primary"
-                  />
-                : <div
-                    className="mx-auto my-auto cursor-pointer text-center"
-                    onClick={() => {
-                      setEditingItemId(item.id);
-                      setEditingLabel(item.label);
-                    }}
-                  >
-                    {item.label}
-                  </div>
-                }
-
-                <button
-                  className="invisible absolute top-0.5 right-0.5 cursor-pointer rounded-full bg-red-500 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 hover:bg-red-300"
-                  onClick={() => removeItem(rowIndex, itemIndex)}
+        <div key={rowIndex} className="relative flex w-full flex-wrap gap-2">
+          {row.map((item, itemIndex) => {
+            const itemWidth = `w-${SIZES[row.length]}`;
+            return (
+              <div
+                key={item.id}
+                className={`flex items-center gap-1 ${itemWidth}`}
+              >
+                <div
+                  className={`group card relative h-15 w-full bg-primary p-2 hover:bg-patina-500`}
                 >
-                  <X size={18} />
-                </button>
+                  {editingItemId === item.id ?
+                    <input
+                      autoFocus
+                      type="text"
+                      value={editingLabel}
+                      onChange={(e) => setEditingLabel(e.target.value)}
+                      onBlur={() => saveEdit(item.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") saveEdit(item.id);
+                      }}
+                      className="mx-auto my-auto w-full text-center outline-none input-primary"
+                    />
+                  : <div
+                      className="mx-auto my-auto cursor-pointer text-center"
+                      onClick={() => {
+                        setEditingItemId(item.id);
+                        setEditingLabel(item.label);
+                      }}
+                    >
+                      {item.label}
+                    </div>
+                  }
+
+                  <button
+                    className="invisible absolute top-0.5 right-0.5 cursor-pointer rounded-full bg-red-500 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 hover:bg-red-300"
+                    onClick={() => removeItem(rowIndex, itemIndex)}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {row.length < MAX_COLS && (
             <button
               type="button"
               onClick={() => addItemToRow(rowIndex)}
-              className="btn absolute right-0 rounded-full btn-secondary"
+              className="btn absolute -right-3 rounded-full btn-secondary"
             >
               <Plus size={20} />
             </button>
