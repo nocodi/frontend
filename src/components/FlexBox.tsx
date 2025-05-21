@@ -94,7 +94,7 @@ export default function FlexibleButtonGrid() {
                     onKeyDown={(e) => {
                       if (e.key === "Enter") saveEdit(item.id);
                     }}
-                    className="w-full rounded bg-white px-1 py-0.5 text-sm text-black"
+                    className="w-full input-primary"
                   />
                 : <div
                     className="mx-auto my-auto cursor-pointer text-center"
