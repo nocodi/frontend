@@ -14,6 +14,9 @@ export default function FlexibleButtonGrid() {
     [{ id: crypto.randomUUID(), label: "Item" }],
   ]);
 
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editingLabel, setEditingLabel] = useState("");
+
   const addItemToRow = (rowIndex: number) => {
     setRows((prev) =>
       prev.map((row, idx) =>
@@ -62,14 +65,47 @@ export default function FlexibleButtonGrid() {
     });
   };
 
+  const saveEdit = (itemId: string) => {
+    setRows((prev) =>
+      prev.map((row) =>
+        row.map((item) =>
+          item.id === itemId ? { ...item, label: editingLabel } : item,
+        ),
+      ),
+    );
+    setEditingItemId(null);
+    setEditingLabel("");
+  };
+
   return (
     <div className="mt-5 mb-15 space-y-6 p-4 text-primary-content">
       {rows.map((row, rowIndex) => (
         <div key={rowIndex} className="relative flex flex-wrap gap-2">
           {row.map((item, itemIndex) => (
             <div key={item.id} className="flex items-center gap-1">
-              <div className="group card relative h-15 w-20 bg-primary hover:bg-patina-500">
-                <div className="mx-auto my-auto">{item.label}</div>
+              <div className="group card relative h-15 w-20 bg-primary p-2 hover:bg-patina-500">
+                {editingItemId === item.id ?
+                  <input
+                    autoFocus
+                    type="text"
+                    value={editingLabel}
+                    onChange={(e) => setEditingLabel(e.target.value)}
+                    onBlur={() => saveEdit(item.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") saveEdit(item.id);
+                    }}
+                    className="w-full rounded bg-white px-1 py-0.5 text-sm text-black"
+                  />
+                : <div
+                    className="mx-auto my-auto cursor-pointer text-center"
+                    onClick={() => {
+                      setEditingItemId(item.id);
+                      setEditingLabel(item.label);
+                    }}
+                  >
+                    {item.label}
+                  </div>
+                }
 
                 <button
                   className="invisible absolute top-0.5 right-0.5 cursor-pointer rounded-full bg-red-500 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 hover:bg-red-300"
