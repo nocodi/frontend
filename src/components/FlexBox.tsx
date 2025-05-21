@@ -56,7 +56,6 @@ const FlexMatrix = () => {
 
   const deleteBox = (idToDelete: string) => {
     const updatedItems = items.filter((item) => item.id !== idToDelete);
-    // const updatedLayout = layout.filter((l) => l.i !== idToDelete);
 
     const newLayout = updatedItems.map((item, idx) => ({
       i: item.id,
@@ -82,6 +81,7 @@ const FlexMatrix = () => {
         compactType="vertical"
         isResizable={false}
         onLayoutChange={setLayout}
+        draggableCancel=".no-drag"
       >
         {items.map((item) => (
           <div
@@ -92,7 +92,7 @@ const FlexMatrix = () => {
             <button
               type="button"
               onClick={() => deleteBox(item.id)}
-              className="invisible absolute top-1 right-1 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:bg-red-500 group-hover:opacity-100 hover:bg-red-300"
+              className="no-drag invisible absolute top-1 right-1 cursor-pointer rounded-full p-1 opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:bg-red-500 group-hover:opacity-100 hover:bg-red-300"
             >
               <X size={16} />
             </button>
