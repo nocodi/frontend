@@ -11,16 +11,9 @@ export default function DeployCode({ botId }: { botId: number }) {
     api
       .get(`/bot/${botId}/deploy`)
       .then((response) => {
-        const blob = new Blob([response.data], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "bot-generated-code.py";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        if (response.status === 200) {
+          toast(response.data);
+        }
       })
       .catch((error) => {
         toast(error);
