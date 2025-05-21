@@ -11,7 +11,7 @@ export default function FlexibleButtonGrid() {
   const MAX_COLS = 4;
 
   const [rows, setRows] = useState<GridItem[][]>([
-    [{ id: crypto.randomUUID(), label: "Item 1" }],
+    [{ id: crypto.randomUUID(), label: "Item" }],
   ]);
 
   const addItemToRow = (rowIndex: number) => {
@@ -29,22 +29,30 @@ export default function FlexibleButtonGrid() {
       if (prev.length >= MAX_ROWS) return prev;
       const lastRow = prev[prev.length - 1];
       if (lastRow.length === 0) return prev;
-      return [...prev, []];
+      return [...prev, [{ id: crypto.randomUUID(), label: "Item" }]];
     });
   };
 
+  function trimRows(newRows: GridItem[][], rowIndex: number): GridItem[][] {
+    if (
+      newRows[rowIndex].length === 0 &&
+      rowIndex + 1 < newRows.length &&
+      newRows[rowIndex + 1].length > 0
+    ) {
+      newRows[rowIndex].push(newRows[rowIndex + 1].shift()!);
+    } else {
+      return newRows;
+    }
+
+    return trimRows(newRows, rowIndex + 1);
+  }
+
   const removeItem = (rowIndex: number, itemIndex: number) => {
     setRows((prev) => {
-      const newRows = prev.map((row) => [...row]);
+      let newRows = prev.map((row) => [...row]);
       newRows[rowIndex].splice(itemIndex, 1);
 
-      if (
-        newRows[rowIndex].length === 0 &&
-        rowIndex + 1 < newRows.length &&
-        newRows[rowIndex + 1].length > 0
-      ) {
-        newRows[rowIndex].push(newRows[rowIndex + 1].shift()!);
-      }
+      newRows = trimRows(newRows, rowIndex);
 
       if (newRows[newRows.length - 1].length === 0 && newRows.length > 1) {
         newRows.pop();
