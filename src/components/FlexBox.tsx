@@ -6,8 +6,6 @@ type GridItem = {
   label: string;
 };
 
-const SIZES = [0, 90, 45, 30, 25];
-
 export default function FlexibleButtonGrid() {
   const MAX_ROWS = 5;
   const MAX_COLS = 4;
@@ -82,17 +80,14 @@ export default function FlexibleButtonGrid() {
   return (
     <div className="mt-5 mb-15 space-y-6 p-4 text-primary-content">
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="relative flex w-full flex-wrap gap-2">
+        <div key={rowIndex} className="relative flex flex-wrap gap-2">
           {row.map((item, itemIndex) => {
-            const itemWidth = `w-${SIZES[row.length]}`;
             return (
               <div
                 key={item.id}
-                className={`flex items-center gap-1 ${itemWidth}`}
+                className="flex shrink grow items-center gap-1"
               >
-                <div
-                  className={`group card relative h-15 w-full bg-primary p-2 hover:bg-patina-500`}
-                >
+                <div className="group card relative h-15 flex-1 bg-primary hover:bg-patina-500">
                   {editingItemId === item.id ?
                     <input
                       autoFocus
@@ -131,7 +126,7 @@ export default function FlexibleButtonGrid() {
             <button
               type="button"
               onClick={() => addItemToRow(rowIndex)}
-              className="btn absolute -right-3 rounded-full btn-secondary"
+              className="btn my-auto shrink-0 grow-0 rounded-full btn-secondary"
             >
               <Plus size={20} />
             </button>
