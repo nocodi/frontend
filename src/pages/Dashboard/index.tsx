@@ -1,4 +1,5 @@
-import { LoaderCircle, Trash2 } from "lucide-react";
+import { Cog, LoaderCircle, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
 
 import DeleteBotDialog from "./DeleteBotDialog";
 import EditBotDialog from "./EditBotDialog";
@@ -9,11 +10,13 @@ import SearchBar from "../../components/searchBar";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useBots } from "../../services/getQueries";
-import { useState } from "react";
 
 const Dashboard = () => {
   const [query, setQuery] = useState("");
   const { bots, isFetching, refetch } = useBots();
+  const [editSelected, setEditSelected] = useState<string | null>(null);
+  const [delSelected, setDelSelected] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   const handleCreateBot = async (newBot: {
     name: string;
@@ -27,20 +30,23 @@ const Dashboard = () => {
     });
   };
 
-  const handleEditBot = async (newBot: {
-    name: string;
-    token: string;
-    description: string;
-  }) => {
-    await api.patch("bot/create-bot/", newBot);
-    toast.success("Bot created successfully!");
+  const handleEditBot = async (
+    botId: string | null,
+    bot: {
+      name: string;
+      token: string;
+      description: string;
+    },
+  ) => {
+    await api.patch(`bot/my-bots/${botId}`, bot);
+    toast.success("Bot edited successfully!");
     refetch().catch((err) => {
       toast(err.message);
     });
   };
 
   const handleDeleteBot = async (botId: string) => {
-    await api.delete(`bot/${botId}/`);
+    await api.delete(`bot/my-bots/${botId}/`);
     toast.success("Bot deleted successfully!");
     refetch().catch((err) => {
       toast(err.message);
@@ -62,6 +68,31 @@ const Dashboard = () => {
         <div className="mt-10 flex items-center justify-between gap-2">
           <h2 className="mr-auto text-3xl font-bold">Your Bots</h2>
           <NewBotDialog onCreate={handleCreateBot} />
+          <dialog ref={modalRef} className="modal">
+            <div className="modal-box">
+              {editSelected && (
+                <EditBotDialog
+                  modalRef={modalRef}
+                  onEdit={handleEditBot}
+                  botId={editSelected}
+                  bots={bots}
+                  setSelected={setEditSelected}
+                />
+              )}
+              {delSelected && (
+                <DeleteBotDialog
+                  onDelete={handleDeleteBot}
+                  botId={delSelected}
+                  setDelSelected={setDelSelected}
+                  modalRef={modalRef}
+                />
+              )}
+            </div>
+
+            <form method="dialog" className="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
           <ProfileDialog />
         </div>
 
@@ -91,14 +122,24 @@ const Dashboard = () => {
                           >
                             Open Bot
                           </Link>
-                          <EditBotDialog
-                            onCreate={handleEditBot}
-                            botId={item.id}
-                          />
-                          <DeleteBotDialog
-                            onDelete={handleDeleteBot}
-                            botId={item.id}
-                          />
+                          <button
+                            className="btn mt-4 btn-secondary"
+                            onClick={() => {
+                              setEditSelected(item.id);
+                              modalRef.current?.showModal();
+                            }}
+                          >
+                            <Cog />
+                          </button>
+                          <button
+                            className="btn mt-4 btn-error"
+                            onClick={() => {
+                              setDelSelected(item.id);
+                              modalRef.current?.showModal();
+                            }}
+                          >
+                            <Trash2 />
+                          </button>
                         </div>
                       </div>
                     </div>
