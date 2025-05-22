@@ -80,14 +80,11 @@ export default function FlexibleButtonGrid() {
   return (
     <div className="mt-5 mb-15 space-y-6 p-4 text-primary-content">
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="relative flex flex-wrap gap-2">
+        <div key={rowIndex} className="relative flex flex-wrap gap-3">
           {row.map((item, itemIndex) => {
             return (
-              <div
-                key={item.id}
-                className="flex shrink grow items-center gap-1"
-              >
-                <div className="group card relative h-15 flex-1 bg-primary hover:bg-patina-500">
+              <div key={item.id} className="flex shrink grow items-center">
+                <div className="group card relative h-15 flex-1 bg-primary hover:bg-patina-400">
                   {editingItemId === item.id ?
                     <input
                       autoFocus
@@ -126,7 +123,7 @@ export default function FlexibleButtonGrid() {
             <button
               type="button"
               onClick={() => addItemToRow(rowIndex)}
-              className="btn my-auto shrink-0 grow-0 rounded-full btn-secondary"
+              className="btn my-auto shrink-0 grow-0 btn-soft btn-primary"
             >
               <Plus size={20} />
             </button>
@@ -138,7 +135,7 @@ export default function FlexibleButtonGrid() {
         <button
           type="button"
           onClick={addRow}
-          className="btn mt-2 rounded-xl btn-accent"
+          className="btn mt-2 btn-soft btn-primary"
         >
           <Plus />
         </button>
