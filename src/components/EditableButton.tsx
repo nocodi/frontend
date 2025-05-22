@@ -70,7 +70,11 @@ export default function EditableButton({
           autoFocus
           type="text"
           value={editingLabel}
-          onChange={(e) => setEditingLabel(e.target.value)}
+          onChange={(e) =>
+            setEditingLabel(
+              e.target.value.length > 0 ? e.target.value : "default",
+            )
+          }
           onBlur={() => saveEdit(item.id)}
           onKeyDown={(e) => {
             if (e.key === "Enter") saveEdit(item.id);
