@@ -7,7 +7,7 @@ import api from "../services/api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
-import FlexMatrix from "./FlexBox";
+import ButtonGrid from "./ButtonGrid";
 
 const parseRewValue = (rawValue: formValuesType[string]) => {
   if (typeof rawValue === "string") {
@@ -218,7 +218,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                 </div>
               ))}
             </div>
-            <FlexMatrix />
+            <ButtonGrid />
             <div className="modal-action">
               <button
                 type="submit"
