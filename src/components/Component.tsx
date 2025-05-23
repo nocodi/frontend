@@ -14,6 +14,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes();
+
   function deleteComponent() {
     setLoading(true);
     if (contentTypes) {
@@ -33,23 +34,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
     }
   }
 
-  function editComponentDetails() {
-    setUnattendedComponent(data);
-  }
-
-  return (
-    <div className="group flex flex-col items-center gap-1">
-      <div className="invisible flex h-3 flex-row justify-center gap-1 text-base-content opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
-        <Trash2
-          onClick={() => deleteComponent()}
-          className="size-3 cursor-pointer hover:text-patina-400"
-        />
-        <Cog
-          onClick={() => editComponentDetails()}
-          className="size-3 cursor-pointer hover:text-patina-400"
-        />
-      </div>
-      <div className="relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
+  if (data.component_type === "BUTTON") {
+    return (
+      <div className="relative flex h-fit min-h-9 w-10 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
         <div>
           <Handle
             type="source"
@@ -59,22 +46,52 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               width: 7,
               height: 7,
             }}
-          ></Handle>
-          {data.component_type != "TRIGGER" && (
-            <Handle
-              type="target"
-              position={Position.Left}
-              isConnectable={isConnectable}
-              isConnectableStart={false}
-              style={{
-                width: 1,
-                height: 8,
-                borderRadius: 1,
-              }}
-            />
-          )}
+          />
         </div>
         <span className="text-[10px] font-medium">{data.component_name}</span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col">
+      <div className="group flex flex-col items-center gap-1">
+        <div className="invisible flex h-3 flex-row justify-center gap-1 text-base-content opacity-0 transition-opacity duration-300 ease-in group-hover:visible group-hover:opacity-100">
+          <Trash2
+            onClick={() => deleteComponent()}
+            className="size-3 cursor-pointer hover:text-patina-400"
+          />
+          <Cog
+            onClick={() => setUnattendedComponent(data)}
+            className="size-3 cursor-pointer hover:text-patina-400"
+          />
+        </div>
+        <div className="relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
+          <div>
+            <Handle
+              type="source"
+              position={Position.Right}
+              isConnectable={isConnectable}
+              style={{
+                width: 7,
+                height: 7,
+              }}
+            ></Handle>
+            {data.component_type != "TRIGGER" && (
+              <Handle
+                type="target"
+                position={Position.Left}
+                isConnectable={isConnectable}
+                isConnectableStart={false}
+                style={{
+                  width: 1,
+                  height: 8,
+                  borderRadius: 1,
+                }}
+              />
+            )}
+          </div>
+          <span className="text-[10px] font-medium">{data.component_name}</span>
+        </div>
       </div>
     </div>
   );
