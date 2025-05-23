@@ -30,7 +30,7 @@ export default function ButtonGrid() {
   };
 
   return (
-    <div className="mt-5 mb-15 space-y-6 p-4 text-primary-content">
+    <div className="mt-7 mb-10 flex flex-col gap-3 text-primary-content">
       {rows.map((row, rowIndex) => (
         <div key={rowIndex} className="relative flex flex-wrap gap-3">
           {row.map((item, itemIndex) => {
@@ -52,7 +52,7 @@ export default function ButtonGrid() {
             <button
               type="button"
               onClick={() => addItemToRow(rowIndex)}
-              className="btn my-auto shrink-0 grow-0 btn-soft btn-primary"
+              className="btn my-auto h-15 shrink-0 grow-0 btn-soft btn-secondary"
             >
               <Plus size={20} />
             </button>
@@ -64,7 +64,7 @@ export default function ButtonGrid() {
         <button
           type="button"
           onClick={addRow}
-          className="btn mt-2 btn-soft btn-primary"
+          className="btn mt-2 btn-soft btn-secondary"
         >
           <Plus />
         </button>
