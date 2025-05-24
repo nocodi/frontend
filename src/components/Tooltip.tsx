@@ -17,7 +17,7 @@ export default function Tooltip({ children, content }: TooltipProps) {
       const rect = triggerRef.current.getBoundingClientRect();
       setCoords({
         top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX - 400,
+        left: rect.left + window.scrollX,
       });
     }
     setVisible(true);
@@ -53,7 +53,12 @@ export default function Tooltip({ children, content }: TooltipProps) {
           <div
             ref={tooltipRef}
             className="absolute z-50 max-w-xs rounded bg-base-content px-2 py-1 text-xs text-base-300 shadow"
-            style={{ top: coords.top, left: coords.left }}
+            style={{
+              top: coords.top,
+              left: coords.left,
+              transform: "translateX(-100%)",
+              marginRight: "8px",
+            }}
             onMouseLeave={handleMouseLeave}
             onMouseEnter={() => setVisible(true)}
           >
