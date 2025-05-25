@@ -21,6 +21,7 @@ export type ContentType = {
   description: string;
   path: string;
   type: string;
+  component_type: "TELEGRAM" | "TRIGGER" | "CONDITIONAL" | "CODE" | "";
   schema: Record<string, SchemaType>;
 };
 
@@ -35,6 +36,7 @@ export type ComponentType = {
     | "CODE"
     | "BUTTON"
     | "GROUP";
+
   component_content_type: number;
   position_x: number;
   position_y: number;
