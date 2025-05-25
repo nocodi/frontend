@@ -28,8 +28,9 @@ import { toast } from "react-toastify";
 import { useDnD } from "../components/DnDContext";
 import { useLoading } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
+import { GroupNode } from "./GroupNode";
 
-const nodeTypes = { customNode: Component };
+const nodeTypes = { customNode: Component, group: GroupNode };
 const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow() {
@@ -82,8 +83,9 @@ export default function Flow() {
 
                   const prevEdgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
                   // update previous_component of targetNode
-                  setNodes(() =>
-                    nodes.map((item) =>
+
+                  setNodes((nds) =>
+                    nds.map((item) =>
                       item.id === targetNode.id ?
                         {
                           ...item,
@@ -121,14 +123,19 @@ export default function Flow() {
         x: x ?? window.innerWidth / 2 + Math.random() * 50 + 1,
         y: y ?? window.innerHeight / 2 + Math.random() * 50 + 1,
       });
+      const dataPayload: Record<string, unknown> = {
+        component_content_type: content.id,
+        component_name: content.name,
+        position_x: position.x,
+        position_y: position.y,
+        previous_component: null,
+      };
+
+      if (content.schema && "chat_id" in content.schema) {
+        dataPayload.chat_id = ".chat.id";
+      }
       api
-        .post(`${content.path.split(".ir")[1]}`, {
-          component_content_type: content.id,
-          component_name: content.name,
-          position_x: position.x,
-          position_y: position.y,
-          previous_component: null,
-        })
+        .post(`${content.path.split(".ir")[1]}`, dataPayload)
         .then((res) => {
           const newNode = makeNode(res.data as ComponentType, position);
           flowInstance.addNodes(newNode);
@@ -138,7 +145,7 @@ export default function Flow() {
           toast(err.message);
         });
     },
-    [flowInstance, setNodes],
+    [flowInstance, setUnattendedComponent],
   );
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -185,8 +192,8 @@ export default function Flow() {
         )
         .then(() => {})
         .catch((err) => {
-          setNodes(() =>
-            nodes.map((item) =>
+          setNodes((nds) =>
+            nds.map((item) =>
               item.id === node.id ?
                 {
                   ...item,

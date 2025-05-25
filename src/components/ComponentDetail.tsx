@@ -1,12 +1,15 @@
 import { ComponentType, SchemaType } from "../types/Component";
 import { useComponentDetails, useContentTypes } from "../services/getQueries";
 import { useEffect, useState } from "react";
+import { HelpCircle } from "lucide-react";
+import Tooltip from "./Tooltip";
 
 import Loading from "./Loading";
 import api from "../services/api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
+import ButtonGrid from "./ButtonGrid";
 
 const parseRewValue = (rawValue: formValuesType[string]) => {
   if (typeof rawValue === "string") {
@@ -39,7 +42,7 @@ const validateField = (
   if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
     return "Please select 'true' or 'false'.";
   }
-  if (type === "CharField" && !/^[\w\s/]+$/.test(value)) {
+  if (type === "CharField" && !/^[\w\s./]+$/.test(value)) {
     return "Only letters and numbers are allowed.";
   }
   if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
@@ -159,9 +162,14 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
             <div className="mt-4 grid w-full grid-cols-1 sm:grid-cols-3 sm:gap-4">
               {Object.entries(componentSchema).map(([key, value]) => (
                 <div key={key} className="sm:col-span-3">
-                  <label className="label mt-4 mb-2 text-base-content sm:mt-0">
+                  <label className="label mt-4 mb-2 flex items-center gap-2 text-base-content sm:mt-0">
                     {value?.verbose_name}
                     {value?.required && <span className="text-error">*</span>}
+                    {value?.help_text && (
+                      <Tooltip content={value.help_text}>
+                        <HelpCircle className="size-4 cursor-help text-base-content/70 hover:text-base-content" />
+                      </Tooltip>
+                    )}
                   </label>
                   {value?.type === "BooleanField" ?
                     <select
@@ -217,7 +225,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                 </div>
               ))}
             </div>
-
+            <ButtonGrid />
             <div className="modal-action">
               <button
                 type="submit"
