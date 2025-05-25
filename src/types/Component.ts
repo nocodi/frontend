@@ -28,7 +28,13 @@ export type ComponentType = {
   id: number;
   previous_component: number | null;
   component_name: string;
-  component_type: "TELEGRAM" | "TRIGGER" | "CONDITIONAL" | "CODE";
+  component_type:
+    | "TELEGRAM"
+    | "TRIGGER"
+    | "CONDITIONAL"
+    | "CODE"
+    | "BUTTON"
+    | "GROUP";
   component_content_type: number;
   position_x: number;
   position_y: number;

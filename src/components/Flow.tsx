@@ -28,8 +28,9 @@ import { toast } from "react-toastify";
 import { useDnD } from "../components/DnDContext";
 import { useLoading } from "../pages/Workflow";
 import { useUnattended } from "./UnattendedComponentContext";
+import { GroupNode } from "./GroupNode";
 
-const nodeTypes = { customNode: Component };
+const nodeTypes = { customNode: Component, group: GroupNode };
 const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow() {
