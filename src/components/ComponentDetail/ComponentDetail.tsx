@@ -1,12 +1,15 @@
-import { ComponentType, SchemaType } from "../types/Component";
-import { useComponentDetails, useContentTypes } from "../services/getQueries";
+import { ComponentType, SchemaType } from "../../types/Component";
+import {
+  useComponentDetails,
+  useContentTypes,
+} from "../../services/getQueries";
 import { useEffect, useState } from "react";
 import { HelpCircle } from "lucide-react";
-import Tooltip from "./Tooltip";
+import Tooltip from "../ContentTypes/Tooltip";
 
-import Loading from "./Loading";
-import api from "../services/api";
-import { formValuesType } from "../types/ComponentDetailForm";
+import Loading from "../Loading";
+import api from "../../services/api";
+import { formValuesType } from "../../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";

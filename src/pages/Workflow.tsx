@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from "react";
 import CodeGeneration from "../components/CodeGeneration";
 
 import DeployCode from "../components/DeployCode";
-import DnDFlow from "../components/DndFlow";
+import DnDFlow from "../components/Flow/DndFlow";
 import Loading from "../components/Loading";
 import { useIsFetching } from "@tanstack/react-query";
 

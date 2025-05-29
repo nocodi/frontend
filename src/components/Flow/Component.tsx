@@ -1,12 +1,12 @@
 import { Cog, Trash2 } from "lucide-react";
 import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
-import { ComponentType } from "../types/Component";
-import api from "../services/api";
-import { getPathOfContent } from "../utils/freqFuncs";
+import { ComponentType } from "../../types/Component";
+import api from "../../services/api";
+import { getPathOfContent } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
-import { useContentTypes } from "../services/getQueries";
-import { useLoading } from "../pages/Workflow";
-import { useUnattended } from "./UnattendedComponentContext";
+import { useContentTypes } from "../../services/getQueries";
+import { useLoading } from "../../pages/Workflow";
+import { useUnattended } from "../Context/UnattendedComponentContext";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();

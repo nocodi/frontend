@@ -7,11 +7,11 @@ import {
 } from "reactflow";
 
 import { Trash2 } from "lucide-react";
-import api from "../services/api";
-import { getPathOfContent } from "../utils/freqFuncs";
+import api from "../../services/api";
+import { getPathOfContent } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
-import { useContentTypes } from "../services/getQueries";
-import { useLoading } from "../pages/Workflow";
+import { useContentTypes } from "../../services/getQueries";
+import { useLoading } from "../../pages/Workflow";
 
 export default function CustomEdge({
   id,

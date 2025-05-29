@@ -1,6 +1,6 @@
 import "reactflow/dist/style.css";
 
-import { ComponentType, ContentType } from "../types/Component";
+import { ComponentType, ContentType } from "../../types/Component";
 import ReactFlow, {
   Background,
   Connection,
@@ -14,20 +14,20 @@ import ReactFlow, {
   useNodesState,
   useReactFlow,
 } from "reactflow";
-import { useBotSchema, useContentTypes } from "../services/getQueries";
+import { useBotSchema, useContentTypes } from "../../services/getQueries";
 import { useCallback, useRef, useState } from "react";
 
 import Component from "./Component";
-import ComponentDetail from "./ComponentDetail";
-import ContentTypesList from "./ContentTypesList";
+import ComponentDetail from "../ComponentDetail/ComponentDetail";
+import ContentTypesList from "../ContentTypes/ContentTypesList";
 import CustomEdge from "./EdgeComponent";
 import { Plus } from "lucide-react";
-import api from "../services/api";
-import { getPathOfContent, makeNode } from "../utils/freqFuncs";
+import api from "../../services/api";
+import { getPathOfContent, makeNode } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
-import { useDnD } from "../components/DnDContext";
-import { useLoading } from "../pages/Workflow";
-import { useUnattended } from "./UnattendedComponentContext";
+import { useDnD } from "../Context/DnDContext";
+import { useLoading } from "../../pages/Workflow";
+import { useUnattended } from "../Context/UnattendedComponentContext";
 import { GroupNode } from "./GroupNode";
 
 const nodeTypes = { customNode: Component, group: GroupNode };

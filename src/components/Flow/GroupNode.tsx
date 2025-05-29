@@ -1,5 +1,5 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { ComponentType } from "../types/Component";
+import { ComponentType } from "../../types/Component";
 
 export const GroupNode = ({
   data,
