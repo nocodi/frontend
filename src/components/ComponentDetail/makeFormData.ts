@@ -1,7 +1,7 @@
 import { SchemaType } from "../../types/Component";
 import { formValuesType } from "../../types/ComponentDetailForm";
 
-type componentSchemaType = {
+export type componentSchemaType = {
   [k: string]: SchemaType;
 };
 
