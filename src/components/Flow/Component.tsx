@@ -2,17 +2,19 @@ import { Cog, Trash2 } from "lucide-react";
 import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
 import { ComponentType } from "../../types/Component";
 import api from "../../services/api";
-import { getPathOfContent } from "../../utils/freqFuncs";
+import { getPathOfContent, sliceString } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
 import { useContentTypes } from "../../services/getQueries";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
+import { useState } from "react";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes();
+  const [summaryData, setSummaryData] = useState<null | string>(null);
 
   function deleteComponent() {
     setLoading(true);
@@ -64,7 +66,11 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             className="size-3 cursor-pointer hover:text-patina-400"
           />
         </div>
-        <div className="relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
+        <div
+          onMouseEnter={() => setSummaryData("/start")}
+          onMouseLeave={() => setSummaryData(null)}
+          className="group relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
+        >
           <div>
             <Handle
               type="source"
@@ -89,7 +95,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               />
             )}
           </div>
-          <span className="text-[10px] font-medium">{data.component_name}</span>
+          <span className="text-[10px] font-medium">
+            {summaryData ? sliceString(summaryData, 10) : data.component_name}
+          </span>
         </div>
       </div>
     </div>
