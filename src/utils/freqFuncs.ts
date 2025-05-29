@@ -42,3 +42,11 @@ export function makeNode(
 
   return newNode;
 }
+
+export function sliceString(text: string, to: number): string {
+  if (text.length > to) {
+    return text.slice(0, to) + " ...";
+  }
+
+  return text;
+}
