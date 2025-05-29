@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { ContentType } from "../types/Component";
-import SearchBar from "./searchBar";
-import Tooltip from "./Tooltip";
+import { ContentType } from "../../types/Component";
+import SearchBar from "../searchBar";
+import Tooltip from "../Tooltip";
 import { ArrowLeft, X, Bot, Zap, Settings2, Puzzle } from "lucide-react";
-import { useContentTypes } from "../services/getQueries";
-import { useDnD } from "./DnDContext";
+import { useContentTypes } from "../../services/getQueries";
+import { useDnD } from "../Context/DnDContext";
 
 const CATEGORIES = ["Telegram", "Trigger", "Conditional", "Other"];
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
