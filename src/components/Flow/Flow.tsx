@@ -5,7 +5,6 @@ import ReactFlow, {
   Background,
   Connection,
   Controls,
-  DefaultEdgeOptions,
   Edge,
   MiniMap,
   Node,
@@ -16,39 +15,34 @@ import ReactFlow, {
 } from "reactflow";
 import { useBotSchema, useContentTypes } from "../../services/getQueries";
 import { useCallback, useRef, useState } from "react";
-
 import Component from "./Component";
 import ComponentDetail from "../ComponentDetail/ComponentDetail";
 import ContentTypesList from "../ContentTypes/ContentTypesList";
 import CustomEdge from "./EdgeComponent";
 import { Plus } from "lucide-react";
-import api from "../../services/api";
-import { getPathOfContent, makeNode } from "../../utils/freqFuncs";
-import { toast } from "react-toastify";
 import { useDnD } from "../Context/DnDContext";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
 import { GroupNode } from "./GroupNode";
+import { handleConn } from "./handleConn";
+import { makeComponent } from "./makeComponent";
+import { NodeDragExitService } from "./NodeDragExitService";
 
 const nodeTypes = { customNode: Component, group: GroupNode };
 const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow() {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-
   const [draggingNodeXY, setDraggingNodeXY] = useState<{
     x: number;
     y: number;
   }>({ x: -1, y: -1 });
-
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
   const setLoading = useLoading();
   useBotSchema(setNodes, setEdges);
   const { contentTypes } = useContentTypes(0);
@@ -56,95 +50,14 @@ export default function Flow() {
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
       setLoading(true);
-      if (connection.target && connection.source) {
-        const targetNode: undefined | Node<ComponentType> =
-          flowInstance.getNode(connection.target);
-
-        const prevComponentId: number = parseInt(connection.source);
-        if (targetNode && contentTypes) {
-          const newEdgeId: string = `e${connection.source}-${connection.target}`;
-          const exists = flowInstance.getEdge(newEdgeId);
-          if (!exists) {
-            api
-              .patch(
-                `${getPathOfContent(targetNode.data.component_content_type, contentTypes)}${connection.target}/`,
-                {
-                  previous_component: prevComponentId,
-                },
-              )
-              .then(() => {
-                if (connection.source && connection.target) {
-                  const newEdge: Edge<DefaultEdgeOptions> = {
-                    id: newEdgeId,
-                    source: connection.source,
-                    target: connection.target,
-                    type: "customEdge",
-                  };
-
-                  const prevEdgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
-                  // update previous_component of targetNode
-
-                  setNodes((nds) =>
-                    nds.map((item) =>
-                      item.id === targetNode.id ?
-                        {
-                          ...item,
-                          data: {
-                            ...item.data,
-                            previous_component: parseInt(connection.source!),
-                          },
-                        }
-                      : item,
-                    ),
-                  );
-                  // update new edge
-                  flowInstance.deleteElements({ edges: [{ id: prevEdgeId }] });
-                  flowInstance.addEdges(newEdge);
-                }
-              })
-              .catch((err) => {
-                toast(err.message);
-              })
-              .finally(() => {
-                setLoading(false);
-              });
-          } else {
-            setLoading(false);
-          }
-        }
-      }
+      handleConn(flowInstance, connection, contentTypes, setLoading, setNodes);
     },
 
     [setEdges, contentTypes],
   );
   const makeNewComponent = useCallback(
-    (content: ContentType, x?: number, y?: number) => {
-      const position = flowInstance.screenToFlowPosition({
-        x: x ?? window.innerWidth / 2 + Math.random() * 50 + 1,
-        y: y ?? window.innerHeight / 2 + Math.random() * 50 + 1,
-      });
-      const dataPayload: Record<string, unknown> = {
-        component_content_type: content.id,
-        component_name: content.name,
-        position_x: position.x,
-        position_y: position.y,
-        previous_component: null,
-      };
-
-      if (content.schema && "chat_id" in content.schema) {
-        dataPayload.chat_id = ".chat.id";
-      }
-      api
-        .post(`${content.path.split(".ir")[1]}`, dataPayload)
-        .then((res) => {
-          const newNode = makeNode(res.data as ComponentType, position);
-          flowInstance.addNodes(newNode);
-          setUnattendedComponent(newNode.data);
-        })
-        .catch((err) => {
-          toast(err.message);
-        });
-    },
+    (content: ContentType, x?: number, y?: number) =>
+      makeComponent(flowInstance, content, setUnattendedComponent, x, y),
     [flowInstance, setUnattendedComponent],
   );
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -176,38 +89,13 @@ export default function Flow() {
     _event: React.MouseEvent,
     node: Node,
   ) => {
-    if (
-      draggingNodeXY.x !== node.position.x &&
-      draggingNodeXY.y !== node.position.y &&
-      contentTypes
-    ) {
-      setLoading(true);
-      api
-        .patch(
-          `${getPathOfContent(node.data.component_content_type, contentTypes)}${node.id}/`,
-          {
-            position_x: node.position.x,
-            position_y: node.position.y,
-          },
-        )
-        .then(() => {})
-        .catch((err) => {
-          setNodes((nds) =>
-            nds.map((item) =>
-              item.id === node.id ?
-                {
-                  ...item,
-                  position: { x: draggingNodeXY.x, y: draggingNodeXY.y },
-                }
-              : item,
-            ),
-          );
-          toast(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+    NodeDragExitService(
+      draggingNodeXY,
+      node,
+      contentTypes,
+      setLoading,
+      setNodes,
+    );
   };
 
   return (
