@@ -13,48 +13,9 @@ import { formValuesType } from "../../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";
-
-const parseRewValue = (rawValue: formValuesType[string]) => {
-  if (typeof rawValue === "string") {
-    return rawValue;
-  } else if (rawValue instanceof File) {
-    return rawValue.name;
-  } else if (typeof rawValue === "number" || typeof rawValue === "boolean") {
-    return rawValue.toString();
-  } else if (rawValue != null) {
-    return JSON.stringify(rawValue);
-  }
-  return "";
-};
-
-const validateField = (
-  value: string,
-  type: SchemaType["type"],
-  required: boolean,
-): string => {
-  if (required && !value.toString().trim()) {
-    return "This field is required.";
-  }
-
-  if (!value.toString().trim()) return "";
-
-  if (type === "FileField" && value === null) {
-    return "Please provide a file";
-  }
-
-  if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
-    return "Please select 'true' or 'false'.";
-  }
-  if (type === "CharField" && !/^[\w\s./]+$/.test(value)) {
-    return "Only letters and numbers are allowed.";
-  }
-  if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
-    return "Please enter a valid integer.";
-  }
-  // TODO FloatField
-
-  return "";
-};
+import { parseRawValue } from "./parseRawValue";
+import { validateField } from "./validateField";
+import { makeFormData } from "./makeFormData";
 
 type PropsType = {
   node: ComponentType;
@@ -88,7 +49,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
 
   const handleBlur = (key: string, fieldSchema: SchemaType) => {
     const error = validateField(
-      parseRewValue(formValues[key]),
+      parseRawValue(formValues[key]),
       fieldSchema.type,
       fieldSchema.required,
     );
@@ -97,25 +58,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   };
 
   const handleSubmit = (override?: formValuesType) => {
-    const formData = new FormData();
-    Object.entries(componentSchema).forEach(([key, schema]) => {
-      const value = override?.[key] ?? formValues[key];
-      if (value === null || value === undefined || !schema) return;
-
-      if (schema.type === "FileField") {
-        if (value instanceof File) formData.append(key, value);
-      } else if (schema.type === "BooleanField") {
-        if (value == "true" || value == "false") formData.append(key, value);
-      } else if (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean"
-      ) {
-        formData.append(key, value.toString());
-      } else {
-        formData.append(key, JSON.stringify(value)); // fallback for objects/arrays
-      }
-    });
+    const formData = makeFormData(componentSchema, override, formValues);
 
     setLoading(true);
     api
