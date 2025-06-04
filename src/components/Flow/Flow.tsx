@@ -16,7 +16,7 @@ import ReactFlow, {
 import { useBotSchema, useContentTypes } from "../../services/getQueries";
 import { useCallback, useRef, useState } from "react";
 import Component from "./Component";
-import ComponentDetail from "../ComponentDetail/ComponentDetail";
+import ComponentDetail from "../ComponentDetail";
 import ContentTypesList from "../ContentTypes/ContentTypesList";
 import CustomEdge from "./EdgeComponent";
 import { Plus } from "lucide-react";
