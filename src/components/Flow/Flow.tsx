@@ -24,8 +24,8 @@ import { useDnD } from "../Context/DnDContext";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
 import { GroupNode } from "./GroupNode";
-import { HandleConn } from "./handleConn";
-import { MakeComponent } from "./makeComponent";
+import { HandleConn } from "./HandleConn";
+import { MakeComponent } from "./MakeComponent";
 import { NodeDragExitService } from "./NodeDragExitService";
 
 const nodeTypes = { customNode: Component, group: GroupNode };
