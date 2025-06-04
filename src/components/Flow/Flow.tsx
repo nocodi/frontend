@@ -88,7 +88,13 @@ export default function Flow() {
     _event: React.MouseEvent,
     node: Node,
   ) => {
-    HandleNodeDragExit(draggingNodeXY, node, contentTypes, setLoading);
+    HandleNodeDragExit(
+      flowInstance,
+      draggingNodeXY,
+      node,
+      contentTypes,
+      setLoading,
+    );
   };
 
   return (

@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import api from "../../services/api";
 import { ContentType } from "../../types/Component";
 import { getPathOfContent } from "../../utils/freqFuncs";
-import { Node, useReactFlow } from "reactflow";
+import { Node, ReactFlowInstance } from "reactflow";
 import { loadingContextType } from "../../pages/Workflow";
 
 export type DraggingNodeXY = {
@@ -11,12 +11,12 @@ export type DraggingNodeXY = {
 };
 
 export function HandleNodeDragExit(
+  flowInstance: ReactFlowInstance,
   draggingNodeXY: DraggingNodeXY,
   node: Node,
   contentTypes: ContentType[] | undefined,
   setLoading: loadingContextType,
 ) {
-  const flowInstance = useReactFlow();
   if (
     draggingNodeXY.x !== node.position.x &&
     draggingNodeXY.y !== node.position.y &&
