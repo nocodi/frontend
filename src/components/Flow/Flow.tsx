@@ -49,14 +49,14 @@ export default function Flow() {
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
-      HandleConn(connection, contentTypes, setLoading);
+      HandleConn(flowInstance, connection, contentTypes, setLoading);
     },
 
-    [setEdges, contentTypes],
+    [flowInstance, contentTypes, setLoading],
   );
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) =>
-      MakeComponent(content, setUnattendedComponent, x, y),
+      MakeComponent(flowInstance, content, setUnattendedComponent, x, y),
     [flowInstance, setUnattendedComponent],
   );
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {

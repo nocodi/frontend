@@ -3,7 +3,7 @@ import {
   DefaultEdgeOptions,
   Edge,
   Node,
-  useReactFlow,
+  ReactFlowInstance,
 } from "reactflow";
 import { ComponentType, ContentType } from "../../types/Component";
 import api from "../../services/api";
@@ -12,12 +12,11 @@ import { toast } from "react-toastify";
 import { loadingContextType } from "../../pages/Workflow";
 
 export function HandleConn(
+  flowInstance: ReactFlowInstance,
   connection: Edge | Connection,
   contentTypes: ContentType[] | undefined,
   setLoading: loadingContextType,
 ) {
-  const flowInstance = useReactFlow();
-
   if (connection.target && connection.source) {
     const targetNode: undefined | Node<ComponentType> = flowInstance.getNode(
       connection.target,
