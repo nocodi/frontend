@@ -10,7 +10,7 @@ export type DraggingNodeXY = {
   y: number;
 };
 
-export function NodeDragExitService(
+export function HandleNodeDragExit(
   draggingNodeXY: DraggingNodeXY,
   node: Node,
   contentTypes: ContentType[] | undefined,

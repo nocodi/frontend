@@ -26,7 +26,7 @@ import { useUnattended } from "../Context/UnattendedComponentContext";
 import { GroupNode } from "./GroupNode";
 import { HandleConn } from "./HandleConn";
 import { MakeComponent } from "./MakeComponent";
-import { NodeDragExitService } from "./NodeDragExitService";
+import { HandleNodeDragExit } from "./HandleNodeDragExit";
 
 const nodeTypes = { customNode: Component, group: GroupNode };
 const edgeTypes = { customEdge: CustomEdge };
@@ -88,7 +88,7 @@ export default function Flow() {
     _event: React.MouseEvent,
     node: Node,
   ) => {
-    NodeDragExitService(draggingNodeXY, node, contentTypes, setLoading);
+    HandleNodeDragExit(draggingNodeXY, node, contentTypes, setLoading);
   };
 
   return (
