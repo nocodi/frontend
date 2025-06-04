@@ -61,59 +61,56 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     setFormErrors({});
   };
 
-  const modalBox =
-    "code" in contentType.schema ?
-      <div className="modal-box max-w-4xl p-0">
-        <CodeEditor
-          initialValue={(details?.code ?? "") as string}
-          onSubmit={(updatedCode: string) => {
-            handleSubmit({ code: updatedCode });
-            onClose();
-          }}
-          onDiscard={onClose}
-        />
-      </div>
-    : <div className="modal-box bg-base-100">
-        <h3 className="text-lg font-bold text-base-content">
-          {contentType.name}
-        </h3>
-
-        {isFetching ?
-          <Loading size={30} />
-        : <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <FormFields
-              componentSchema={componentSchema}
-              formValues={formValues}
-              formErrors={formErrors}
-              setFormValues={setFormValues}
-              setFormErrors={setFormErrors}
-            />
-
-            <ButtonGrid />
-            <div className="modal-action">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? "Saving..." : "Save"}
-              </button>
-              <button type="button" className="btn" onClick={handleCancel}>
-                Cancel
-              </button>
-            </div>
-          </form>
-        }
-      </div>;
-
   return (
     <dialog className="modal-open modal">
-      {modalBox}
+      {"code" in contentType.schema ?
+        <div className="modal-box max-w-4xl p-0">
+          <CodeEditor
+            initialValue={(details?.code ?? "") as string}
+            onSubmit={(updatedCode: string) => {
+              handleSubmit({ code: updatedCode });
+              onClose();
+            }}
+            onDiscard={onClose}
+          />
+        </div>
+      : <div className="modal-box bg-base-100">
+          <h3 className="text-lg font-bold text-base-content">
+            {contentType.name}
+          </h3>
+          {isFetching ?
+            <Loading size={30} />
+          : <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <FormFields
+                componentSchema={componentSchema}
+                formValues={formValues}
+                formErrors={formErrors}
+                setFormValues={setFormValues}
+                setFormErrors={setFormErrors}
+              />
+
+              <ButtonGrid />
+              <div className="modal-action">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save"}
+                </button>
+                <button type="button" className="btn" onClick={handleCancel}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      }
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>
