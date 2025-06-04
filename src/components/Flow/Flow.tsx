@@ -49,7 +49,6 @@ export default function Flow() {
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
-      setLoading(true);
       HandleConn(connection, contentTypes, setLoading);
     },
 

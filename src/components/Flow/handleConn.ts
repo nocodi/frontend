@@ -28,6 +28,7 @@ export function HandleConn(
       const newEdgeId: string = `e${connection.source}-${connection.target}`;
       const exists = flowInstance.getEdge(newEdgeId);
       if (!exists) {
+        setLoading(true);
         api
           .patch(
             `${getPathOfContent(targetNode.data.component_content_type, contentTypes)}${connection.target}/`,
