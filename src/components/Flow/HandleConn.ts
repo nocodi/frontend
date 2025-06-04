@@ -72,8 +72,6 @@ export function HandleConn(
           .finally(() => {
             setLoading(false);
           });
-      } else {
-        setLoading(false);
       }
     }
   }
