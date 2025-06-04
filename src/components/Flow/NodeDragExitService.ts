@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import api from "../../services/api";
-import { ComponentType, ContentType } from "../../types/Component";
+import { ContentType } from "../../types/Component";
 import { getPathOfContent } from "../../utils/freqFuncs";
-import { Node } from "reactflow";
+import { Node, useReactFlow } from "reactflow";
 import { loadingContextType } from "../../pages/Workflow";
 
 export type DraggingNodeXY = {
@@ -15,10 +15,8 @@ export function NodeDragExitService(
   node: Node,
   contentTypes: ContentType[] | undefined,
   setLoading: loadingContextType,
-  setNodes: React.Dispatch<
-    React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >,
 ) {
+  const flowInstance = useReactFlow();
   if (
     draggingNodeXY.x !== node.position.x &&
     draggingNodeXY.y !== node.position.y &&
@@ -35,7 +33,7 @@ export function NodeDragExitService(
       )
       .then(() => {})
       .catch((err) => {
-        setNodes((nds) =>
+        flowInstance.setNodes((nds) =>
           nds.map((item) =>
             item.id === node.id ?
               {

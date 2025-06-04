@@ -24,8 +24,8 @@ import { useDnD } from "../Context/DnDContext";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
 import { GroupNode } from "./GroupNode";
-import { handleConn } from "./handleConn";
-import { makeComponent } from "./makeComponent";
+import { HandleConn } from "./handleConn";
+import { MakeComponent } from "./makeComponent";
 import { NodeDragExitService } from "./NodeDragExitService";
 
 const nodeTypes = { customNode: Component, group: GroupNode };
@@ -50,14 +50,14 @@ export default function Flow() {
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
       setLoading(true);
-      handleConn(flowInstance, connection, contentTypes, setLoading, setNodes);
+      HandleConn(connection, contentTypes, setLoading);
     },
 
     [setEdges, contentTypes],
   );
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) =>
-      makeComponent(flowInstance, content, setUnattendedComponent, x, y),
+      MakeComponent(content, setUnattendedComponent, x, y),
     [flowInstance, setUnattendedComponent],
   );
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -89,13 +89,7 @@ export default function Flow() {
     _event: React.MouseEvent,
     node: Node,
   ) => {
-    NodeDragExitService(
-      draggingNodeXY,
-      node,
-      contentTypes,
-      setLoading,
-      setNodes,
-    );
+    NodeDragExitService(draggingNodeXY, node, contentTypes, setLoading);
   };
 
   return (

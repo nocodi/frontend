@@ -1,11 +1,10 @@
-import { ReactFlowInstance } from "reactflow";
+import { useReactFlow } from "reactflow";
 import { ComponentType, ContentType } from "../../types/Component";
 import api from "../../services/api";
 import { makeNode } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
 
-export function makeComponent(
-  flowInstance: ReactFlowInstance,
+export function MakeComponent(
   content: ContentType,
   setUnattendedComponent: React.Dispatch<
     React.SetStateAction<ComponentType | undefined>
@@ -13,6 +12,7 @@ export function makeComponent(
   x?: number,
   y?: number,
 ) {
+  const flowInstance = useReactFlow();
   const position = flowInstance.screenToFlowPosition({
     x: x ?? window.innerWidth / 2 + Math.random() * 50 + 1,
     y: y ?? window.innerHeight / 2 + Math.random() * 50 + 1,
