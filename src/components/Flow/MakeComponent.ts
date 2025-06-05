@@ -31,7 +31,7 @@ export function MakeComponent(
   api
     .post(`${content.path.split(".ir")[1]}`, dataPayload)
     .then((res) => {
-      const newNode = makeNode(res.data as ComponentType, position);
+      const newNode = makeNode({ ...res.data } as ComponentType, position);
       flowInstance.addNodes(newNode);
       setUnattendedComponent(newNode.data);
     })
