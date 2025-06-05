@@ -66,7 +66,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             className="size-3 cursor-pointer hover:text-patina-400"
           />
         </div>
-        <div className="group/component relative flex h-12 min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content">
+        <div className="group/component relative flex h-12 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content">
           <div>
             <Handle
               type="source"
