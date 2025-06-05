@@ -14,7 +14,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes();
-  const [summaryData, setSummaryData] = useState<null | string>(null);
+  const [showSummaryData, setShowSummaryData] = useState<boolean>(false);
 
   function deleteComponent() {
     setLoading(true);
@@ -67,8 +67,8 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           />
         </div>
         <div
-          onMouseEnter={() => setSummaryData("/start")}
-          onMouseLeave={() => setSummaryData(null)}
+          onMouseEnter={() => setShowSummaryData(true)}
+          onMouseLeave={() => setShowSummaryData(false)}
           className="group relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
         >
           <div>
@@ -96,7 +96,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             )}
           </div>
           <span className="text-[10px] font-medium">
-            {summaryData ? sliceString(summaryData, 15) : data.component_name}
+            {showSummaryData ?
+              sliceString(data.hover_text ?? "", 15)
+            : data.component_name}
           </span>
         </div>
       </div>
