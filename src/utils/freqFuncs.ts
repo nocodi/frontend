@@ -31,6 +31,7 @@ export function makeNode(
     component_type,
     position_x,
     position_y,
+    hover_text: "no text/caption",
   };
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
