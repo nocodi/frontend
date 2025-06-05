@@ -35,7 +35,8 @@ export function makeNode(
   };
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
-    type: "customNode",
+    type:
+      componentData.component_name == "send message" ? "group" : "customNode",
     position: position,
     selected: false,
     data: componentData,

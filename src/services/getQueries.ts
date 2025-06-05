@@ -72,7 +72,10 @@ export const useBotSchema = (
                   x: element.position_x,
                   y: element.position_y,
                 }),
-                type: "customNode",
+                type:
+                  element.component_name == "send message" ?
+                    "group"
+                  : "customNode",
                 selected: false,
                 data: {
                   ...element,
