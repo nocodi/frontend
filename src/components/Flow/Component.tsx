@@ -66,11 +66,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             className="size-3 cursor-pointer hover:text-patina-400"
           />
         </div>
-        <div
-          onMouseEnter={() => setShowSummaryData(true)}
-          onMouseLeave={() => setShowSummaryData(false)}
-          className="group relative flex h-fit min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
-        >
+        <div className="group/component relative flex h-12 min-h-9 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content">
           <div>
             <Handle
               type="source"
@@ -95,11 +91,12 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               />
             )}
           </div>
-          <span className="text-[10px] font-medium">
-            {showSummaryData ?
-              sliceString(data.hover_text ?? "", 15)
-            : data.component_name}
-          </span>
+          <div className="text-[10px] font-medium group-hover/component:hidden">
+            {data.component_name}
+          </div>
+          <div className="hidden text-[10px] group-hover/component:block">
+            {sliceString(data.hover_text ?? "", 15)}
+          </div>
         </div>
       </div>
     </div>
