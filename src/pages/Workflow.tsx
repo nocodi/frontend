@@ -5,11 +5,11 @@ import { createContext, useContext, useState } from "react";
 import CodeGeneration from "../components/CodeGeneration";
 
 import DeployCode from "../components/DeployCode";
-import DnDFlow from "../components/DndFlow";
+import DnDFlow from "../components/Flow";
 import Loading from "../components/Loading";
 import { useIsFetching } from "@tanstack/react-query";
 
-type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
+export type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 
 const loadingContext = createContext<loadingContextType>(() => {});
 

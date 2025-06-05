@@ -1,7 +1,7 @@
-import { DnDProvider } from "./DnDContext";
+import { DnDProvider } from "../Context/DnDContext";
 import { ReactFlowProvider } from "reactflow";
 import Flow from "./Flow";
-import { UnattendedComponentProvider } from "./UnattendedComponentContext";
+import { UnattendedComponentProvider } from "../Context/UnattendedComponentContext";
 
 function DnDFlow() {
   return (
