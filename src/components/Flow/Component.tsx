@@ -96,7 +96,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
             )}
           </div>
           <span className="text-[10px] font-medium">
-            {summaryData ? sliceString(summaryData, 10) : data.component_name}
+            {summaryData ? sliceString(summaryData, 15) : data.component_name}
           </span>
         </div>
       </div>
