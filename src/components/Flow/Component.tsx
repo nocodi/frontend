@@ -7,14 +7,12 @@ import { toast } from "react-toastify";
 import { useContentTypes } from "../../services/getQueries";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
-import { useState } from "react";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
   const setUnattendedComponent = useUnattended()[1];
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes();
-  const [showSummaryData, setShowSummaryData] = useState<boolean>(false);
 
   function deleteComponent() {
     setLoading(true);
