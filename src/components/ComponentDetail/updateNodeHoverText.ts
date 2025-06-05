@@ -7,9 +7,9 @@ export function updateNodeHoverText(
 ) {
   let hover_text: string = "no text/caption";
 
-  if (formData.get("text") != null) {
+  if (formData.get("text")) {
     hover_text = formData.get("text") as string;
-  } else if (formData.get("caption") != null) {
+  } else if (formData.get("caption")) {
     hover_text = formData.get("caption") as string;
   }
   flowInstance.setNodes((nds) =>
