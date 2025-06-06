@@ -85,7 +85,6 @@ export default function LogContainer({ botId }: { botId: number }) {
       }
     };
 
-    // Use void to explicitly ignore the promise returned by fetchLogs
     void fetchLogs();
 
     const intervalId = setInterval(() => {
