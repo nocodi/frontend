@@ -173,7 +173,7 @@ function Workflow() {
                         }`}
                       >
                         <TutorialButton onClick={handleStartTutorial}>
-                          Generate Code
+                          Download
                         </TutorialButton>
                       </div>
                     </>
