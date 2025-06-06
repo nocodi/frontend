@@ -1,4 +1,4 @@
-import { Cog, Trash2 } from "lucide-react";
+import { Cog, Trash2, Bot, Zap, Settings2, Puzzle } from "lucide-react";
 import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
 import { ComponentType } from "../../types/Component";
 import api from "../../services/api";
@@ -51,6 +51,23 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       </div>
     );
   }
+
+  // Icon mapping based on component_type
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "TELEGRAM":
+        return <Bot className="mr-1 h-4 w-4" />;
+      case "TRIGGER":
+        return <Zap className="mr-1 h-4 w-4 text-yellow-500" />;
+      case "CONDITIONAL":
+        return <Settings2 className="mr-1 h-4 w-4 text-green-500" />;
+      case "CODE":
+        return <Puzzle className="mr-1 h-4 w-4 text-gray-500" />;
+      default:
+        return <Puzzle className="mr-1 h-4 w-4 text-gray-400" />;
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <div className="group flex flex-col items-center gap-1">
@@ -92,13 +109,16 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               />
             )}
           </div>
-          <div className="text-[10px] font-medium group-hover/component:hidden">
-            {data.component_name}
-          </div>
-          <div className="hidden text-[10px] font-medium group-hover/component:block">
-            {data.hover_text ?
-              sliceString(data.hover_text, 15)
-            : data.component_name}
+          <div className="flex items-center">
+            {getIcon(data.component_type)}
+            <div className="text-[10px] font-medium group-hover/component:hidden">
+              {data.component_name}
+            </div>
+            <div className="hidden text-[10px] font-medium group-hover/component:block">
+              {data.hover_text ?
+                sliceString(data.hover_text, 15)
+              : data.component_name}
+            </div>
           </div>
         </div>
       </div>
