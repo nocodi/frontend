@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Plus } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { Plus, X } from "lucide-react";
 import { toast } from "react-toastify";
 
 type NewBotDialogProps = {
@@ -10,17 +10,35 @@ type NewBotDialogProps = {
   }) => Promise<void>;
 };
 
+const TUTORIAL_STORAGE_KEY = "hasSeenNewBotButtonTutorial";
+
 export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+
   const modalRef = useRef<HTMLDialogElement>(null);
+  const newBotButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const hasSeenTutorial = localStorage.getItem(TUTORIAL_STORAGE_KEY);
+    if (!hasSeenTutorial) {
+      setShowTutorial(true);
+    }
+  }, []);
 
   const resetForm = () => {
     setName("");
     setToken("");
     setDescription("");
+  };
+
+  const handleDismissTutorial = () => {
+    localStorage.setItem(TUTORIAL_STORAGE_KEY, "true");
+    setShowTutorial(false);
+    modalRef.current?.show();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,7 +50,6 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
       modalRef.current?.close();
     } catch (error) {
       toast.error("Failed to create bot. Please try again.");
-      setIsSubmitting(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -40,9 +57,35 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
 
   return (
     <>
-      {/* Open button */}
+      {showTutorial && (
+        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm">
+          <div className="relative h-full w-full">
+            <div className="absolute top-24 left-10 animate-pulse rounded-lg bg-base-100 p-4 shadow-2xl">
+              <button
+                onClick={handleDismissTutorial}
+                className="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
+              >
+                <X className="size-4" />
+              </button>
+              <h3 className="text-lg font-bold">New Bot Button</h3>
+              <p className="py-2">
+                Click here to add a new bot by providing its name, token, and a
+                short description.
+              </p>
+              <button
+                onClick={handleDismissTutorial}
+                className="btn mt-2 btn-sm btn-primary"
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <button
-        className="btn btn-primary"
+        ref={newBotButtonRef}
+        className={`btn btn-primary ${showTutorial ? "relative z-50" : ""}`}
         onClick={() => modalRef.current?.showModal()}
       >
         <Plus className="size-6" />
