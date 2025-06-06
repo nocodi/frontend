@@ -74,7 +74,13 @@ export const useBotSchema = (
                 }),
                 type: "customNode",
                 selected: false,
-                data: { ...element },
+                data: {
+                  ...element,
+                  hover_text:
+                    element.hover_text != null && element.hover_text != "" ?
+                      element.hover_text
+                    : null,
+                },
               }),
             );
 
