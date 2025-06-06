@@ -27,8 +27,13 @@ import { GroupNode } from "./GroupNode";
 import { HandleConn } from "./HandleConn";
 import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
+import ButtonNode from "./ButtonNode";
 
-const nodeTypes = { customNode: Component, group: GroupNode };
+const nodeTypes = {
+  customNode: Component,
+  group: GroupNode,
+  button: ButtonNode,
+};
 const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow() {

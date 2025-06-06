@@ -33,10 +33,12 @@ export function makeNode(
     position_y,
     hover_text: null,
   };
+
+  const componentType = determineType(componentData.component_name);
+
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
-    type:
-      componentData.component_name == "send message" ? "group" : "customNode",
+    type: componentType,
     position: position,
     selected: false,
     data: componentData,
@@ -51,4 +53,15 @@ export function sliceString(text: string, to: number): string {
   }
 
   return text;
+}
+
+export function determineType(component_name: string): string {
+  if (component_name == "send message") {
+    return "group";
+  }
+  if (component_name == "send poll") {
+    return "button";
+  }
+
+  return "customNode";
 }

@@ -8,6 +8,7 @@ import api from "./api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { determineType } from "../utils/freqFuncs";
 
 export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
@@ -72,10 +73,7 @@ export const useBotSchema = (
                   x: element.position_x,
                   y: element.position_y,
                 }),
-                type:
-                  element.component_name == "send message" ?
-                    "group"
-                  : "customNode",
+                type: determineType(element.component_name),
                 selected: false,
                 data: {
                   ...element,
