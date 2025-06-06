@@ -46,25 +46,21 @@ function Workflow() {
     }
   }, []);
 
+  // THIS IS THE COMBINED AND CORRECTED LOGIC
+  // This single useEffect now handles positioning for BOTH tutorials.
+  // It always uses the 'deployButtonRef' to ensure the position is the same.
   useEffect(() => {
-    if (showDeployTutorial && deployButtonRef.current) {
+    if (
+      (showDeployTutorial || showCodeGenTutorial) &&
+      deployButtonRef.current
+    ) {
       const rect = deployButtonRef.current.getBoundingClientRect();
       setTutorialPosition({
         top: rect.bottom + 15,
         left: rect.left,
       });
     }
-  }, [showDeployTutorial]);
-
-  useEffect(() => {
-    if (showCodeGenTutorial && codeGenButtonRef.current) {
-      const rect = codeGenButtonRef.current.getBoundingClientRect();
-      setTutorialPosition({
-        top: rect.bottom + 15,
-        left: rect.left,
-      });
-    }
-  }, [showCodeGenTutorial]);
+  }, [showDeployTutorial, showCodeGenTutorial]); // It runs if either tutorial becomes visible
 
   const handleDismissDeployTutorial = () => {
     localStorage.setItem(DEPLOY_TUTORIAL_KEY, "true");
@@ -137,13 +133,21 @@ function Workflow() {
                 <div className="flex items-center gap-3">
                   <div
                     ref={deployButtonRef}
-                    className={`my-auto ${showDeployTutorial ? "relative z-50 rounded-md ring-2 ring-primary ring-offset-2" : ""}`}
+                    className={`my-auto ${
+                      showDeployTutorial ?
+                        "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
+                      : ""
+                    }`}
                   >
                     <DeployCode botId={Number(botId)} />
                   </div>
                   <div
                     ref={codeGenButtonRef}
-                    className={`my-auto ${showCodeGenTutorial ? "relative z-50 rounded-md ring-2 ring-primary ring-offset-2" : ""}`}
+                    className={`my-auto ${
+                      showCodeGenTutorial ?
+                        "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
+                      : ""
+                    }`}
                   >
                     <CodeGeneration botId={Number(botId)} />
                   </div>
