@@ -45,6 +45,7 @@ function Workflow() {
       setShowCodeGenTutorial(true);
     }
   }, []);
+
   useEffect(() => {
     if (
       (showDeployTutorial || showCodeGenTutorial) &&

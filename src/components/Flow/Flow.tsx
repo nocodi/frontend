@@ -51,7 +51,7 @@ export default function Flow() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialPosition, setTutorialPosition] = useState({
     top: 0,
-    right: 0,
+    left: 0,
   });
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function Flow() {
       const rect = plusButtonRef.current.getBoundingClientRect();
       setTutorialPosition({
         top: rect.top,
-        right: rect.right + 15,
+        left: rect.left + 15,
       });
     }
   }, [showTutorial]);
@@ -142,7 +142,7 @@ export default function Flow() {
             className="absolute z-50 w-72 animate-pulse rounded-lg bg-base-100 p-4 shadow-2xl"
             style={{
               top: `${tutorialPosition.top}px`,
-              right: `${tutorialPosition.right}px`,
+              left: `${tutorialPosition.left}px`,
             }}
           >
             <button
