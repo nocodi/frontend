@@ -92,8 +92,10 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           <div className="text-[10px] font-medium group-hover/component:hidden">
             {data.component_name}
           </div>
-          <div className="hidden text-[10px] group-hover/component:block">
-            {sliceString(data.hover_text ?? "", 15)}
+          <div className="hidden text-[10px] font-medium group-hover/component:block">
+            {data.hover_text ?
+              sliceString(data.hover_text, 15)
+            : data.component_name}
           </div>
         </div>
       </div>

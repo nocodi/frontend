@@ -5,7 +5,7 @@ export function updateNodeHoverText(
   formData: FormData,
   nodeID: number,
 ) {
-  let hover_text: string = "no text/caption";
+  let hover_text: string | null = null;
 
   if (formData.get("text")) {
     hover_text = formData.get("text") as string;

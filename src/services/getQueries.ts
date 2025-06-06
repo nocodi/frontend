@@ -77,7 +77,9 @@ export const useBotSchema = (
                 data: {
                   ...element,
                   hover_text:
-                    element.hover_text ? element.hover_text : "no text/caption",
+                    element.hover_text != null && element.hover_text != "" ?
+                      element.hover_text
+                    : null,
                 },
               }),
             );
