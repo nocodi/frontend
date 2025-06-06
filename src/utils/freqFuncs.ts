@@ -31,6 +31,7 @@ export function makeNode(
     component_type,
     position_x,
     position_y,
+    hover_text: null,
   };
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
@@ -41,4 +42,12 @@ export function makeNode(
   };
 
   return newNode;
+}
+
+export function sliceString(text: string, to: number): string {
+  if (text.length > to) {
+    return text.slice(0, to) + " ...";
+  }
+
+  return text;
 }

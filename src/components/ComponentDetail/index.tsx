@@ -12,6 +12,8 @@ import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";
 import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
+import { useReactFlow } from "reactflow";
+import { updateNodeHoverText } from "./updateNodeHoverText";
 
 type PropsType = {
   node: ComponentType;
@@ -19,6 +21,8 @@ type PropsType = {
 };
 
 const ComponentDetail = ({ node, onClose }: PropsType) => {
+  const flowInstance = useReactFlow();
+
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -45,6 +49,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     api
       .patch(`${componentPath}${node.id}/`, formData)
       .then(() => {
+        updateNodeHoverText(flowInstance, formData, node.id);
         onClose();
       })
       .catch((err) => {

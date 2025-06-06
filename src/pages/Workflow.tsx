@@ -178,7 +178,6 @@ function Workflow() {
                       </div>
                     </>
                   }
-
                   {loading || isFetching ?
                     <Loading size={30} />
                   : <Check size={30} className="my-auto" />}

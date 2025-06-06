@@ -38,6 +38,7 @@ export type ComponentType = {
     | "GROUP";
 
   component_content_type: number;
+  hover_text: string | null;
   position_x: number;
   position_y: number;
 };
