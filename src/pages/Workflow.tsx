@@ -19,8 +19,7 @@ export type WorkflowParams = {
   botId: string;
 };
 
-const DEPLOY_TUTORIAL_KEY = "hasSeenDeployTutorial";
-const CODE_GEN_TUTORIAL_KEY = "hasSeenCodeGenTutorial";
+const WORKFLOW_TUTORIAL_KEY = "hasSeenWorkflowTutorial";
 
 function Workflow() {
   const { botId } = useParams<WorkflowParams>();
@@ -30,76 +29,77 @@ function Workflow() {
   const deployButtonRef = useRef<HTMLDivElement>(null);
   const codeGenButtonRef = useRef<HTMLDivElement>(null);
 
+  const [hasCompletedTutorial, setHasCompletedTutorial] = useState(true);
+
   const [showDeployTutorial, setShowDeployTutorial] = useState(false);
   const [showCodeGenTutorial, setShowCodeGenTutorial] = useState(false);
-
   const [tutorialPosition, setTutorialPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
-    const hasSeenDeploy = localStorage.getItem(DEPLOY_TUTORIAL_KEY);
-    const hasSeenCodeGen = localStorage.getItem(CODE_GEN_TUTORIAL_KEY);
-
-    if (!hasSeenDeploy) {
-      setShowDeployTutorial(true);
-    } else if (!hasSeenCodeGen) {
-      setShowCodeGenTutorial(true);
+    const hasSeen = localStorage.getItem(WORKFLOW_TUTORIAL_KEY);
+    if (!hasSeen) {
+      setHasCompletedTutorial(false);
     }
   }, []);
 
   useEffect(() => {
-    if (
-      (showDeployTutorial || showCodeGenTutorial) &&
-      deployButtonRef.current
-    ) {
-      const rect = deployButtonRef.current.getBoundingClientRect();
+    let activeTutorialRef = null;
+    if (showCodeGenTutorial) {
+      activeTutorialRef = codeGenButtonRef;
+    } else if (showDeployTutorial) {
+      activeTutorialRef = deployButtonRef;
+    }
+
+    if (activeTutorialRef && activeTutorialRef.current) {
+      const rect = activeTutorialRef.current.getBoundingClientRect();
       setTutorialPosition({
         top: rect.bottom + 15,
         left: rect.left,
       });
     }
-  }, [showDeployTutorial, showCodeGenTutorial]);
+  }, [showCodeGenTutorial, showDeployTutorial]);
 
-  const handleDismissDeployTutorial = () => {
-    localStorage.setItem(DEPLOY_TUTORIAL_KEY, "true");
-    setShowDeployTutorial(false);
-
-    const hasSeenCodeGen = localStorage.getItem(CODE_GEN_TUTORIAL_KEY);
-    if (!hasSeenCodeGen) {
-      setShowCodeGenTutorial(true);
-    }
+  const handleStartTutorial = () => {
+    setShowCodeGenTutorial(true);
   };
 
-  const handleDismissCodeGenTutorial = () => {
-    localStorage.setItem(CODE_GEN_TUTORIAL_KEY, "true");
+  const handleAdvanceToDeployTutorial = () => {
     setShowCodeGenTutorial(false);
+    setShowDeployTutorial(true);
   };
+
+  const handleFinishTutorial = () => {
+    localStorage.setItem(WORKFLOW_TUTORIAL_KEY, "true");
+    setShowDeployTutorial(false);
+    setHasCompletedTutorial(true);
+  };
+
+  const TutorialButton = ({
+    onClick,
+    children,
+  }: {
+    onClick: () => void;
+    children: React.ReactNode;
+  }) => (
+    <button onClick={onClick} className="btn text-primary btn-outline">
+      {children}
+    </button>
+  );
+
+  const isTutorialActive = showCodeGenTutorial || showDeployTutorial;
 
   return (
     <>
-      {(showDeployTutorial || showCodeGenTutorial) && (
+      {isTutorialActive && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
           <div
-            className="absolute z-50 w-72 animate-pulse rounded-lg bg-base-100 p-4 shadow-2xl"
+            className="absolute z-50 w-45 animate-pulse rounded-lg bg-base-100 p-4 shadow-2xl"
             style={{
               top: `${tutorialPosition.top}px`,
               left: `${tutorialPosition.left}px`,
             }}
           >
-            {showDeployTutorial && (
-              <>
-                <h3 className="font-bold">Deploy Your Bot</h3>
-                <p className="py-2 text-sm">
-                  Click here to deploy your bot and make it live.
-                </p>
-                <button
-                  onClick={handleDismissDeployTutorial}
-                  className="btn mt-2 w-full btn-sm btn-primary"
-                >
-                  Next
-                </button>
-              </>
-            )}
             {showCodeGenTutorial && (
               <>
                 <h3 className="font-bold">Generate Code</h3>
@@ -107,7 +107,21 @@ function Workflow() {
                   Use this to see and download the underlying code for your bot.
                 </p>
                 <button
-                  onClick={handleDismissCodeGenTutorial}
+                  onClick={handleAdvanceToDeployTutorial}
+                  className="btn mt-2 w-full btn-sm btn-primary"
+                >
+                  Next
+                </button>
+              </>
+            )}
+            {showDeployTutorial && (
+              <>
+                <h3 className="font-bold">Deploy Your Bot</h3>
+                <p className="py-2 text-sm">
+                  Click here to deploy your bot and make it live.
+                </p>
+                <button
+                  onClick={handleFinishTutorial}
                   className="btn mt-2 w-full btn-sm btn-primary"
                 >
                   Got it!
@@ -128,26 +142,43 @@ function Workflow() {
                   <Undo2 />
                 </Link>
                 <div className="flex items-center gap-3">
-                  <div
-                    ref={deployButtonRef}
-                    className={`my-auto ${
-                      showDeployTutorial ?
-                        "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
-                      : ""
-                    }`}
-                  >
-                    <DeployCode botId={Number(botId)} />
-                  </div>
-                  <div
-                    ref={codeGenButtonRef}
-                    className={`my-auto ${
-                      showCodeGenTutorial ?
-                        "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
-                      : ""
-                    }`}
-                  >
-                    <CodeGeneration botId={Number(botId)} />
-                  </div>
+                  {hasCompletedTutorial ?
+                    <>
+                      <div className="my-auto">
+                        <DeployCode botId={Number(botId)} />
+                      </div>
+                      <div className="my-auto">
+                        <CodeGeneration botId={Number(botId)} />
+                      </div>
+                    </>
+                  : <>
+                      <div
+                        ref={deployButtonRef}
+                        className={`my-auto ${
+                          showDeployTutorial ?
+                            "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
+                          : ""
+                        }`}
+                      >
+                        <TutorialButton onClick={handleStartTutorial}>
+                          Deploy
+                        </TutorialButton>
+                      </div>
+                      <div
+                        ref={codeGenButtonRef}
+                        className={`my-auto ${
+                          showCodeGenTutorial ?
+                            "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
+                          : ""
+                        }`}
+                      >
+                        <TutorialButton onClick={handleStartTutorial}>
+                          Generate Code
+                        </TutorialButton>
+                      </div>
+                    </>
+                  }
+
                   {loading || isFetching ?
                     <Loading size={30} />
                   : <Check size={30} className="my-auto" />}

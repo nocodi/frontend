@@ -58,7 +58,7 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   return (
     <>
       {showTutorial && (
-        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-30 bg-base-200 backdrop-blur-sm">
           <div className="relative h-full w-full">
             <div className="absolute top-24 left-10 animate-pulse rounded-lg bg-base-100 p-4 shadow-2xl">
               <button
