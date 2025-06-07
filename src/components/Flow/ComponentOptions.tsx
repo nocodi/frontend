@@ -45,16 +45,18 @@ export const ComponentHandles = ({
 }: ComponentHandlesProps) => {
   return (
     <div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        isConnectable={isConnectable}
-        style={{
-          width: 7,
-          height: 7,
-        }}
-      ></Handle>
-      {component_type != "TRIGGER" && (
+      {component_type != "GROUP" && (
+        <Handle
+          type="source"
+          position={Position.Right}
+          isConnectable={isConnectable}
+          style={{
+            width: 7,
+            height: 7,
+          }}
+        ></Handle>
+      )}
+      {!["TRIGGER", "BUTTON"].includes(component_type) && (
         <Handle
           type="target"
           position={Position.Left}
