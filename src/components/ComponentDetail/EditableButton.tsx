@@ -1,10 +1,6 @@
 import { X } from "lucide-react";
 import { useState } from "react";
-
-export type GridItem = {
-  id: string;
-  label: string;
-};
+import { GridItem } from "../../types/ComponentDetailForm";
 
 type EditableButtonProps = {
   item: GridItem;

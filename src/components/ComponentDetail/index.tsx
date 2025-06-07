@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import Loading from "../Loading";
 import api from "../../services/api";
-import { formValuesType } from "../../types/ComponentDetailForm";
+import { formValuesType, GridItem } from "../../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";
@@ -26,6 +26,9 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [rows, setRows] = useState<GridItem[][]>([
+    [{ id: crypto.randomUUID(), label: "Item" }],
+  ]);
 
   const { contentTypes } = useContentTypes();
   const contentType = contentTypes!.find(
@@ -38,6 +41,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const componentSchema = Object.fromEntries(
     Object.keys(details ?? {}).map((key) => [key, contentType.schema[key]]),
   );
+
   useEffect(() => {
     setFormValues(details ?? {});
   }, [details]);
@@ -99,7 +103,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                 setFormErrors={setFormErrors}
               />
 
-              <ButtonGrid />
+              <ButtonGrid rows={rows} setRows={setRows} />
               <div className="modal-action">
                 <button
                   type="submit"

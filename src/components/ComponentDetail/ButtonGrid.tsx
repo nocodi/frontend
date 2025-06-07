@@ -1,14 +1,15 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
-import EditableButton, { GridItem } from "./EditableButton";
+import EditableButton from "./EditableButton";
+import { GridItem } from "../../types/ComponentDetailForm";
 
-export default function ButtonGrid() {
+type ButtonGridProps = {
+  rows: GridItem[][];
+  setRows: React.Dispatch<React.SetStateAction<GridItem[][]>>;
+};
+
+export default function ButtonGrid({ rows, setRows }: ButtonGridProps) {
   const MAX_ROWS = 5;
   const MAX_COLS = 4;
-
-  const [rows, setRows] = useState<GridItem[][]>([
-    [{ id: crypto.randomUUID(), label: "Item" }],
-  ]);
 
   const addItemToRow = (rowIndex: number) => {
     setRows((prev) =>
