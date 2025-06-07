@@ -34,35 +34,55 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   Other: <Puzzle className="h-5 w-5 text-gray-500" />,
 };
 
-const getComponentIcon = (name: string) => {
+const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
+  const iconClass =
+    size === "small" ? "mr-1 ml-1 h-4.5 w-4.5" : "mr-2 ml-2 h-6 w-6";
+  const colorClass = {
+    message: "text-blue-500",
+    photo: "text-pink-500",
+    document: "text-gray-500",
+    video: "text-purple-500",
+    voice: "text-orange-500",
+    location: "text-green-500",
+    contact: "text-teal-500",
+    poll: "text-yellow-500",
+    keyboard: "text-indigo-500",
+    reply: "text-cyan-500",
+    markup: "text-lime-500",
+    button: "text-rose-500",
+    callback: "text-fuchsia-500",
+    default: "text-gray-500",
+  };
   const lower = name.toLowerCase();
   if (lower.includes("message"))
-    return <MessageSquare className="mr-2 ml-2 h-6 w-6 text-blue-500" />;
+    return <MessageSquare className={`${iconClass} ${colorClass.message}`} />;
   if (lower.includes("photo"))
-    return <Image className="mr-2 ml-2 h-6 w-6 text-pink-500" />;
+    return <Image className={`${iconClass} ${colorClass.photo}`} />;
   if (lower.includes("document"))
-    return <FileText className="mr-2 ml-2 h-6 w-6 text-gray-500" />;
+    return <FileText className={`${iconClass} ${colorClass.document}`} />;
   if (lower.includes("video"))
-    return <Video className="mr-2 ml-2 h-6 w-6 text-purple-500" />;
+    return <Video className={`${iconClass} ${colorClass.video}`} />;
   if (lower.includes("voice"))
-    return <Mic className="mr-2 ml-2 h-6 w-6 text-orange-500" />;
+    return <Mic className={`${iconClass} ${colorClass.voice}`} />;
   if (lower.includes("location"))
-    return <MapPin className="mr-2 ml-2 h-6 w-6 text-green-500" />;
+    return <MapPin className={`${iconClass} ${colorClass.location}`} />;
   if (lower.includes("contact"))
-    return <Contact className="mr-2 ml-2 h-6 w-6 text-teal-500" />;
+    return <Contact className={`${iconClass} ${colorClass.contact}`} />;
   if (lower.includes("poll"))
-    return <BarChart2 className="mr-2 ml-2 h-6 w-6 text-yellow-500" />;
+    return <BarChart2 className={`${iconClass} ${colorClass.poll}`} />;
   if (lower.includes("keyboard"))
-    return <Keyboard className="mr-2 ml-2 h-6 w-6 text-indigo-500" />;
+    return <Keyboard className={`${iconClass} ${colorClass.keyboard}`} />;
   if (lower.includes("reply"))
-    return <Reply className="mr-2 ml-2 h-6 w-6 text-cyan-500" />;
+    return <Reply className={`${iconClass} ${colorClass.reply}`} />;
   if (lower.includes("markup"))
-    return <Layout className="mr-2 ml-2 h-6 w-6 text-lime-500" />;
+    return <Layout className={`${iconClass} ${colorClass.markup}`} />;
   if (lower.includes("button"))
-    return <Square className="mr-2 ml-2 h-6 w-6 text-rose-500" />;
+    return <Square className={`${iconClass} ${colorClass.button}`} />;
   if (lower.includes("callback"))
-    return <MousePointerClick className="mr-2 h-6 w-6 text-fuchsia-500" />;
-  return <Puzzle className="mr-2 ml-2 h-6 w-6 text-gray-500" />;
+    return (
+      <MousePointerClick className={`${iconClass} ${colorClass.callback}`} />
+    );
+  return <Puzzle className={`${iconClass} ${colorClass.default}`} />;
 };
 
 function ContentTypesList({
@@ -177,3 +197,4 @@ function ContentTypesList({
 }
 
 export default ContentTypesList;
+export { getComponentIcon };

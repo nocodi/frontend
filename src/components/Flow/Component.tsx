@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useContentTypes } from "../../services/getQueries";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
+import { getComponentIcon } from "../ContentTypes/ContentTypesList";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
@@ -52,22 +53,6 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
     );
   }
 
-  // Icon mapping based on component_type
-  const getIcon = (type: string) => {
-    switch (type) {
-      case "TELEGRAM":
-        return <Bot className="mr-1 h-4 w-4" />;
-      case "TRIGGER":
-        return <Zap className="mr-1 h-4 w-4 text-yellow-500" />;
-      case "CONDITIONAL":
-        return <Settings2 className="mr-1 h-4 w-4 text-green-500" />;
-      case "CODE":
-        return <Puzzle className="mr-1 h-4 w-4 text-gray-500" />;
-      default:
-        return <Puzzle className="mr-1 h-4 w-4 text-gray-400" />;
-    }
-  };
-
   return (
     <div className="flex flex-col">
       <div className="group flex flex-col items-center gap-1">
@@ -83,7 +68,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
         </div>
         <div
           onDoubleClick={() => setUnattendedComponent(data)}
-          className="group/component relative flex h-12 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
+          className="group/component relative flex h-12 w-30 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
         >
           <div>
             <Handle
@@ -111,7 +96,9 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           </div>
           <div className="flex shrink grow items-center">
             <div className="shrink-0 grow-0">
-              {getIcon(data.component_type)}
+              <span className="flex items-center justify-center">
+                {getComponentIcon(data.component_name, "small")}
+              </span>
             </div>
             <div className="text-[10px] font-medium group-hover/component:hidden">
               {data.component_name}
