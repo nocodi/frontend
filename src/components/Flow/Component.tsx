@@ -1,4 +1,4 @@
-import { Cog, Trash2, Bot, Zap, Settings2, Puzzle } from "lucide-react";
+import { Cog, Trash2 } from "lucide-react";
 import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
 import { ComponentType } from "../../types/Component";
 import api from "../../services/api";
