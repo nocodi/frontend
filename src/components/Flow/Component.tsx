@@ -31,24 +31,6 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
     }
   }
 
-  if (data.component_type === "BUTTON") {
-    return (
-      <div className="relative flex h-fit min-h-9 w-10 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg">
-        <div>
-          <Handle
-            type="source"
-            position={Position.Right}
-            isConnectable={isConnectable}
-            style={{
-              width: 7,
-              height: 7,
-            }}
-          />
-        </div>
-        <span className="text-[10px] font-medium">{data.component_name}</span>
-      </div>
-    );
-  }
   return (
     <div className="flex flex-col">
       <div className="group flex flex-col items-center gap-1">
