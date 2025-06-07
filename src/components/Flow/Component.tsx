@@ -1,4 +1,4 @@
-import { Handle, NodeProps, Position, useReactFlow } from "reactflow";
+import { NodeProps, useReactFlow } from "reactflow";
 import { ComponentType } from "../../types/Component";
 import api from "../../services/api";
 import { getPathOfContent, sliceString } from "../../utils/freqFuncs";
