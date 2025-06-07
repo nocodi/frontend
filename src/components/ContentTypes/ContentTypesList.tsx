@@ -2,7 +2,27 @@ import React, { useState } from "react";
 import { ContentType } from "../../types/Component";
 import SearchBar from "../searchBar";
 import Tooltip from "../Tooltip";
-import { ArrowLeft, X, Bot, Zap, Settings2, Puzzle } from "lucide-react";
+import {
+  ArrowLeft,
+  X,
+  Bot,
+  Zap,
+  Settings2,
+  Puzzle,
+  MessageSquare,
+  Image,
+  FileText,
+  Video,
+  Mic,
+  MapPin,
+  Contact,
+  BarChart2,
+  Keyboard,
+  Reply,
+  Layout,
+  Square,
+  MousePointerClick,
+} from "lucide-react";
 import { useContentTypes } from "../../services/getQueries";
 import { useDnD } from "../Context/DnDContext";
 
@@ -14,6 +34,37 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   Other: <Puzzle className="h-5 w-5 text-gray-500" />,
 };
 
+const getComponentIcon = (name: string) => {
+  const lower = name.toLowerCase();
+  if (lower.includes("message"))
+    return <MessageSquare className="mr-2 ml-2 h-6 w-6 text-blue-500" />;
+  if (lower.includes("photo"))
+    return <Image className="mr-2 ml-2 h-6 w-6 text-pink-500" />;
+  if (lower.includes("document"))
+    return <FileText className="mr-2 ml-2 h-6 w-6 text-gray-500" />;
+  if (lower.includes("video"))
+    return <Video className="mr-2 ml-2 h-6 w-6 text-purple-500" />;
+  if (lower.includes("voice"))
+    return <Mic className="mr-2 ml-2 h-6 w-6 text-orange-500" />;
+  if (lower.includes("location"))
+    return <MapPin className="mr-2 ml-2 h-6 w-6 text-green-500" />;
+  if (lower.includes("contact"))
+    return <Contact className="mr-2 ml-2 h-6 w-6 text-teal-500" />;
+  if (lower.includes("poll"))
+    return <BarChart2 className="mr-2 ml-2 h-6 w-6 text-yellow-500" />;
+  if (lower.includes("keyboard"))
+    return <Keyboard className="mr-2 ml-2 h-6 w-6 text-indigo-500" />;
+  if (lower.includes("reply"))
+    return <Reply className="mr-2 ml-2 h-6 w-6 text-cyan-500" />;
+  if (lower.includes("markup"))
+    return <Layout className="mr-2 ml-2 h-6 w-6 text-lime-500" />;
+  if (lower.includes("button"))
+    return <Square className="mr-2 ml-2 h-6 w-6 text-rose-500" />;
+  if (lower.includes("callback"))
+    return <MousePointerClick className="mr-2 h-6 w-6 text-fuchsia-500" />;
+  return <Puzzle className="mr-2 ml-2 h-6 w-6 text-gray-500" />;
+};
+
 function ContentTypesList({
   onClose,
   addSelectedComponent,
@@ -23,6 +74,7 @@ function ContentTypesList({
 }) {
   const setContent = useDnD()[1];
   const { contentTypes } = useContentTypes();
+  console.log(contentTypes);
 
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -101,26 +153,21 @@ function ContentTypesList({
         : null}
 
         {filtered?.map((item, key) => (
-          <div
-            key={`${key}`}
-            onClick={() => clickedOnComponent(item)}
-            className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
-            onDragStart={(event) => onDragStart(event, item)}
-            draggable
-          >
-            <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
-            <div>
-              <div className="ml-2 text-sm font-bold">{item.name}</div>
-
-              <Tooltip content={item.description}>
-                <div className="ml-4 text-xs">
-                  {item.description.length < 100 ?
-                    item.description
-                  : item.description.slice(0, 96) + "..."}
-                </div>
-              </Tooltip>
+          <Tooltip key={`tooltip-${key}`} content={item.description}>
+            <div
+              key={`${key}`}
+              onClick={() => clickedOnComponent(item)}
+              className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
+              onDragStart={(event) => onDragStart(event, item)}
+              draggable
+            >
+              <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
+              <div className="flex items-center">
+                {getComponentIcon(item.name)}
+                <div className="ml-2 text-sm font-bold">{item.name}</div>
+              </div>
             </div>
-          </div>
+          </Tooltip>
         ))}
 
         <div className="h-15"></div>
