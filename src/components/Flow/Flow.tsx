@@ -28,6 +28,7 @@ import { HandleConn } from "./HandleConn";
 import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
+import { nods } from "./mock";
 
 const nodeTypes = {
   customNode: Component,
@@ -46,7 +47,7 @@ export default function Flow() {
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-  const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
+  const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>(nods);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const setLoading = useLoading();
   useBotSchema(setNodes, setEdges);

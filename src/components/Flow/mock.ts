@@ -1,0 +1,67 @@
+import { Node } from "reactflow";
+import { ComponentType } from "../../types/Component";
+
+export const nods: Node<ComponentType, string | undefined>[] = [
+  {
+    id: "1",
+    position: { x: 0, y: 0 },
+    type: "group",
+    data: {
+      id: 1,
+      previous_component: null,
+      component_name: "big",
+      component_type: "GROUP",
+      component_content_type: 30,
+      hover_text: null,
+      position_x: 0,
+      position_y: 0,
+    },
+  },
+  {
+    id: "2",
+    position: { x: 220, y: 70 },
+    type: "customNode",
+    data: {
+      id: 2,
+      previous_component: null,
+      component_name: "temp",
+      component_type: "TELEGRAM",
+      component_content_type: 40,
+      hover_text: null,
+      position_x: 50,
+      position_y: 70,
+    },
+  },
+  {
+    id: "3",
+    position: { x: 10, y: 25 },
+    parentId: "1",
+    type: "button",
+    data: {
+      id: 1,
+      previous_component: null,
+      component_name: "smol",
+      component_type: "BUTTON",
+      component_content_type: 32,
+      hover_text: null,
+      position_x: 0,
+      position_y: 0,
+    },
+  },
+  {
+    id: "4",
+    position: { x: 30, y: 25 },
+    parentId: "1",
+    type: "button",
+    data: {
+      id: 4,
+      previous_component: null,
+      component_name: "smol2",
+      component_type: "BUTTON",
+      component_content_type: 32,
+      hover_text: null,
+      position_x: 20,
+      position_y: 0,
+    },
+  },
+];
