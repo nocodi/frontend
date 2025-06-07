@@ -109,14 +109,16 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               />
             )}
           </div>
-          <div className="flex items-center">
-            {getIcon(data.component_type)}
+          <div className="flex shrink grow items-center">
+            <div className="shrink-0 grow-0">
+              {getIcon(data.component_type)}
+            </div>
             <div className="text-[10px] font-medium group-hover/component:hidden">
               {data.component_name}
             </div>
             <div className="hidden text-[10px] font-medium group-hover/component:block">
               {data.hover_text ?
-                sliceString(data.hover_text, 15)
+                sliceString(data.hover_text, 12)
               : data.component_name}
             </div>
           </div>
