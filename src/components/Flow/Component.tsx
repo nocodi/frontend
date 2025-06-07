@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useContentTypes } from "../../services/getQueries";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
+import { getComponentIcon } from "../ContentTypes/ContentTypesList";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
@@ -51,6 +52,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       </div>
     );
   }
+
   return (
     <div className="flex flex-col">
       <div className="group flex flex-col items-center gap-1">
@@ -66,7 +68,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
         </div>
         <div
           onDoubleClick={() => setUnattendedComponent(data)}
-          className="group/component relative flex h-12 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
+          className="group/component relative flex h-12 w-30 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
         >
           <div>
             <Handle
@@ -92,13 +94,20 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
               />
             )}
           </div>
-          <div className="text-[10px] font-medium group-hover/component:hidden">
-            {data.component_name}
-          </div>
-          <div className="hidden text-[10px] font-medium group-hover/component:block">
-            {data.hover_text ?
-              sliceString(data.hover_text, 15)
-            : data.component_name}
+          <div className="flex shrink grow items-center">
+            <div className="shrink-0 grow-0">
+              <span className="flex items-center justify-center">
+                {getComponentIcon(data.component_name, "small")}
+              </span>
+            </div>
+            <div className="text-[10px] font-medium group-hover/component:hidden">
+              {data.component_name}
+            </div>
+            <div className="hidden text-[10px] font-medium group-hover/component:block">
+              {data.hover_text ?
+                sliceString(data.hover_text, 12)
+              : data.component_name}
+            </div>
           </div>
         </div>
       </div>
