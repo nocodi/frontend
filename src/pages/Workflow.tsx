@@ -28,11 +28,13 @@ function Workflow() {
 
   const deployButtonRef = useRef<HTMLDivElement>(null);
   const codeGenButtonRef = useRef<HTMLDivElement>(null);
+  const logButtonRef = useRef<HTMLDivElement>(null);
 
   const [hasCompletedTutorial, setHasCompletedTutorial] = useState(true);
 
   const [showDeployTutorial, setShowDeployTutorial] = useState(false);
   const [showCodeGenTutorial, setShowCodeGenTutorial] = useState(false);
+  const [showLogTutorial, setShowLogTutorial] = useState(false);
   const [tutorialPosition, setTutorialPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
@@ -48,6 +50,8 @@ function Workflow() {
       activeTutorialRef = codeGenButtonRef;
     } else if (showDeployTutorial) {
       activeTutorialRef = deployButtonRef;
+    } else {
+      activeTutorialRef = logButtonRef;
     }
 
     if (activeTutorialRef && activeTutorialRef.current) {
@@ -57,36 +61,54 @@ function Workflow() {
         left: rect.left,
       });
     }
-  }, [showCodeGenTutorial, showDeployTutorial]);
+  }, [showCodeGenTutorial, showDeployTutorial, showLogTutorial]);
 
   const handleStartTutorial = () => {
     setShowCodeGenTutorial(true);
+    setShowDeployTutorial(false);
+    setShowLogTutorial(false);
   };
 
   const handleAdvanceToDeployTutorial = () => {
     setShowCodeGenTutorial(false);
     setShowDeployTutorial(true);
+    setShowLogTutorial(false);
+  };
+
+  const handleAdvanceToLogTutorial = () => {
+    setShowCodeGenTutorial(false);
+    setShowDeployTutorial(false);
+    setShowLogTutorial(true);
   };
 
   const handleFinishTutorial = () => {
     localStorage.setItem(WORKFLOW_TUTORIAL_KEY, "true");
     setShowDeployTutorial(false);
+    setShowLogTutorial(false);
+    setShowCodeGenTutorial(false);
     setHasCompletedTutorial(true);
   };
 
   const TutorialButton = ({
     onClick,
     children,
+    disabled,
   }: {
     onClick: () => void;
     children: React.ReactNode;
+    disabled?: boolean;
   }) => (
-    <button onClick={onClick} className="btn text-primary btn-outline">
+    <button
+      onClick={onClick}
+      className="btn text-primary btn-outline"
+      disabled={disabled}
+    >
       {children}
     </button>
   );
 
-  const isTutorialActive = showCodeGenTutorial || showDeployTutorial;
+  const isTutorialActive =
+    showCodeGenTutorial || showDeployTutorial || showLogTutorial;
 
   return (
     <>
@@ -120,6 +142,18 @@ function Workflow() {
                 <p className="py-2 text-sm">
                   Click here to deploy your bot and make it live.
                 </p>
+                <button
+                  onClick={handleAdvanceToLogTutorial}
+                  className="btn mt-2 w-full btn-sm btn-primary"
+                >
+                  Next
+                </button>
+              </>
+            )}
+            {showLogTutorial && (
+              <>
+                <h3 className="font-bold">Log button</h3>
+                <p className="py-2 text-sm">Click here to see the logs live.</p>
                 <button
                   onClick={handleFinishTutorial}
                   className="btn mt-2 w-full btn-sm btn-primary"
@@ -156,6 +190,18 @@ function Workflow() {
                     </>
                   : <>
                       <div
+                        ref={logButtonRef}
+                        className={`my-auto ${
+                          showLogTutorial ?
+                            "relative z-50 rounded-md ring-2 ring-primary ring-offset-2"
+                          : ""
+                        }`}
+                      >
+                        <TutorialButton onClick={() => {}} disabled>
+                          Log
+                        </TutorialButton>
+                      </div>
+                      <div
                         ref={deployButtonRef}
                         className={`my-auto ${
                           showDeployTutorial ?
@@ -163,7 +209,7 @@ function Workflow() {
                           : ""
                         }`}
                       >
-                        <TutorialButton onClick={handleStartTutorial}>
+                        <TutorialButton onClick={() => {}} disabled>
                           Deploy
                         </TutorialButton>
                       </div>
