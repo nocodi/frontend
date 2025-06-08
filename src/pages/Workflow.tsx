@@ -1,7 +1,7 @@
 import { Check, Undo2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-
+import LogContainer from "../components/logContainerButton";
 import CodeGeneration from "../components/CodeGeneration";
 import DeployCode from "../components/DeployCode";
 import DnDFlow from "../components/Flow";
@@ -144,6 +144,9 @@ function Workflow() {
                 <div className="flex items-center gap-3">
                   {hasCompletedTutorial ?
                     <>
+                      <div className="my-auto">
+                        <LogContainer botId={Number(botId)} />
+                      </div>
                       <div className="my-auto">
                         <DeployCode botId={Number(botId)} />
                       </div>
