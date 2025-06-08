@@ -19,8 +19,8 @@ export const useLoading = () => {
 
 export type WorkflowParams = {
   botId: string;
+  // console.log(botId);
 };
-
 function Workflow() {
   const { botId } = useParams<WorkflowParams>();
   const [loading, setLoading] = useState(false);
