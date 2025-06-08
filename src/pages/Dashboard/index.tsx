@@ -38,7 +38,7 @@ const Dashboard = () => {
       description: string;
     },
   ) => {
-    await api.patch(`bot/my-bots/${botId}`, bot);
+    await api.patch(`bot/my-bots/${botId}/`, bot);
     toast.success("Bot edited successfully!");
     refetch().catch((err) => {
       toast(err.message);
