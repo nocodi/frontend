@@ -49,6 +49,21 @@ export const nods: Node<ComponentType, string | undefined>[] = [
     },
   },
   {
+    id: "5",
+    position: { x: 400, y: 100 },
+    type: "customNode",
+    data: {
+      id: 5,
+      previous_component: null,
+      component_name: "switch",
+      component_type: "CONDITIONAL",
+      component_content_type: 47,
+      hover_text: null,
+      position_x: 400,
+      position_y: 100,
+    },
+  },
+  {
     id: "4",
     position: { x: 30, y: 25 },
     parentId: "1",
