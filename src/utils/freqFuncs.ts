@@ -55,6 +55,7 @@ export function sliceString(text: string, to: number): string {
   return text;
 }
 
+// this function is temporary
 export function determineType(component_name: string): string {
   if (component_name == "send message") {
     return "group";

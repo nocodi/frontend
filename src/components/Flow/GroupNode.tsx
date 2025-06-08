@@ -1,6 +1,7 @@
 import { Handle, NodeProps, Position } from "reactflow";
 import { ComponentType } from "../../types/Component";
 
+// can move this to ComponentOptions
 export const GroupNode = ({
   data,
   isConnectable,
