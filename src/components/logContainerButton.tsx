@@ -84,7 +84,7 @@ export default function LogContainer({ botId }: { botId: number }) {
         if (isMounted) setLoading(false);
       }
     };
-
+    // Add log container
     void fetchLogs();
 
     const intervalId = setInterval(() => {
