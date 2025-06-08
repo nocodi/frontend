@@ -53,6 +53,16 @@ const Dashboard = () => {
     });
   };
 
+  const handleDeleteDialogClose = () => {
+    modalRef.current?.close();
+    setDelSelected(null);
+  };
+
+  const handleEditDialogClose = () => {
+    modalRef.current?.close();
+    setEditSelected(null);
+  };
+
   const filtered =
     query == "" ? bots : (
       bots?.filter(
@@ -72,19 +82,17 @@ const Dashboard = () => {
             <div className="modal-box">
               {editSelected && (
                 <EditBotDialog
-                  modalRef={modalRef}
                   onEdit={handleEditBot}
                   botId={editSelected}
                   bots={bots}
-                  setSelected={setEditSelected}
+                  onClose={handleEditDialogClose}
                 />
               )}
               {delSelected && (
                 <DeleteBotDialog
-                  onDelete={handleDeleteBot}
                   botId={delSelected}
-                  setDelSelected={setDelSelected}
-                  modalRef={modalRef}
+                  onDelete={handleDeleteBot}
+                  onClose={handleDeleteDialogClose}
                 />
               )}
             </div>
@@ -118,12 +126,12 @@ const Dashboard = () => {
                         <div className="flex w-full flex-row gap-3">
                           <Link
                             to={`bot/${item.id}`}
-                            className="btn mt-4 w-1/2 btn-primary"
+                            className="btn mt-4 flex-1 btn-primary"
                           >
                             Open Bot
                           </Link>
                           <button
-                            className="btn mt-4 btn-secondary"
+                            className="btn mt-4 flex-none btn-soft btn-secondary"
                             onClick={() => {
                               setEditSelected(item.id);
                               modalRef.current?.showModal();
@@ -132,7 +140,7 @@ const Dashboard = () => {
                             <Cog />
                           </button>
                           <button
-                            className="btn mt-4 btn-error"
+                            className="btn mt-4 flex-none btn-soft btn-error"
                             onClick={() => {
                               setDelSelected(item.id);
                               modalRef.current?.showModal();

@@ -4,8 +4,6 @@ import { BotData } from "../../types/BotData";
 import { toast } from "react-toastify";
 
 export type EditBotDialogProps = {
-  setSelected: React.Dispatch<React.SetStateAction<string | null>>;
-  modalRef: React.RefObject<HTMLDialogElement | null>;
   bots: BotData[] | undefined;
   botId: string | null;
   onEdit: (
@@ -16,14 +14,14 @@ export type EditBotDialogProps = {
       description: string;
     },
   ) => Promise<void>;
+  onClose: () => unknown;
 };
 
 export default function EditBotDialog({
-  onEdit,
-  botId,
   bots,
-  modalRef,
-  setSelected,
+  botId,
+  onEdit,
+  onClose,
 }: EditBotDialogProps) {
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
@@ -34,7 +32,7 @@ export default function EditBotDialog({
     setName("");
     setToken("");
     setDescription("");
-    setSelected(null);
+    onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,7 +41,7 @@ export default function EditBotDialog({
     try {
       await onEdit(botId, { name, token, description });
       resetForm();
-      modalRef.current?.close();
+      onClose();
     } catch (error) {
       toast.error("Failed to edit bot. Please try again.");
       setIsSubmitting(false);
@@ -57,7 +55,7 @@ export default function EditBotDialog({
     setName(bot ? bot.name : "");
     setToken(bot ? bot.token : "");
     setDescription(bot ? bot.description : "");
-  }, []);
+  }, [bots, botId]);
 
   return (
     <div>
@@ -106,7 +104,7 @@ export default function EditBotDialog({
             className="btn"
             onClick={() => {
               resetForm();
-              modalRef.current?.close();
+              onClose();
             }}
           >
             Cancel

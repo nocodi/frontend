@@ -2,17 +2,15 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 
 export type DeleteBotDialogProps = {
-  modalRef: React.RefObject<HTMLDialogElement | null>;
-  setDelSelected: React.Dispatch<React.SetStateAction<string | null>>;
   botId: string;
   onDelete: (botId: string) => Promise<void>;
+  onClose: () => unknown;
 };
 
 export default function DeleteBotDialog({
-  onDelete,
   botId,
-  setDelSelected,
-  modalRef,
+  onDelete,
+  onClose,
 }: DeleteBotDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -21,11 +19,9 @@ export default function DeleteBotDialog({
     setIsDeleting(true);
     try {
       await onDelete(botId);
-      modalRef.current?.close();
-      setDelSelected(null);
+      onClose();
     } catch (error) {
       toast.error("Failed to delete bot. Please try again.");
-      setIsDeleting(false);
     } finally {
       setIsDeleting(false);
     }
@@ -35,21 +31,13 @@ export default function DeleteBotDialog({
     <>
       <h3 className="text-lg font-bold">Delete bot {botId}?</h3>
       <div className="modal-action">
-        <button onClick={handleDelete} className="btn btn-primary">
+        <button onClick={handleDelete} className="btn btn-error">
           {isDeleting ? "Deleting..." : "Delete"}
         </button>
-        <button
-          className="btn"
-          onClick={() => {
-            modalRef.current?.close();
-          }}
-        >
+        <button className="btn" onClick={onClose}>
           Cancel
         </button>
       </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
     </>
   );
 }
