@@ -14,6 +14,7 @@ import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
 import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
+import { generateUUID } from "./generateUUID";
 
 type PropsType = {
   node: ComponentType;
@@ -27,7 +28,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<GridItem[][]>([
-    [{ id: crypto.randomUUID(), label: "Item" }],
+    [{ id: generateUUID(), label: "Item" }],
   ]);
 
   const { contentTypes } = useContentTypes();

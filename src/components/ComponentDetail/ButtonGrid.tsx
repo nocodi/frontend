@@ -1,29 +1,16 @@
 import { Plus } from "lucide-react";
 import EditableButton from "./EditableButton";
 import { GridItem } from "../../types/ComponentDetailForm";
-import { useState } from "react";
+import { generateUUID } from "./generateUUID";
 
-// Utility function to generate UUIDs with fallback
-function generateUUID(): string {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
+type ButtonGridProps = {
+  rows: GridItem[][];
+  setRows: React.Dispatch<React.SetStateAction<GridItem[][]>>;
+};
 
-  // Fallback for environments without crypto.randomUUID
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-export default function ButtonGrid() {
+export default function ButtonGrid({ rows, setRows }: ButtonGridProps) {
   const MAX_ROWS = 5;
   const MAX_COLS = 4;
-
-  const [rows, setRows] = useState<GridItem[][]>([
-    [{ id: generateUUID(), label: "Item" }],
-  ]);
 
   const addItemToRow = (rowIndex: number) => {
     setRows((prev) =>
