@@ -1,21 +1,35 @@
 import { Plus } from "lucide-react";
 import EditableButton from "./EditableButton";
 import { GridItem } from "../../types/ComponentDetailForm";
+import { useState } from "react";
 
-type ButtonGridProps = {
-  rows: GridItem[][];
-  setRows: React.Dispatch<React.SetStateAction<GridItem[][]>>;
-};
+// Utility function to generate UUIDs with fallback
+function generateUUID(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
 
-export default function ButtonGrid({ rows, setRows }: ButtonGridProps) {
+  // Fallback for environments without crypto.randomUUID
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+export default function ButtonGrid() {
   const MAX_ROWS = 5;
   const MAX_COLS = 4;
+
+  const [rows, setRows] = useState<GridItem[][]>([
+    [{ id: generateUUID(), label: "Item" }],
+  ]);
 
   const addItemToRow = (rowIndex: number) => {
     setRows((prev) =>
       prev.map((row, idx) =>
         idx === rowIndex && row.length < MAX_COLS ?
-          [...row, { id: crypto.randomUUID(), label: "Item" }]
+          [...row, { id: generateUUID(), label: "Item" }]
         : row,
       ),
     );
@@ -26,7 +40,7 @@ export default function ButtonGrid({ rows, setRows }: ButtonGridProps) {
       if (prev.length >= MAX_ROWS) return prev;
       const lastRow = prev[prev.length - 1];
       if (lastRow.length === 0) return prev;
-      return [...prev, [{ id: crypto.randomUUID(), label: "Item" }]];
+      return [...prev, [{ id: generateUUID(), label: "Item" }]];
     });
   };
 

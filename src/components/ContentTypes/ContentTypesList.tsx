@@ -2,7 +2,27 @@ import React, { useState } from "react";
 import { ContentType } from "../../types/Component";
 import SearchBar from "../searchBar";
 import Tooltip from "../Tooltip";
-import { ArrowLeft, X, Bot, Zap, Settings2, Puzzle } from "lucide-react";
+import {
+  ArrowLeft,
+  X,
+  Bot,
+  Zap,
+  Settings2,
+  Puzzle,
+  MessageSquare,
+  Image,
+  FileText,
+  Video,
+  Mic,
+  MapPin,
+  Contact,
+  BarChart2,
+  Keyboard,
+  Reply,
+  Layout,
+  Square,
+  MousePointerClick,
+} from "lucide-react";
 import { useContentTypes } from "../../services/getQueries";
 import { useDnD } from "../Context/DnDContext";
 
@@ -14,6 +34,57 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   Other: <Puzzle className="h-5 w-5 text-gray-500" />,
 };
 
+const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
+  const iconClass =
+    size === "small" ? "mr-1 ml-1 h-4.5 w-4.5" : "mr-2 ml-2 h-6 w-6";
+  const colorClass = {
+    message: "text-blue-500",
+    photo: "text-pink-500",
+    document: "text-gray-500",
+    video: "text-purple-500",
+    voice: "text-orange-500",
+    location: "text-green-500",
+    contact: "text-teal-500",
+    poll: "text-yellow-500",
+    keyboard: "text-indigo-500",
+    reply: "text-cyan-500",
+    markup: "text-lime-500",
+    button: "text-rose-500",
+    callback: "text-fuchsia-500",
+    default: "text-gray-500",
+  };
+  const lower = name.toLowerCase();
+  if (lower.includes("message"))
+    return <MessageSquare className={`${iconClass} ${colorClass.message}`} />;
+  if (lower.includes("photo"))
+    return <Image className={`${iconClass} ${colorClass.photo}`} />;
+  if (lower.includes("document"))
+    return <FileText className={`${iconClass} ${colorClass.document}`} />;
+  if (lower.includes("video"))
+    return <Video className={`${iconClass} ${colorClass.video}`} />;
+  if (lower.includes("voice"))
+    return <Mic className={`${iconClass} ${colorClass.voice}`} />;
+  if (lower.includes("location"))
+    return <MapPin className={`${iconClass} ${colorClass.location}`} />;
+  if (lower.includes("contact"))
+    return <Contact className={`${iconClass} ${colorClass.contact}`} />;
+  if (lower.includes("poll"))
+    return <BarChart2 className={`${iconClass} ${colorClass.poll}`} />;
+  if (lower.includes("keyboard"))
+    return <Keyboard className={`${iconClass} ${colorClass.keyboard}`} />;
+  if (lower.includes("reply"))
+    return <Reply className={`${iconClass} ${colorClass.reply}`} />;
+  if (lower.includes("markup"))
+    return <Layout className={`${iconClass} ${colorClass.markup}`} />;
+  if (lower.includes("button"))
+    return <Square className={`${iconClass} ${colorClass.button}`} />;
+  if (lower.includes("callback"))
+    return (
+      <MousePointerClick className={`${iconClass} ${colorClass.callback}`} />
+    );
+  return <Puzzle className={`${iconClass} ${colorClass.default}`} />;
+};
+
 function ContentTypesList({
   onClose,
   addSelectedComponent,
@@ -23,6 +94,7 @@ function ContentTypesList({
 }) {
   const setContent = useDnD()[1];
   const { contentTypes } = useContentTypes();
+  console.log(contentTypes);
 
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -101,26 +173,21 @@ function ContentTypesList({
         : null}
 
         {filtered?.map((item, key) => (
-          <div
-            key={`${key}`}
-            onClick={() => clickedOnComponent(item)}
-            className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
-            onDragStart={(event) => onDragStart(event, item)}
-            draggable
-          >
-            <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
-            <div>
-              <div className="ml-2 text-sm font-bold">{item.name}</div>
-
-              <Tooltip content={item.description}>
-                <div className="ml-4 text-xs">
-                  {item.description.length < 100 ?
-                    item.description
-                  : item.description.slice(0, 96) + "..."}
-                </div>
-              </Tooltip>
+          <Tooltip key={`tooltip-${key}`} content={item.description}>
+            <div
+              key={`${key}`}
+              onClick={() => clickedOnComponent(item)}
+              className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
+              onDragStart={(event) => onDragStart(event, item)}
+              draggable
+            >
+              <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
+              <div className="flex items-center">
+                {getComponentIcon(item.name)}
+                <div className="ml-2 text-sm font-bold">{item.name}</div>
+              </div>
             </div>
-          </div>
+          </Tooltip>
         ))}
 
         <div className="h-15"></div>
@@ -130,3 +197,4 @@ function ContentTypesList({
 }
 
 export default ContentTypesList;
+export { getComponentIcon };
