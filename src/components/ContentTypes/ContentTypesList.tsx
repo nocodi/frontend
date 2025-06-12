@@ -94,7 +94,6 @@ function ContentTypesList({
 }) {
   const setContent = useDnD()[1];
   const { contentTypes } = useContentTypes();
-  console.log(contentTypes);
 
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
