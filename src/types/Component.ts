@@ -23,6 +23,7 @@ export type ContentType = {
   type: string;
   component_type: "TELEGRAM" | "TRIGGER" | "CONDITIONAL" | "CODE" | "";
   schema: Record<string, SchemaType>;
+  reply_markup_supported: boolean;
 };
 
 export type ComponentType = {
