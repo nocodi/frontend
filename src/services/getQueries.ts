@@ -49,10 +49,7 @@ export const useComponentDetails = (pathOfComponent: string, id: number) => {
   return { details, isFetching };
 };
 
-export const useBotSchema = (
-  flowInstance: ReactFlowInstance,
-  contentTypes: ContentType[] | undefined,
-) => {
+export const useBotSchema = (flowInstance: ReactFlowInstance) => {
   const { botId } = useParams<WorkflowParams>();
 
   useQuery({
@@ -62,7 +59,6 @@ export const useBotSchema = (
         populateFlow({
           flowInstance: flowInstance,
           components: res.data,
-          contentTypes: contentTypes,
         });
         return true;
       }),

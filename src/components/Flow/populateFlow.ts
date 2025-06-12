@@ -1,19 +1,14 @@
 import { ReactFlowInstance } from "reactflow";
-import { ComponentType, ContentType } from "../../types/Component";
-import { determineType, getContent } from "../../utils/freqFuncs";
+import { ComponentType } from "../../types/Component";
+import { determineType } from "../../utils/freqFuncs";
 
 type populateFlowProps = {
   flowInstance: ReactFlowInstance;
   components: ComponentType[] | undefined;
-  contentTypes: ContentType[] | undefined;
 };
 
-export function populateFlow({
-  flowInstance,
-  components,
-  contentTypes,
-}: populateFlowProps) {
-  if (components && contentTypes) {
+export function populateFlow({ flowInstance, components }: populateFlowProps) {
+  if (components) {
     if (components.length > 0) {
       components.forEach((element: ComponentType) => {
         flowInstance.setNodes((nds) =>

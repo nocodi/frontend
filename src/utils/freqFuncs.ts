@@ -19,7 +19,6 @@ export const getPathOfContent = (
 export function makeNode(
   data: ComponentType,
   position: XYPosition,
-  content: ContentType,
 ): Node<ComponentType> {
   const {
     id,

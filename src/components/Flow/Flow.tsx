@@ -50,13 +50,13 @@ export default function Flow() {
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>(nods);
+  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, _setEdges, onEdgesChange] = useEdgesState([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
   const [showTutorial, setShowTutorial] = useState(false);
 
-  useBotSchema(flowInstance, contentTypes);
+  useBotSchema(flowInstance);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
