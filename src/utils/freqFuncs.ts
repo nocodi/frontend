@@ -43,11 +43,9 @@ export function makeNode(
     reply_markup_supported,
   };
 
-  const componentType = determineType(reply_markup_supported);
-
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
-    type: componentType,
+    type: "customNode",
     position: position,
     selected: false,
     data: componentData,
@@ -62,17 +60,4 @@ export function sliceString(text: string, to: number): string {
   }
 
   return text;
-}
-
-// this function is temporary
-export function determineType(reply_markup_supported: boolean): string {
-  if (reply_markup_supported) {
-    return "customGroup";
-  }
-  // }
-  // if (component_name == "send poll") {
-  //   return "button";
-  // }
-
-  return "customNode";
 }

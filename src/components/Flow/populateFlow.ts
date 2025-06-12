@@ -1,6 +1,5 @@
 import { ReactFlowInstance } from "reactflow";
 import { ComponentType } from "../../types/Component";
-import { determineType } from "../../utils/freqFuncs";
 
 type populateFlowProps = {
   flowInstance: ReactFlowInstance;
@@ -18,7 +17,7 @@ export function populateFlow({ flowInstance, components }: populateFlowProps) {
               x: element.position_x,
               y: element.position_y,
             }),
-            type: determineType(element.reply_markup_supported),
+            type: "customNode",
             selected: false,
             data: {
               ...element,
