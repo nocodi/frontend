@@ -67,7 +67,7 @@ export function sliceString(text: string, to: number): string {
 // this function is temporary
 export function determineType(reply_markup_supported: boolean): string {
   if (reply_markup_supported) {
-    return "group";
+    return "customGroup";
   }
   // }
   // if (component_name == "send poll") {

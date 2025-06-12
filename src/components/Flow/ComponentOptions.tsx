@@ -53,22 +53,16 @@ export const ComponentHeader = ({ id, data }: ComponentHeaderProps) => {
 };
 
 type ComponentHandlesProps = {
-  component_type:
-    | "TELEGRAM"
-    | "TRIGGER"
-    | "CONDITIONAL"
-    | "CODE"
-    | "BUTTON"
-    | "GROUP";
+  component: ComponentType;
   isConnectable: boolean;
 };
 
 export const ComponentHandles = ({
-  component_type,
+  component,
   isConnectable,
 }: ComponentHandlesProps) => {
   const handles = [0, 1, 2, 3, 4, 5];
-  if (component_type == "CONDITIONAL") {
+  if (component.component_type == "CONDITIONAL") {
     return (
       <>
         <div className="">
@@ -104,7 +98,7 @@ export const ComponentHandles = ({
   }
   return (
     <div>
-      {component_type != "GROUP" && (
+      {!component.reply_markup_supported && (
         <Handle
           type="source"
           position={Position.Right}
@@ -115,7 +109,7 @@ export const ComponentHandles = ({
           }}
         ></Handle>
       )}
-      {!["TRIGGER", "BUTTON"].includes(component_type) && (
+      {!["TRIGGER", "BUTTON"].includes(component.component_type) && (
         <Handle
           type="target"
           position={Position.Left}

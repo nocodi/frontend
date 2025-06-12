@@ -9,10 +9,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       <div className="group flex flex-col items-center gap-1">
         <ComponentHeader id={id} data={data} />
         <div className="group/component relative flex h-12 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content">
-          <ComponentHandles
-            component_type={data.component_type}
-            isConnectable={isConnectable}
-          />
+          <ComponentHandles component={data} isConnectable={isConnectable} />
           <div className="text-[10px] font-medium group-hover/component:hidden">
             {data.component_name}
           </div>
