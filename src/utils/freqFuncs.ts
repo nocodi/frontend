@@ -29,6 +29,7 @@ export function makeNode(
     component_content_type,
     position_x,
     position_y,
+    reply_markup_supported,
   } = data;
 
   const componentData: ComponentType = {
@@ -40,9 +41,10 @@ export function makeNode(
     position_x,
     position_y,
     hover_text: null,
+    reply_markup_supported,
   };
 
-  const componentType = determineType(content);
+  const componentType = determineType(reply_markup_supported);
 
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
@@ -64,16 +66,14 @@ export function sliceString(text: string, to: number): string {
 }
 
 // this function is temporary
-export function determineType(content: ContentType | undefined): string {
-  if (content) {
-    if (content.reply_markup_supported == true) {
-      return "group";
-    }
-    // }
-    // if (component_name == "send poll") {
-    //   return "button";
-    // }
+export function determineType(reply_markup_supported: boolean): string {
+  if (reply_markup_supported) {
+    return "group";
   }
+  // }
+  // if (component_name == "send poll") {
+  //   return "button";
+  // }
 
   return "customNode";
 }

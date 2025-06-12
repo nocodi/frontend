@@ -23,9 +23,7 @@ export function populateFlow({
               x: element.position_x,
               y: element.position_y,
             }),
-            type: determineType(
-              getContent(contentTypes, element.component_content_type),
-            ),
+            type: determineType(element.reply_markup_supported),
             selected: false,
             data: {
               ...element,

@@ -42,4 +42,5 @@ export type ComponentType = {
   hover_text: string | null;
   position_x: number;
   position_y: number;
+  reply_markup_supported: boolean;
 };
