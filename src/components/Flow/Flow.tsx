@@ -14,12 +14,12 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import { useBotSchema, useContentTypes } from "../../services/getQueries";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Component from "./Component";
 import ComponentDetail from "../ComponentDetail";
 import ContentTypesList from "../ContentTypes/ContentTypesList";
 import CustomEdge from "./EdgeComponent";
-import { Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useDnD } from "../Context/DnDContext";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
@@ -29,6 +29,7 @@ import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
 import { nods } from "./mock";
+import Tutorial from "./Tutorial";
 
 const nodeTypes = {
   customNode: Component,
@@ -36,16 +37,16 @@ const nodeTypes = {
   button: ButtonNode,
 };
 const edgeTypes = { customEdge: CustomEdge };
-const TUTORIAL_STORAGE_KEY = "hasSeenPlusSign";
 
 export default function Flow() {
+  const plusButtonRef = useRef<HTMLDivElement>(null);
+
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [draggingNodeXY, setDraggingNodeXY] = useState<{
     x: number;
     y: number;
   }>({ x: -1, y: -1 });
   const reactFlowWrapper = useRef(null);
-  const plusButtonRef = useRef<HTMLDivElement>(null);
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
@@ -53,38 +54,7 @@ export default function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
-
   const [showTutorial, setShowTutorial] = useState(false);
-  const [tutorialPosition, setTutorialPosition] = useState({
-    top: 0,
-    right: 0,
-  });
-
-  useEffect(() => {
-    const hasSeenPlusSign = localStorage.getItem(TUTORIAL_STORAGE_KEY);
-    if (!hasSeenPlusSign) {
-      setShowTutorial(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (showTutorial && plusButtonRef.current) {
-      const rect = plusButtonRef.current.getBoundingClientRect();
-      setTutorialPosition({
-        top: rect.top,
-        right: rect.right + 15,
-      });
-    }
-  }, [showTutorial]);
-
-  const handleDismissTutorial = () => {
-    localStorage.setItem(TUTORIAL_STORAGE_KEY, "true");
-    setShowTutorial(false);
-    setIsPanelOpen(true);
-    // setTimeout(() => {
-    //   setIsPanelOpen(false);
-    // }, 5000);
-  };
 
   useBotSchema(setNodes, setEdges);
 
@@ -142,38 +112,12 @@ export default function Flow() {
   return (
     <>
       {showTutorial && (
-        <>
-          <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <div
-            className="absolute z-50 w-72 animate-pulse rounded-lg bg-base-100 p-4 shadow-2xl"
-            style={{
-              top: `${tutorialPosition.top}px`,
-              right: `${tutorialPosition.right}px`,
-            }}
-          >
-            <button
-              onClick={() => {
-                localStorage.setItem(TUTORIAL_STORAGE_KEY, "true");
-                setShowTutorial(false);
-              }}
-              className="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
-            >
-              <X className="size-4" />
-            </button>
-            <p className="font-bold text-primary">
-              Use Components <span className="text-2xl">►</span>
-            </p>
-            <p className="py-2 text-sm text-white">
-              Click this button to open a list of components for your workflow.
-            </p>
-            <button
-              onClick={handleDismissTutorial}
-              className="btn mt-2 w-full btn-sm btn-primary"
-            >
-              Got it!
-            </button>
-          </div>
-        </>
+        <Tutorial
+          showTutorial={showTutorial}
+          setShowTutorial={setShowTutorial}
+          setIsPanelOpen={setIsPanelOpen}
+          plusButtonRef={plusButtonRef}
+        />
       )}
       <div className="h-full w-full text-primary">
         <div className="relative h-full w-full bg-base-300">
