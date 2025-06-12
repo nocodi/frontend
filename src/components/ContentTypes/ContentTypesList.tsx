@@ -28,10 +28,10 @@ import { useDnD } from "../Context/DnDContext";
 
 const CATEGORIES = ["Telegram", "Trigger", "Conditional", "Other"];
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  Telegram: <Bot className="h-5 w-5 text-primary" />,
-  Trigger: <Zap className="h-5 w-5 text-yellow-500" />,
-  Conditional: <Settings2 className="h-5 w-5 text-green-500" />,
-  Other: <Puzzle className="h-5 w-5 text-gray-500" />,
+  Telegram: <Bot className="h-6 w-6 text-primary" />,
+  Trigger: <Zap className="h-6 w-6 text-yellow-500" />,
+  Conditional: <Settings2 className="h-6 w-6 text-green-500" />,
+  Other: <Puzzle className="h-6 w-6 text-gray-500" />,
 };
 
 const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
@@ -94,8 +94,6 @@ function ContentTypesList({
 }) {
   const setContent = useDnD()[1];
   const { contentTypes } = useContentTypes();
-  console.log(contentTypes);
-
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -123,74 +121,77 @@ function ContentTypesList({
     });
 
   return (
-    <div className="flex h-full w-full flex-col gap-2 overflow-y-scroll">
-      <div className="flex flex-row">
+    <div className="flex h-full w-full flex-col gap-6 overflow-y-scroll bg-base-100 p-6">
+      <div className="flex flex-row items-center justify-between">
         <div className="my-auto h-fit w-fit">
           {selectedCategory ?
             <button
               onClick={() => setSelectedCategory(null)}
-              className="group btn ml-2 cursor-pointer p-4 btn-outline btn-primary"
+              className="group btn btn-circle btn-ghost hover:bg-primary/10"
             >
-              <ArrowLeft />
+              <ArrowLeft className="h-6 w-6 transition-transform group-hover:-translate-x-1" />
             </button>
           : <button
               onClick={onClose}
-              className="group btn ml-2 cursor-pointer p-4 btn-outline btn-primary"
+              className="group btn btn-circle btn-ghost hover:bg-primary/10"
             >
-              <X />
+              <X className="h-6 w-6 transition-transform group-hover:rotate-90" />
             </button>
           }
         </div>
-
-        <h1 className="w-full p-4 text-center font-bold">
-          {!selectedCategory && CATEGORIES ?
-            <>Select a Category</>
-          : <>Drag and Drop Components</>}
+        <h1 className="text-2xl font-bold">
+          {!selectedCategory ? "Select a Category" : "Drag and Drop Components"}
         </h1>
+        <div className="w-12" /> {/* Spacer for alignment */}
       </div>
 
-      <div className="mx-auto mb-2 w-60">
+      <div className="mx-auto w-full max-w-2xl">
         <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
       </div>
 
-      <div className="flex flex-col gap-3">
-        {!selectedCategory && CATEGORIES ?
-          <>
+      <div className="flex flex-col gap-4">
+        {!selectedCategory ?
+          <div className="flex flex-col gap-4">
             {CATEGORIES.map((cat) => (
               <div
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row items-center gap-2 duration-300 hover:bg-primary hover:text-primary-content"
+                className="group relative flex h-24 w-full cursor-pointer flex-row items-center gap-4 rounded-xl border border-base-300 bg-base-200 p-4 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-primary hover:bg-primary/5 hover:shadow-md"
               >
-                <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
-                <div className="ml-2 flex items-center gap-2 text-sm font-bold">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-base-100 shadow-sm transition-all duration-200 group-hover:bg-primary/10">
                   {CATEGORY_ICONS[cat]}
-                  {cat}
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="truncate text-lg font-semibold">{cat}</span>
                 </div>
               </div>
             ))}
-          </>
-        : null}
+          </div>
+        : <div className="flex flex-col gap-4">
+            {filtered?.map((item, key) => (
+              <Tooltip key={`tooltip-${key}`} content={item.description}>
+                <div
+                  key={`${key}`}
+                  onClick={() => clickedOnComponent(item)}
+                  className="group relative flex h-24 w-full cursor-pointer flex-row items-center gap-4 rounded-xl border border-base-300 bg-base-200 p-4 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-primary hover:bg-primary/5 hover:shadow-md"
+                  onDragStart={(event) => onDragStart(event, item)}
+                  draggable
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-base-100 shadow-sm transition-all duration-200 group-hover:bg-primary/10">
+                    {getComponentIcon(item.name)}
+                  </div>
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="truncate text-lg font-semibold">
+                      {item.name}
+                    </span>
+                  </div>
+                </div>
+              </Tooltip>
+            ))}
+          </div>
+        }
 
-        {filtered?.map((item, key) => (
-          <Tooltip key={`tooltip-${key}`} content={item.description}>
-            <div
-              key={`${key}`}
-              onClick={() => clickedOnComponent(item)}
-              className="tansition-all group/component relative flex min-h-17 w-full cursor-pointer flex-row duration-300 hover:bg-primary hover:text-primary-content"
-              onDragStart={(event) => onDragStart(event, item)}
-              draggable
-            >
-              <div className="h-full w-3 min-w-3 rounded-r-xs bg-primary group-hover/component:bg-patina-200"></div>
-              <div className="flex items-center">
-                {getComponentIcon(item.name)}
-                <div className="ml-2 text-sm font-bold">{item.name}</div>
-              </div>
-            </div>
-          </Tooltip>
-        ))}
-
-        <div className="h-15"></div>
+        <div className="h-6" />
       </div>
     </div>
   );
