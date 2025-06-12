@@ -22,16 +22,22 @@ import {
   Layout,
   Square,
   MousePointerClick,
+  Code2,
+  MessageCircleQuestion,
+  GitFork,
+  Delete,
+  PackagePlus,
+  CircleEllipsis,
 } from "lucide-react";
 import { useContentTypes } from "../../services/getQueries";
 import { useDnD } from "../Context/DnDContext";
 
 const CATEGORIES = ["Telegram", "Trigger", "Conditional", "Other"];
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  Telegram: <Bot className="h-5 w-5 text-primary" />,
+  Telegram: <Bot className="h-5 w-5 text-blue-400" />,
   Trigger: <Zap className="h-5 w-5 text-yellow-500" />,
   Conditional: <Settings2 className="h-5 w-5 text-green-500" />,
-  Other: <Puzzle className="h-5 w-5 text-gray-500" />,
+  Other: <CircleEllipsis className="h-5 w-5 text-rose-500" />,
 };
 
 const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
@@ -39,9 +45,14 @@ const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
     size === "small" ? "mr-1 ml-1 h-4.5 w-4.5" : "mr-2 ml-2 h-6 w-6";
   const colorClass = {
     message: "text-blue-500",
+    delete: "text-red-500",
+    code: "text-orange-500",
+    switch: "text-lime-500",
+    state: "text-cyan-500",
     photo: "text-pink-500",
     document: "text-gray-500",
     video: "text-purple-500",
+    create: "text-green-500",
     voice: "text-orange-500",
     location: "text-green-500",
     contact: "text-teal-500",
@@ -51,9 +62,17 @@ const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
     markup: "text-lime-500",
     button: "text-rose-500",
     callback: "text-fuchsia-500",
-    default: "text-gray-500",
+    default: "text-gray-400",
   };
   const lower = name.toLowerCase();
+  if (lower.includes("switch"))
+    return <GitFork className={`${iconClass} ${colorClass.switch}`} />;
+  if (lower.includes("state"))
+    return (
+      <MessageCircleQuestion className={`${iconClass} ${colorClass.state}`} />
+    );
+  if (lower.includes("code"))
+    return <Code2 className={`${iconClass} ${colorClass.code}`} />;
   if (lower.includes("message"))
     return <MessageSquare className={`${iconClass} ${colorClass.message}`} />;
   if (lower.includes("photo"))
@@ -62,6 +81,8 @@ const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
     return <FileText className={`${iconClass} ${colorClass.document}`} />;
   if (lower.includes("video"))
     return <Video className={`${iconClass} ${colorClass.video}`} />;
+  if (lower.includes("create"))
+    return <PackagePlus className={`${iconClass} ${colorClass.create}`} />;
   if (lower.includes("voice"))
     return <Mic className={`${iconClass} ${colorClass.voice}`} />;
   if (lower.includes("location"))
@@ -82,6 +103,8 @@ const getComponentIcon = (name: string, size: "small" | "large" = "large") => {
     return (
       <MousePointerClick className={`${iconClass} ${colorClass.callback}`} />
     );
+  if (lower.includes("delete"))
+    return <Delete className={`${iconClass} ${colorClass.delete}`} />;
   return <Puzzle className={`${iconClass} ${colorClass.default}`} />;
 };
 
@@ -115,7 +138,8 @@ function ContentTypesList({
     ?.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()))
     .filter((item) => {
       if (!selectedCategory) return false;
-      if (selectedCategory === "Other") return item.component_type === "";
+      if (selectedCategory === "Other")
+        return ["CODE", "STATE"].includes(item.component_type);
       return (
         item.component_type?.toLowerCase() === selectedCategory.toLowerCase()
       );

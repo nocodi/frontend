@@ -58,6 +58,7 @@ type ComponentHandlesProps = {
     | "TRIGGER"
     | "CONDITIONAL"
     | "CODE"
+    | "STATE"
     | "BUTTON"
     | "GROUP";
   isConnectable: boolean;
