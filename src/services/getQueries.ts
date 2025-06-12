@@ -50,57 +50,18 @@ export const useComponentDetails = (pathOfComponent: string, id: number) => {
   return { details, isFetching };
 };
 
-export const useBotSchema = (
-  setNodes: React.Dispatch<
-    React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >,
-  setEdges: React.Dispatch<React.SetStateAction<Edge<Edge>[]>>,
-) => {
+export const useBotSchema = () => {
   const { botId } = useParams<WorkflowParams>();
-  const flowInstance = useReactFlow();
 
-  useQuery({
+  const { data: components } = useQuery({
     queryKey: ["botSchema"],
     queryFn: () =>
-      api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
-        const components: ComponentType[] = res.data;
-        if (res.data.length > 0) {
-          components.forEach((element: ComponentType) => {
-            setNodes((nds) =>
-              nds.concat({
-                id: element.id.toString(),
-                position: flowInstance.screenToFlowPosition({
-                  x: element.position_x,
-                  y: element.position_y,
-                }),
-                type: determineType(element.component_name),
-                selected: false,
-                data: {
-                  ...element,
-                  hover_text:
-                    element.hover_text != null && element.hover_text != "" ?
-                      element.hover_text
-                    : null,
-                },
-              }),
-            );
-
-            if (element.previous_component) {
-              const previous_component: number = element.previous_component;
-              setEdges((edg) =>
-                edg.concat({
-                  id: `e${previous_component}-${element.id}`,
-                  source: previous_component.toString(),
-                  target: element.id.toString(),
-                  type: "customEdge",
-                }),
-              );
-            }
-          });
-        }
-        return true;
-      }),
+      api
+        .get<ComponentType[]>(`/component/${botId}/schema/`)
+        .then((res) => res.data),
   });
+
+  return { components };
 };
 
 export const useBots = () => {

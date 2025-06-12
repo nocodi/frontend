@@ -1,17 +1,25 @@
 import { ContentType, ComponentType } from "../types/Component";
 import { Node, XYPosition } from "reactflow";
 
+export function getContent(
+  contents: ContentType[],
+  content_id: number,
+): ContentType | undefined {
+  return contents.find((content) => content.id === content_id);
+}
+
 export const getPathOfContent = (
   id: number,
   contentTypes: ContentType[],
 ): string | undefined => {
-  const content = contentTypes?.find((content) => content.id === id);
+  const content = getContent(contentTypes, id);
   return content?.path?.split(".ir")[1];
 };
 
 export function makeNode(
   data: ComponentType,
   position: XYPosition,
+  content: ContentType,
 ): Node<ComponentType> {
   const {
     id,
@@ -34,7 +42,7 @@ export function makeNode(
     hover_text: null,
   };
 
-  const componentType = determineType(componentData.component_name);
+  const componentType = determineType(content);
 
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
@@ -56,12 +64,15 @@ export function sliceString(text: string, to: number): string {
 }
 
 // this function is temporary
-export function determineType(component_name: string): string {
-  if (component_name == "send message") {
-    return "group";
-  }
-  if (component_name == "send poll") {
-    return "button";
+export function determineType(content: ContentType | undefined): string {
+  if (content) {
+    if (content.reply_markup_supported == true) {
+      return "group";
+    }
+    // }
+    // if (component_name == "send poll") {
+    //   return "button";
+    // }
   }
 
   return "customNode";

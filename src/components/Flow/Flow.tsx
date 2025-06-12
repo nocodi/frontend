@@ -30,6 +30,7 @@ import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
 import { nods } from "./mock";
 import Tutorial from "./Tutorial";
+import { populateFlow } from "./populateFlow";
 
 const nodeTypes = {
   customNode: Component,
@@ -50,13 +51,14 @@ export default function Flow() {
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-  const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>(nods);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>(nods);
+  const [edges, _setEdges, onEdgesChange] = useEdgesState([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
   const [showTutorial, setShowTutorial] = useState(false);
 
-  useBotSchema(setNodes, setEdges);
+  const { components } = useBotSchema();
+  populateFlow({ flowInstance, components, contentTypes });
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
