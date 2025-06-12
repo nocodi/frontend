@@ -79,41 +79,63 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
             onDiscard={onClose}
           />
         </div>
-      : <div className="modal-box bg-base-100">
-          <h3 className="text-lg font-bold text-base-content">
-            {contentType.name}
-          </h3>
-          {isFetching ?
-            <Loading size={30} />
-          : <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit();
-              }}
-            >
-              <FormFields
-                componentSchema={componentSchema}
-                formValues={formValues}
-                formErrors={formErrors}
-                setFormValues={setFormValues}
-                setFormErrors={setFormErrors}
-              />
-
-              <ButtonGrid />
-              <div className="modal-action">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Save"}
-                </button>
-                <button type="button" className="btn" onClick={handleCancel}>
-                  Cancel
-                </button>
+      : <div className="modal-box w-9/12 max-w-2xl bg-base-100 p-0">
+          <div className="sticky top-0 z-10 border-b border-base-300 bg-base-100 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h3 className="text-xl font-bold text-base-content">
+                  {contentType.name}
+                </h3>
+                <div className="badge badge-sm badge-primary">{node.id}</div>
               </div>
-            </form>
-          }
+              <div className="text-sm text-base-content/70">
+                {
+                  Object.values(componentSchema).filter(
+                    (field) => field?.required,
+                  ).length
+                }{" "}
+                required fields
+              </div>
+            </div>
+            {contentType.description && (
+              <p className="text-sm text-base-content/70">
+                {contentType.description}
+              </p>
+            )}
+          </div>
+          <div className="max-h-[calc(100vh-200px)] overflow-y-auto p-8">
+            {isFetching ?
+              <Loading size={30} />
+            : <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+              >
+                <FormFields
+                  componentSchema={componentSchema}
+                  formValues={formValues}
+                  formErrors={formErrors}
+                  setFormValues={setFormValues}
+                  setFormErrors={setFormErrors}
+                />
+
+                <ButtonGrid />
+                <div className="modal-action">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading}
+                  >
+                    {loading ? "Saving..." : "Save"}
+                  </button>
+                  <button type="button" className="btn" onClick={handleCancel}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            }
+          </div>
         </div>
       }
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
