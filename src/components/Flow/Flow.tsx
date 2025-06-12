@@ -30,7 +30,6 @@ import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
 import { nods } from "./mock";
 import Tutorial from "./Tutorial";
-import { populateFlow } from "./populateFlow";
 
 const nodeTypes = {
   customNode: Component,
@@ -57,8 +56,7 @@ export default function Flow() {
   const { contentTypes } = useContentTypes(0);
   const [showTutorial, setShowTutorial] = useState(false);
 
-  const { components } = useBotSchema();
-  populateFlow({ flowInstance, components, contentTypes });
+  useBotSchema(flowInstance, contentTypes);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {

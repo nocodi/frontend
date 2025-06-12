@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const TUTORIAL_STORAGE_KEY = "hasSeenPlusSign";
 
@@ -73,7 +73,7 @@ export default function Tutorial({
           Click this button to open a list of components for your workflow.
         </p>
         <button
-          onClick={handleDismissTutorial}
+          onClick={() => handleDismissTutorial}
           className="btn mt-2 w-full btn-sm btn-primary"
         >
           Got it!

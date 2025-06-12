@@ -1,14 +1,13 @@
 import { ComponentType, ContentType } from "../types/Component";
-import { Edge, Node, useReactFlow } from "reactflow";
+import { ReactFlowInstance } from "reactflow";
 
 import { BotData } from "../types/BotData";
-import React from "react";
 import { WorkflowParams } from "../pages/Workflow";
 import api from "./api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { determineType } from "../utils/freqFuncs";
+import { populateFlow } from "../components/Flow/populateFlow";
 
 export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
@@ -50,18 +49,26 @@ export const useComponentDetails = (pathOfComponent: string, id: number) => {
   return { details, isFetching };
 };
 
-export const useBotSchema = () => {
+export const useBotSchema = (
+  flowInstance: ReactFlowInstance,
+  contentTypes: ContentType[] | undefined,
+) => {
   const { botId } = useParams<WorkflowParams>();
 
-  const { data: components } = useQuery({
+  useQuery({
     queryKey: ["botSchema"],
     queryFn: () =>
-      api
-        .get<ComponentType[]>(`/component/${botId}/schema/`)
-        .then((res) => res.data),
+      api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
+        populateFlow({
+          flowInstance: flowInstance,
+          components: res.data,
+          contentTypes: contentTypes,
+        });
+        return true;
+      }),
   });
 
-  return { components };
+  return false;
 };
 
 export const useBots = () => {
