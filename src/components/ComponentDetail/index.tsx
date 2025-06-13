@@ -14,6 +14,7 @@ import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
 import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
+import { Check, X } from "lucide-react";
 
 type PropsType = {
   node: ComponentType;
@@ -79,23 +80,29 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
             onDiscard={onClose}
           />
         </div>
-      : <div className="modal-box w-9/12 max-w-2xl bg-base-100 p-0">
-          <div className="sticky top-0 z-10 border-b border-base-300 bg-base-100 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <h3 className="text-xl font-bold text-base-content">
-                  {contentType.name}
-                </h3>
-                <div className="badge badge-sm badge-primary">{node.id}</div>
+      : <div className="modal-box flex max-h-11/12 max-w-2xl flex-col p-0">
+          <div className="border-b border-base-300 p-4 pl-6">
+            <div className="flex items-center gap-1 text-base-content">
+              <h3 className="text-xl font-bold">{contentType.name}</h3>
+              <div className="mr-auto badge badge-sm badge-primary">
+                {node.id}
               </div>
-              <div className="text-sm text-base-content/70">
-                {
-                  Object.values(componentSchema).filter(
-                    (field) => field?.required,
-                  ).length
-                }{" "}
-                required fields
-              </div>
+              <button
+                type="button"
+                onClick={() => handleSubmit()}
+                className="btn text-xl font-bold btn-ghost btn-sm hover:btn-success"
+                aria-label="Close"
+              >
+                <Check />
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="btn text-xl font-bold btn-ghost btn-sm hover:btn-error"
+                aria-label="Close"
+              >
+                <X />
+              </button>
             </div>
             {contentType.description && (
               <p className="text-sm text-base-content/70">
@@ -103,7 +110,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               </p>
             )}
           </div>
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto p-8">
+          <div className="overflow-y-auto p-4">
             {isFetching ?
               <Loading size={30} />
             : <form
@@ -121,18 +128,6 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                 />
 
                 <ButtonGrid />
-                <div className="modal-action">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={loading}
-                  >
-                    {loading ? "Saving..." : "Save"}
-                  </button>
-                  <button type="button" className="btn" onClick={handleCancel}>
-                    Cancel
-                  </button>
-                </div>
               </form>
             }
           </div>
