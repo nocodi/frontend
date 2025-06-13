@@ -110,7 +110,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               </p>
             )}
           </div>
-          <div className="overflow-y-auto p-4">
+          <div className="overflow-y-auto p-4 pt-0">
             {isFetching ?
               <Loading size={30} />
             : <form
