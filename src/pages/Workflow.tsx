@@ -186,19 +186,15 @@ function Workflow() {
                 >
                   <HelpCircle size={20} />
                 </button>
-                <div className="flex items-center gap-2">
-                  {loading || isFetching ?
-                    <>
-                      <Loading size={24} />
-                      <span className="text-sm text-base-content/70">
-                        Processing...
-                      </span>
-                    </>
-                  : <>
-                      <CloudCheck size={24} className="text-success" />
-                      <span className="text-sm text-success">Ready</span>
-                    </>
+                <div
+                  className="tooltip tooltip-left"
+                  data-tip={
+                    loading || isFetching ? "Syncing..." : "Everything Synced"
                   }
+                >
+                  {loading || isFetching ?
+                    <Loading size={24} />
+                  : <CloudCheck size={24} className="text-success" />}
                 </div>
               </div>
             </div>
