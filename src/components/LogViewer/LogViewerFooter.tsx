@@ -1,6 +1,6 @@
-interface LogViewerFooterProps {
+type LogViewerFooterProps = {
   logs: string;
-}
+};
 
 export default function LogViewerFooter({ logs }: LogViewerFooterProps) {
   return (

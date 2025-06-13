@@ -6,18 +6,20 @@ import { useBotLogs } from "../hooks/useBotLogs";
 export default function LogContainer({ botId }: { botId: number }) {
   const [isLogViewerOpen, setLogViewerOpen] = useState(false);
 
-  const { logs, loading, setLoading, refreshLogs, clearLogs, setLogs } =
-    useBotLogs(botId, isLogViewerOpen);
+  const { logs, loading, setLoading, refreshLogs, clearLogs } = useBotLogs(
+    botId,
+    isLogViewerOpen,
+  );
 
   const openLogViewer = () => {
     setLoading(true);
-    setLogs("");
+    clearLogs();
     setLogViewerOpen(true);
   };
 
   const closeLogViewer = () => {
     setLogViewerOpen(false);
-    setLogs("");
+    clearLogs();
   };
 
   return (
@@ -30,11 +32,7 @@ export default function LogContainer({ botId }: { botId: number }) {
         <div className="flex items-center gap-2">
           {loading ?
             <Loading size={20} />
-          : <>
-              <span className="text-lg">📋</span>
-              <span className="font-medium">View Logs</span>
-            </>
-          }
+          : <span className="font-medium">View Logs</span>}
         </div>
       </button>
 

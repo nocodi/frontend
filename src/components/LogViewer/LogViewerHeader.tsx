@@ -1,6 +1,7 @@
+import { ClipboardCopy, RefreshCcw, Trash2Icon, X } from "lucide-react";
 import Loading from "../Loading";
 
-interface LogViewerHeaderProps {
+type LogViewerHeaderProps = {
   isLoading: boolean;
   autoScroll: boolean;
   onRefresh: () => void;
@@ -8,7 +9,7 @@ interface LogViewerHeaderProps {
   onCopyToClipboard: () => void;
   onAutoScrollChange: (checked: boolean) => void;
   onClose: () => void;
-}
+};
 
 export default function LogViewerHeader({
   isLoading,
@@ -21,11 +22,8 @@ export default function LogViewerHeader({
 }: LogViewerHeaderProps) {
   return (
     <div className="flex items-center justify-between rounded-t-lg border-b border-base-300 bg-base-200 p-4">
-      <div className="flex items-center gap-4">
-        <h2 className="flex items-center gap-2 text-xl font-bold text-base-content">
-          <span className="text-2xl">📋</span>
-          Bot Logs (Live)
-        </h2>
+      <div className="ml-3 flex items-center gap-4">
+        <h2 className="text-xl font-bold text-base-content">Bot Logs (Live)</h2>
         {isLoading && <Loading size={20} />}
       </div>
 
@@ -37,21 +35,21 @@ export default function LogViewerHeader({
           data-tip="Refresh"
           disabled={isLoading}
         >
-          🔄
+          <RefreshCcw />
         </button>
         <button
           onClick={onClear}
           className="tooltip btn tooltip-bottom btn-ghost btn-sm"
           data-tip="Clear logs"
         >
-          🗑️
+          <Trash2Icon />
         </button>
         <button
           onClick={onCopyToClipboard}
           className="tooltip btn tooltip-bottom btn-ghost btn-sm"
           data-tip="Copy to clipboard"
         >
-          📋
+          <ClipboardCopy />
         </button>
         <div className="divider divider-horizontal"></div>
         <label className="flex items-center gap-2 text-sm">
@@ -68,7 +66,7 @@ export default function LogViewerHeader({
           className="btn text-xl font-bold btn-ghost btn-sm hover:btn-error"
           aria-label="Close"
         >
-          ✕
+          <X />
         </button>
       </div>
     </div>

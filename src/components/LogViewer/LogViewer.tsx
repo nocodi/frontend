@@ -3,13 +3,13 @@ import LogViewerHeader from "./LogViewerHeader";
 import LogViewerContent from "./LogViewerContent";
 import LogViewerFooter from "./LogViewerFooter";
 
-interface LogViewerProps {
+type LogViewerProps = {
   logs: string;
   onClose: () => void;
   isLoading: boolean;
   onClear: () => void;
   onRefresh: () => void;
-}
+};
 
 export default function LogViewer({
   logs,
@@ -39,8 +39,8 @@ export default function LogViewer({
   };
 
   return (
-    <div className="bg-opacity-75 fixed inset-0 z-50 flex items-center justify-center bg-black backdrop-blur-sm">
-      <div className="flex h-5/6 w-5/6 max-w-6xl flex-col rounded-lg border border-base-300 bg-base-100 shadow-2xl">
+    <dialog className="modal-open modal">
+      <div className="modal-box flex h-11/12 max-w-6xl flex-col p-0">
         <LogViewerHeader
           isLoading={isLoading}
           autoScroll={autoScroll}
@@ -59,6 +59,9 @@ export default function LogViewer({
 
         <LogViewerFooter logs={logs} />
       </div>
-    </div>
+      <form method="dialog" className="modal-backdrop" onClick={onClose}>
+        <button>close</button>
+      </form>
+    </dialog>
   );
 }

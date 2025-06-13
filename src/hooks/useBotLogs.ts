@@ -78,6 +78,5 @@ export function useBotLogs(botId: number, isOpen: boolean) {
     setLoading,
     refreshLogs,
     clearLogs,
-    setLogs,
   };
 }

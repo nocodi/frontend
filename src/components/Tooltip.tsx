@@ -52,12 +52,10 @@ export default function Tooltip({ children, content }: TooltipProps) {
         createPortal(
           <div
             ref={tooltipRef}
-            className="absolute z-50 max-w-xs rounded bg-base-content px-2 py-1 text-xs text-base-300 shadow"
+            className="absolute z-50 mr-2 max-w-xs -translate-x-full rounded bg-base-content px-2 py-1 text-xs text-base-300 shadow"
             style={{
               top: coords.top,
               left: coords.left,
-              transform: "translateX(-100%)",
-              marginRight: "8px",
             }}
             onMouseLeave={handleMouseLeave}
             onMouseEnter={() => setVisible(true)}
