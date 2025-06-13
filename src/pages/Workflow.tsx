@@ -1,4 +1,4 @@
-import { Check, Undo2, X, HelpCircle } from "lucide-react";
+import { CloudCheck, Undo2, X, HelpCircle } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { createContext, JSX, useContext, useState } from "react";
 import LogContainer from "../components/logContainerButton";
@@ -195,7 +195,7 @@ function Workflow() {
                       </span>
                     </>
                   : <>
-                      <Check size={24} className="text-success" />
+                      <CloudCheck size={24} className="text-success" />
                       <span className="text-sm text-success">Ready</span>
                     </>
                   }

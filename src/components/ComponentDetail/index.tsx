@@ -14,7 +14,7 @@ import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
 import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
-import { Check, X } from "lucide-react";
+import { Check, RefreshCcw, X } from "lucide-react";
 
 type PropsType = {
   node: ComponentType;
@@ -89,11 +89,14 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               </div>
               <button
                 type="button"
+                disabled={loading}
                 onClick={() => handleSubmit()}
                 className="btn text-xl font-bold btn-ghost btn-sm hover:btn-success"
-                aria-label="Close"
+                aria-label="Submit"
               >
-                <Check />
+                {loading ?
+                  <RefreshCcw />
+                : <Check />}
               </button>
               <button
                 type="button"
@@ -110,7 +113,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               </p>
             )}
           </div>
-          <div className="overflow-y-auto p-4 pt-0">
+          <div className="overflow-y-auto p-4">
             {isFetching ?
               <Loading size={30} />
             : <form

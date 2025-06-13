@@ -1,5 +1,13 @@
-import { HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
-import Tooltip from "../Tooltip";
+import {
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  CircleAlert,
+  UploadCloud,
+  Trash2,
+  FileCheck2,
+  FileClock,
+} from "lucide-react";
 import { componentSchemaType } from "./makeFormData";
 import { validateField } from "./validateField";
 import { parseRawValue } from "./parseRawValue";
@@ -74,11 +82,11 @@ export default function FormFields({
   );
 
   const renderField = (key: string, value: SchemaType) => (
-    <fieldset
+    <div
       key={key}
-      className="fieldset rounded-box border border-base-300 bg-base-200 p-4"
+      className="grid grid-cols-2 rounded-xl border border-base-300 bg-base-200 p-2"
     >
-      <legend className="fieldset-legend">
+      <div className="col-span-1 flex items-center gap-2 self-start py-2 pl-4">
         <span className="font-medium">{value?.verbose_name} </span>
         {value?.required && (
           <span className="badge badge-sm badge-accent">Required</span>
@@ -88,148 +96,61 @@ export default function FormFields({
             <HelpCircle className="size-4 cursor-help text-base-content/70 hover:text-base-content" />
           </span>
         )}
-      </legend>
+      </div>
       {value?.type === "BooleanField" ?
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-4">
-            <label className="relative inline-flex cursor-pointer items-center">
-              <input
-                type="checkbox"
-                id={key}
-                checked={formValues[key] === "true"}
-                onChange={(e) => handleChange(key, e.target.checked.toString())}
-                onBlur={() => handleBlur(key, value)}
-                className="peer sr-only"
-              />
-              <div className="peer h-7 w-14 rounded-full bg-base-300 peer-checked:bg-success peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"></div>
-            </label>
-            <div className="flex flex-col">
-              <span
-                className={`text-sm font-medium ${formValues[key] === "true" ? "text-success" : "text-base-content/70"}`}
-              >
-                {formValues[key] === "true" ? "Enabled" : "Disabled"}
+        <input
+          type="checkbox"
+          id={key}
+          checked={formValues[key] === "true"}
+          onChange={(e) => handleChange(key, e.target.checked.toString())}
+          onBlur={() => handleBlur(key, value)}
+          className="toggle my-2 mr-2 ml-auto toggle-lg toggle-primary"
+        />
+      : value?.type === "FileField" ?
+        <div className="join flex justify-end">
+          {typeof formValues[key] === "string" ?
+            <a
+              href={formValues[key]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tooltip join-item flex min-w-0 items-center gap-2 border border-primary bg-base-100 transition-colors duration-200 hover:bg-base-200"
+              data-tip={`Uploaded File: ${formValues[key].split("/").pop()}`}
+            >
+              <FileCheck2 className="ml-2 size-6" />
+              <span className="truncate text-xs">
+                {formValues[key].split("/").pop()}
               </span>
-              {value?.help_text && (
-                <span className="text-xs text-base-content/50">
-                  {value.help_text}
-                </span>
-              )}
-            </div>
-          </div>
-          {formErrors[key] && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-sm text-error">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="font-medium">{formErrors[key]}</span>
-            </p>
+            </a>
+          : typeof formValues[key] === "object" && formValues[key] ?
+            <span className="join-item flex min-w-0 items-center gap-2 border border-primary bg-base-100 transition-colors duration-200 hover:bg-base-200">
+              <FileClock className="ml-2 size-6" />
+              <span className="truncate text-xs">{formValues[key].name}</span>
+            </span>
+          : null}
+          <label
+            className={`tooltip btn join-item btn-outline btn-accent ${formValues[key] !== null && "px-1.5"}`}
+            data-tip="Select File"
+          >
+            <input
+              type="file"
+              onChange={(e) => handleChange(key, e.target.files?.[0] || null)}
+              onBlur={() => handleBlur(key, value)}
+              required={value.required && formValues[key] === null}
+              className="hidden"
+            />
+            <UploadCloud className="size-4" />
+          </label>
+          {formValues[key] !== null && (
+            <button
+              className="tooltip btn join-item px-1.5 btn-outline btn-error"
+              onClick={() => handleChange(key, null)}
+              data-tip="Clear"
+            >
+              <Trash2 className="size-4" />
+            </button>
           )}
         </div>
-      : value?.type === "FileField" ?
-        <div className="flex flex-col gap-2">
-          {typeof formValues[key] === "string" &&
-            formValues[key].length > 0 && (
-              <div className="flex items-center gap-2 rounded-lg bg-base-100 p-3 transition-colors duration-200 hover:bg-base-200">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-primary"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <a
-                    href={formValues[key]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link truncate text-sm font-medium link-primary hover:underline"
-                  >
-                    View uploaded file
-                  </a>
-                  <span className="truncate text-xs text-base-content/50">
-                    {formValues[key].split("/").pop()}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleChange(key, null)}
-                  className="btn btn-circle btn-ghost btn-sm hover:bg-error/10 hover:text-error"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-          <div className="relative">
-            <div className="flex items-center gap-2">
-              <input
-                id={key}
-                type="file"
-                onChange={(e) => handleChange(key, e.target.files?.[0] || null)}
-                onBlur={() => handleBlur(key, value)}
-                required={value.required && formValues[key] === null}
-                className={`file-input w-full file-input-primary text-base-content transition-all duration-200 file:ml-auto hover:bg-base-200/50 focus:bg-base-100 ${
-                  formErrors[key] ?
-                    "border-error focus:border-error focus:ring-error"
-                  : "focus:ring-2 focus:ring-primary/20"
-                }`}
-              />
-              {formValues[key] && (
-                <button
-                  type="button"
-                  onClick={() => handleChange(key, null)}
-                  className="btn btn-ghost btn-sm hover:bg-error/10 hover:text-error"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-            {formErrors[key] && (
-              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-error">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="font-medium">{formErrors[key]}</span>
-              </p>
-            )}
-          </div>
-        </div>
-      : <div className="flex flex-col gap-2">
+      : <div>
           <input
             id={key}
             type="text"
@@ -238,32 +159,21 @@ export default function FormFields({
             onBlur={() => handleBlur(key, value)}
             required={value?.required}
             placeholder={`Enter ${value?.verbose_name?.toLowerCase()}`}
-            className={`input-bordered input w-full text-base-content transition-all duration-200 input-primary hover:bg-base-200/50 focus:bg-base-100 sm:col-span-2 ${
+            className={`input w-full text-base-content transition-all duration-200 input-primary hover:bg-base-200/50 focus:bg-base-100 sm:col-span-2 ${
               formErrors[key] ?
                 "border-error focus:border-error focus:ring-error"
               : "focus:ring-2 focus:ring-primary/20"
             }`}
           />
-          {formErrors[key] && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-sm text-error">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="font-medium">{formErrors[key]}</span>
-            </p>
-          )}
         </div>
       }
-    </fieldset>
+      {formErrors[key] && (
+        <p className="flex items-center gap-2 pl-4 font-medium text-error">
+          <CircleAlert className="size-4" />
+          <span>{formErrors[key]}</span>
+        </p>
+      )}
+    </div>
   );
 
   return (
