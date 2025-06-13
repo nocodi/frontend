@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useContentTypes } from "../../services/getQueries";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
-import { getComponentIcon } from "../ContentTypes/ContentTypesList";
+import getComponentIcon from "../ContentTypes/getComponentIcon";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const flowInstance = useReactFlow();
