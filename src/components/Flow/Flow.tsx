@@ -182,16 +182,14 @@ export default function Flow() {
           </div>
 
           <div
-            className={`absolute right-0 z-20 flex h-full w-96 bg-base-200 text-base-content transition-transform duration-300 ease-in-out ${
+            className={`absolute inset-y-0 right-0 z-20 flex h-full w-96 bg-base-200 text-base-content transition-transform duration-300 ease-in-out ${
               isPanelOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            {isPanelOpen && (
-              <ContentTypesList
-                onClose={() => setIsPanelOpen(false)}
-                addSelectedComponent={addSelectedComponent}
-              />
-            )}
+            <ContentTypesList
+              onClose={() => setIsPanelOpen(false)}
+              onSelect={addSelectedComponent}
+            />
           </div>
 
           <div className="h-full w-full" ref={reactFlowWrapper}>
