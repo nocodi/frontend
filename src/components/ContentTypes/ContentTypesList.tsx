@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { ContentType } from "../../types/Component";
 import SearchBar from "../searchBar";
-import Tooltip from "../Tooltip";
-import { ArrowLeft, X, Bot, Zap, BrainCircuit } from "lucide-react";
+import { X, Bot, Zap, BrainCircuit } from "lucide-react";
 import { useContentTypes } from "../../services/getQueries";
 import { useDnD } from "../Context/DnDContext";
 import getComponentIcon from "./getComponentIcon";
