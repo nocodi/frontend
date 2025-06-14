@@ -26,7 +26,7 @@ export default function LogViewerContent({
     <pre
       ref={logDisplayRef}
       onScroll={onScroll}
-      className="overflow-auto bg-[#1e1e1e] px-6 py-4 text-left font-mono text-sm leading-relaxed whitespace-pre-wrap text-[#0f0]"
+      className="grow overflow-auto bg-[#1e1e1e] px-6 py-4 text-left font-mono text-sm leading-relaxed whitespace-pre-wrap text-[#0f0]"
     >
       {logs || (
         <span className="text-base-content/50 italic">
