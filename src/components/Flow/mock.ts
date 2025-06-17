@@ -5,7 +5,7 @@ export const nods: Node<ComponentType, string | undefined>[] = [
   {
     id: "1",
     position: { x: 0, y: 0 },
-    type: "group",
+    type: "customNode",
     data: {
       id: 1,
       previous_component: null,
@@ -15,6 +15,7 @@ export const nods: Node<ComponentType, string | undefined>[] = [
       hover_text: null,
       position_x: 0,
       position_y: 0,
+      reply_markup_supported: true,
     },
   },
   {
@@ -30,6 +31,7 @@ export const nods: Node<ComponentType, string | undefined>[] = [
       hover_text: null,
       position_x: 50,
       position_y: 70,
+      reply_markup_supported: false,
     },
   },
   {
@@ -46,6 +48,7 @@ export const nods: Node<ComponentType, string | undefined>[] = [
       hover_text: null,
       position_x: 0,
       position_y: 0,
+      reply_markup_supported: false,
     },
   },
   {
@@ -61,6 +64,7 @@ export const nods: Node<ComponentType, string | undefined>[] = [
       hover_text: null,
       position_x: 400,
       position_y: 100,
+      reply_markup_supported: false,
     },
   },
   {
@@ -77,6 +81,7 @@ export const nods: Node<ComponentType, string | undefined>[] = [
       hover_text: null,
       position_x: 20,
       position_y: 0,
+      reply_markup_supported: false,
     },
   },
 ];
