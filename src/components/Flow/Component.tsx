@@ -21,13 +21,20 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           className={typeOfComponent}
         >
           <ComponentHandles component={data} isConnectable={isConnectable} />
-          <div className="text-[10px] font-medium group-hover/component:hidden">
-            {data.component_name}
-          </div>
-          <div className="hidden text-[10px] font-medium group-hover/component:block">
-            {data.hover_text ?
-              sliceString(data.hover_text, 15)
-            : data.component_name}
+          <div className="flex shrink grow items-center">
+            <div className="shrink-0 grow-0">
+              <span className="flex items-center justify-center">
+                {getComponentIcon(data.component_name, "small")}
+              </span>
+            </div>
+            <div className="text-[10px] font-medium group-hover/component:hidden">
+              {data.component_name}
+            </div>
+            <div className="hidden text-[10px] font-medium group-hover/component:block">
+              {data.hover_text ?
+                sliceString(data.hover_text, 12)
+              : data.component_name}
+            </div>
           </div>
         </div>
       </div>
