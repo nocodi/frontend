@@ -118,7 +118,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               </div>
 
               {/* Preview Button */}
-              {canShowPreview() && (
+              {canShowPreview() && !isFetching && (
                 <button
                   type="button"
                   onClick={() => setShowPreview(true)}
