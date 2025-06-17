@@ -23,17 +23,15 @@ import { Plus } from "lucide-react";
 import { useDnD } from "../Context/DnDContext";
 import { useLoading } from "../../pages/Workflow";
 import { useUnattended } from "../Context/UnattendedComponentContext";
-import { GroupNode } from "./GroupNode";
 import { HandleConn } from "./HandleConn";
 import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
-import { nods } from "./mock";
 import Tutorial from "./Tutorial";
+import { nods } from "./mock";
 
 const nodeTypes = {
   customNode: Component,
-  group: GroupNode,
   button: ButtonNode,
 };
 const edgeTypes = { customEdge: CustomEdge };
@@ -50,7 +48,7 @@ export default function Flow() {
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>([]);
+  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>(nods);
   const [edges, _setEdges, onEdgesChange] = useEdgesState([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
