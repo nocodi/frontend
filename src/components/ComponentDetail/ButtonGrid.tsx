@@ -1,13 +1,23 @@
-import { Plus, Grid, MessageSquare, Reply } from "lucide-react";
+import { Plus, Grid, MessageSquare, Reply, Eye } from "lucide-react";
 import EditableButton from "./EditableButton";
-import { GridItem, KeyboardType } from "../../types/ComponentDetailForm";
+import TelegramPreview from "./TelegramPreview";
+import {
+  GridItem,
+  KeyboardType,
+  formValuesType,
+} from "../../types/ComponentDetailForm";
 import { generateUUID } from "./generateUUID";
+import { useState } from "react";
+import { componentSchemaType } from "./makeFormData";
 
 type ButtonGridProps = {
   rows: GridItem[][];
   setRows: React.Dispatch<React.SetStateAction<GridItem[][]>>;
   keyboardType: KeyboardType;
   setKeyboardType: React.Dispatch<React.SetStateAction<KeyboardType>>;
+  formValues: formValuesType;
+  componentSchema: componentSchemaType;
+  componentName: string;
 };
 
 export default function ButtonGrid({
@@ -15,6 +25,9 @@ export default function ButtonGrid({
   setRows,
   keyboardType,
   setKeyboardType,
+  formValues,
+  componentSchema,
+  componentName,
 }: ButtonGridProps) {
   const MAX_ROWS = 3;
   const MAX_COLS = 3;
@@ -57,38 +70,40 @@ export default function ButtonGrid({
           </button>
         </div>
       : <div className="rounded-xl border-2 border-dashed border-primary/20 bg-base-200/50 p-6 transition-all duration-200 hover:border-primary/40 hover:bg-base-200">
-          {/* Keyboard Type Toggle - Compact Version */}
+          {/* Header with Type Toggle */}
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-base-content/70">
-              Keyboard Type:
-            </span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-base-content/70">
+                Keyboard Type:
+              </span>
 
-            {/* Segmented Control */}
-            <div className="join">
-              <button
-                type="button"
-                onClick={() => setKeyboardType("inline")}
-                className={`btn join-item btn-xs ${
-                  keyboardType === "inline" ? "btn-primary" : (
-                    "text-base-content/60 btn-ghost hover:text-base-content"
-                  )
-                }`}
-              >
-                <MessageSquare className="mr-1 size-3" />
-                Inline
-              </button>
-              <button
-                type="button"
-                onClick={() => setKeyboardType("reply")}
-                className={`btn join-item btn-xs ${
-                  keyboardType === "reply" ? "btn-primary" : (
-                    "text-base-content/60 btn-ghost hover:text-base-content"
-                  )
-                }`}
-              >
-                <Reply className="mr-1 size-3" />
-                Reply
-              </button>
+              {/* Segmented Control */}
+              <div className="join">
+                <button
+                  type="button"
+                  onClick={() => setKeyboardType("inline")}
+                  className={`btn join-item btn-xs ${
+                    keyboardType === "inline" ? "btn-primary" : (
+                      "text-base-content/60 btn-ghost hover:text-base-content"
+                    )
+                  }`}
+                >
+                  <MessageSquare className="mr-1 size-3" />
+                  Inline
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setKeyboardType("reply")}
+                  className={`btn join-item btn-xs ${
+                    keyboardType === "reply" ? "btn-primary" : (
+                      "text-base-content/60 btn-ghost hover:text-base-content"
+                    )
+                  }`}
+                >
+                  <Reply className="mr-1 size-3" />
+                  Reply
+                </button>
+              </div>
             </div>
           </div>
 

@@ -18,7 +18,8 @@ import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
 import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
-import { Check, RefreshCcw, X } from "lucide-react";
+import { Check, RefreshCcw, X, Eye } from "lucide-react";
+import TelegramPreview from "./TelegramPreview";
 
 type PropsType = {
   node: ComponentType;
@@ -33,6 +34,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<GridItem[][]>([]);
   const [keyboardType, setKeyboardType] = useState<KeyboardType>("inline");
+  const [showPreview, setShowPreview] = useState(false);
 
   const { contentTypes } = useContentTypes();
   const contentType = contentTypes!.find(
@@ -49,6 +51,26 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   useEffect(() => {
     setFormValues(details ?? {});
   }, [details]);
+
+  // Check if all required fields are filled
+  const canShowPreview = () => {
+    // Check if all required fields are filled
+    const requiredFields = Object.entries(componentSchema)
+      .filter(([_, schema]) => schema.required)
+      .map(([key, _]) => key);
+
+    // If no required fields, show preview
+    if (requiredFields.length === 0) return true;
+
+    const allRequiredFilled = requiredFields.every((field) => {
+      const value = formValues[field];
+      return (
+        value !== undefined && value !== null && value !== "" && value !== false
+      );
+    });
+
+    return allRequiredFilled;
+  };
 
   const handleSubmit = (override?: formValuesType) => {
     const formData = makeFormData(componentSchema, override, formValues);
@@ -94,6 +116,19 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               <div className="mr-auto badge badge-sm badge-primary">
                 {node.id}
               </div>
+
+              {/* Preview Button */}
+              {canShowPreview() && (
+                <button
+                  type="button"
+                  onClick={() => setShowPreview(true)}
+                  className="btn text-lg font-bold btn-ghost btn-sm hover:btn-info"
+                  aria-label="Preview"
+                >
+                  <Eye />
+                </button>
+              )}
+
               <button
                 type="button"
                 disabled={loading}
@@ -142,12 +177,52 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                   setRows={setRows}
                   keyboardType={keyboardType}
                   setKeyboardType={setKeyboardType}
+                  formValues={formValues}
+                  componentSchema={componentSchema}
+                  componentName={contentType.name}
                 />
               </form>
             }
           </div>
         </div>
       }
+
+      {/* Telegram Preview Modal */}
+      {showPreview && canShowPreview() && (
+        <div className="modal-open modal">
+          <div className="modal-box max-w-md p-0">
+            <div className="border-b border-base-300 p-4">
+              <h3 className="text-lg font-bold">📱 Telegram Preview</h3>
+              <p className="text-sm text-base-content/70">
+                How your component will look in Telegram
+              </p>
+            </div>
+            <div className="p-4">
+              <TelegramPreview
+                rows={rows}
+                keyboardType={keyboardType}
+                formValues={formValues}
+                componentSchema={componentSchema}
+                componentName={contentType.name}
+              />
+            </div>
+            <div className="modal-action p-4">
+              <button
+                type="button"
+                onClick={() => setShowPreview(false)}
+                className="btn btn-primary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+          <div
+            className="modal-backdrop"
+            onClick={() => setShowPreview(false)}
+          ></div>
+        </div>
+      )}
+
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>
