@@ -21,7 +21,7 @@ export type ContentType = {
   description: string;
   path: string;
   type: string;
-  component_type: "TELEGRAM" | "TRIGGER" | "CONDITIONAL" | "CODE" | "";
+  component_type: "TELEGRAM" | "TRIGGER" | "CONDITIONAL" | "CODE" | "STATE";
   schema: Record<string, SchemaType>;
   reply_markup: null;
   reply_markup_supported: boolean;

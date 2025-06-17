@@ -6,13 +6,13 @@ import Loading from "./Loading";
 export default function DeployCode({ botId }: { botId: number }) {
   const [loading, setLoading] = useState(false);
 
-  const handleDownload = () => {
+  const handleDeploy = () => {
     setLoading(true);
     api
       .get(`/bot/${botId}/deploy`)
       .then((response) => {
-        if (response.status === 200) {
-          toast(response.data);
+        if (response.status === 202) {
+          toast(response.data.message);
         }
       })
       .catch((error) => {
@@ -27,7 +27,7 @@ export default function DeployCode({ botId }: { botId: number }) {
     <div className="text-center">
       <button
         className="btn-patina btn w-25 bg-primary text-primary btn-outline hover:bg-primary"
-        onClick={handleDownload}
+        onClick={handleDeploy}
         disabled={loading}
       >
         {loading ?

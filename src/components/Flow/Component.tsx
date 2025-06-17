@@ -3,6 +3,7 @@ import { ComponentType } from "../../types/Component";
 import { ComponentHeader, ComponentHandles } from "./ComponentOptions";
 import { sliceString } from "../../utils/freqFuncs";
 import { useUnattended } from "../Context/UnattendedComponentContext";
+import getComponentIcon from "../ContentTypes/getComponentIcon";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const setUnattendedComponent = useUnattended()[1];
