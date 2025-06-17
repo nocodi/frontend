@@ -11,14 +11,9 @@ import {
 import { componentSchemaType } from "./makeFormData";
 import { validateField } from "./validateField";
 import { parseRawValue } from "./parseRawValue";
-import {
-  formValuesType,
-  GridItem,
-  KeyboardType,
-} from "../../types/ComponentDetailForm";
+import { formValuesType } from "../../types/ComponentDetailForm";
 import { SchemaType } from "../../types/Component";
 import { useMemo, useState } from "react";
-import ButtonGrid from "./ButtonGrid";
 
 type FormFieldsProps = {
   componentSchema: componentSchemaType;
@@ -35,9 +30,6 @@ export default function FormFields({
   setFormValues,
   setFormErrors,
 }: FormFieldsProps) {
-  const [rows, setRows] = useState<GridItem[][]>([]);
-  const [keyboardType, setKeyboardType] = useState<KeyboardType>("inline");
-
   const handleChange = (key: string, value: File | string | null) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
     setFormErrors((prev) => ({ ...prev, [key]: "" }));

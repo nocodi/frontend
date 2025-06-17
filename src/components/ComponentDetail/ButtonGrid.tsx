@@ -1,13 +1,11 @@
-import { Plus, Grid, MessageSquare, Reply, Eye } from "lucide-react";
+import { Plus, Grid, MessageSquare, Reply } from "lucide-react";
 import EditableButton from "./EditableButton";
-import TelegramPreview from "./TelegramPreview";
 import {
   GridItem,
   KeyboardType,
   formValuesType,
 } from "../../types/ComponentDetailForm";
 import { generateUUID } from "./generateUUID";
-import { useState } from "react";
 import { componentSchemaType } from "./makeFormData";
 
 type ButtonGridProps = {
@@ -25,9 +23,6 @@ export default function ButtonGrid({
   setRows,
   keyboardType,
   setKeyboardType,
-  formValues,
-  componentSchema,
-  componentName,
 }: ButtonGridProps) {
   const MAX_ROWS = 3;
   const MAX_COLS = 3;

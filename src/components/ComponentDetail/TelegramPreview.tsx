@@ -90,7 +90,7 @@ export default function TelegramPreview({
   };
 
   const renderFieldValue = (
-    key: string,
+    _key: string,
     value: unknown,
     schema: { type: string; verbose_name?: string },
   ) => {
