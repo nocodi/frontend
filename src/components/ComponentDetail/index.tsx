@@ -6,7 +6,11 @@ import {
 import { useEffect, useState } from "react";
 import Loading from "../Loading";
 import api from "../../services/api";
-import { formValuesType, GridItem } from "../../types/ComponentDetailForm";
+import {
+  formValuesType,
+  GridItem,
+  KeyboardType,
+} from "../../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";
@@ -15,7 +19,6 @@ import FormFields from "./FormFields";
 import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
 import { Check, RefreshCcw, X } from "lucide-react";
-import { generateUUID } from "./generateUUID";
 
 type PropsType = {
   node: ComponentType;
@@ -28,9 +31,8 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [rows, setRows] = useState<GridItem[][]>([
-    [{ id: generateUUID(), label: "Item" }],
-  ]);
+  const [rows, setRows] = useState<GridItem[][]>([]);
+  const [keyboardType, setKeyboardType] = useState<KeyboardType>("inline");
 
   const { contentTypes } = useContentTypes();
   const contentType = contentTypes!.find(
@@ -135,7 +137,12 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                   setFormErrors={setFormErrors}
                 />
 
-                <ButtonGrid rows={rows} setRows={setRows} />
+                <ButtonGrid
+                  rows={rows}
+                  setRows={setRows}
+                  keyboardType={keyboardType}
+                  setKeyboardType={setKeyboardType}
+                />
               </form>
             }
           </div>
