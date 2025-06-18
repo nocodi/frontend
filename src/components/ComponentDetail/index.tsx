@@ -3,7 +3,7 @@ import {
   useComponentDetails,
   useContentTypes,
 } from "../../services/getQueries";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loading from "../Loading";
 import api from "../../services/api";
 import {
@@ -35,6 +35,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [rows, setRows] = useState<GridItem[][]>([]);
   const [keyboardType, setKeyboardType] = useState<KeyboardType>("inline");
   const [showPreview, setShowPreview] = useState(false);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   const { contentTypes } = useContentTypes();
   const contentType = contentTypes!.find(
@@ -52,14 +53,13 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     setFormValues(details ?? {});
   }, [details]);
 
-  // Check if all required fields are filled
   const canShowPreview = () => {
-    // Check if all required fields are filled
+    if (isFetching) return false;
+
     const requiredFields = Object.entries(componentSchema)
       .filter(([_, schema]) => schema.required)
       .map(([key, _]) => key);
 
-    // If no required fields, show preview
     if (requiredFields.length === 0) return true;
 
     const allRequiredFilled = requiredFields.every((field) => {
@@ -118,10 +118,10 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               </div>
 
               {/* Preview Button */}
-              {canShowPreview() && !isFetching && (
+              {canShowPreview() && (
                 <button
                   type="button"
-                  onClick={() => setShowPreview(true)}
+                  onClick={() => modalRef.current?.showModal()}
                   className="btn text-lg font-bold btn-ghost btn-sm hover:btn-info"
                   aria-label="Preview"
                 >
@@ -188,40 +188,38 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
       }
 
       {/* Telegram Preview Modal */}
-      {showPreview && canShowPreview() && (
-        <div className="modal-open modal">
-          <div className="modal-box max-w-md p-0">
-            <div className="border-b border-base-300 p-4">
-              <h3 className="text-lg font-bold">📱 Telegram Preview</h3>
-              <p className="text-sm text-base-content/70">
-                How your component will look in Telegram
-              </p>
-            </div>
-            <div className="p-4">
-              <TelegramPreview
-                rows={rows}
-                keyboardType={keyboardType}
-                formValues={formValues}
-                componentSchema={componentSchema}
-                componentName={contentType.name}
-              />
-            </div>
-            <div className="modal-action p-4">
-              <button
-                type="button"
-                onClick={() => setShowPreview(false)}
-                className="btn btn-primary"
-              >
-                Close
-              </button>
-            </div>
+      <dialog ref={modalRef} className="modal">
+        <div className="modal-box max-w-md p-0">
+          <div className="border-b border-base-300 p-4">
+            <h3 className="text-lg font-bold">📱 Telegram Preview</h3>
+            <p className="text-sm text-base-content/70">
+              How your component will look in Telegram
+            </p>
           </div>
-          <div
-            className="modal-backdrop"
-            onClick={() => setShowPreview(false)}
-          ></div>
+          <div className="p-4">
+            <TelegramPreview
+              rows={rows}
+              keyboardType={keyboardType}
+              formValues={formValues}
+              componentSchema={componentSchema}
+              componentName={contentType.name}
+            />
+          </div>
+          <div className="modal-action p-4">
+            <button
+              type="button"
+              onClick={() => modalRef.current?.close()}
+              className="btn btn-primary"
+            >
+              Close
+            </button>
+          </div>
         </div>
-      )}
+        <div
+          className="modal-backdrop"
+          onClick={() => modalRef.current?.close()}
+        ></div>
+      </dialog>
 
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
