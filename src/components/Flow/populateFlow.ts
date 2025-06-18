@@ -17,6 +17,8 @@ export function populateFlow({ flowInstance, components }: populateFlowProps) {
               x: element.position_x,
               y: element.position_y,
             }),
+            width: element.reply_markup_supported ? 400 : 200,
+            height: element.reply_markup_supported ? 400 : 200,
             type: "customNode",
             selected: false,
             data: {

@@ -20,6 +20,7 @@ import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
 import { Check, RefreshCcw, X, Eye } from "lucide-react";
 import TelegramPreview from "./TelegramPreview";
+import { getPathOfContent } from "../../utils/freqFuncs";
 
 type PropsType = {
   node: ComponentType;
@@ -41,8 +42,8 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     (i) => i.id === node.component_content_type,
   )!;
 
-  const componentPath = contentType.path.split(".ir")[1];
-  const { details, isFetching } = useComponentDetails(componentPath, node.id);
+  const componentPath = getPathOfContent(node.id, contentTypes!);
+  const { details, isFetching } = useComponentDetails(componentPath!, node.id);
 
   const componentSchema = Object.fromEntries(
     Object.keys(details ?? {}).map((key) => [key, contentType.schema[key]]),

@@ -28,7 +28,6 @@ import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
 import Tutorial from "./Tutorial";
-import { nods } from "./mock";
 
 const nodeTypes = {
   customNode: Component,
@@ -48,7 +47,7 @@ export default function Flow() {
   const flowInstance = useReactFlow();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
-  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>(nods);
+  const [nodes, _setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, _setEdges, onEdgesChange] = useEdgesState([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
@@ -65,8 +64,15 @@ export default function Flow() {
 
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) =>
-      MakeComponent(flowInstance, content, setUnattendedComponent, x, y),
-    [flowInstance, setUnattendedComponent],
+      MakeComponent(
+        flowInstance,
+        content,
+        contentTypes,
+        setUnattendedComponent,
+        x,
+        y,
+      ),
+    [flowInstance, setUnattendedComponent, contentTypes],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
