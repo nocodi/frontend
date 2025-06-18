@@ -184,24 +184,26 @@ export default function FormFields({
       })}
 
       {canCollapse && (
-        <button
-          type="button"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="group btn w-full btn-ghost transition-all duration-300 btn-accent"
-        >
-          <span className="flex items-center justify-center gap-2">
-            {isCollapsed ?
-              <>
-                <span>Show Optional Fields</span>
-                <ChevronDown className="size-4 transition-transform duration-300 group-hover:translate-y-0.5" />
-              </>
-            : <>
-                <span>Hide Optional Fields</span>
-                <ChevronUp className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
-              </>
-            }
-          </span>
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="group btn w-full btn-ghost transition-all duration-300 btn-accent"
+          >
+            <span className="flex items-center justify-center gap-2">
+              {isCollapsed ?
+                <>
+                  <span>Show Optional Fields</span>
+                  <ChevronDown className="size-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+                </>
+              : <>
+                  <span>Hide Optional Fields</span>
+                  <ChevronUp className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                </>
+              }
+            </span>
+          </button>
+        </>
       )}
     </div>
   );

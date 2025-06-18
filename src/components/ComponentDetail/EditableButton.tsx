@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, Pencil } from "lucide-react";
 import { useState } from "react";
 import { GridItem } from "../../types/ComponentDetailForm";
 
@@ -18,41 +18,28 @@ export default function EditableButton({
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState("");
 
-  function trimRows(newRows: GridItem[][], rowIndex: number): GridItem[][] {
-    if (
-      newRows[rowIndex].length === 0 &&
-      rowIndex + 1 < newRows.length &&
-      newRows[rowIndex + 1].length > 0
-    ) {
-      newRows[rowIndex].push(newRows[rowIndex + 1].shift()!);
-    } else {
-      return newRows;
-    }
-
-    return trimRows(newRows, rowIndex + 1);
-  }
-
-  const saveEdit = (itemId: string) => {
-    setRows((prev) =>
-      prev.map((row) =>
+  const saveEdit = (id: string) => {
+    setRows((prev) => {
+      const newRows = prev.map((row) =>
         row.map((item) =>
-          item.id === itemId ? { ...item, label: editingLabel } : item,
+          item.id === id ? { ...item, label: editingLabel } : item,
         ),
-      ),
-    );
+      );
+      return newRows;
+    });
     setEditingItemId(null);
-    setEditingLabel("");
   };
 
   const removeItem = (rowIndex: number, itemIndex: number) => {
     setRows((prev) => {
-      let newRows = prev.map((row) => [...row]);
-      newRows[rowIndex].splice(itemIndex, 1);
+      const newRows = [...prev];
+      newRows[rowIndex] = newRows[rowIndex].filter(
+        (_, idx) => idx !== itemIndex,
+      );
 
-      newRows = trimRows(newRows, rowIndex);
-
-      if (newRows[newRows.length - 1].length === 0 && newRows.length > 1) {
-        newRows.pop();
+      // Remove empty rows
+      if (newRows[rowIndex].length === 0) {
+        newRows.splice(rowIndex, 1);
       }
 
       return newRows;
@@ -60,7 +47,7 @@ export default function EditableButton({
   };
 
   return (
-    <>
+    <div className="relative flex h-full w-full items-center justify-center p-3">
       {editingItemId === item.id ?
         <input
           autoFocus
@@ -68,32 +55,35 @@ export default function EditableButton({
           value={editingLabel}
           onChange={(e) =>
             setEditingLabel(
-              e.target.value.length > 0 ? e.target.value : "default",
+              e.target.value.length > 0 ? e.target.value : "New Button",
             )
           }
           onBlur={() => saveEdit(item.id)}
           onKeyDown={(e) => {
             if (e.key === "Enter") saveEdit(item.id);
           }}
-          className="mx-auto my-auto text-center outline-none input-primary"
+          className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-center text-white placeholder-white/50 backdrop-blur-sm transition-all duration-200 outline-none focus:border-white/40 focus:ring-2 focus:ring-white/20"
+          placeholder="Enter button text..."
         />
       : <div
-          className="mx-auto my-auto cursor-pointer text-center"
+          className="group/edit flex h-full w-full cursor-pointer items-center justify-center rounded-lg transition-all duration-200 hover:bg-white/10"
           onClick={() => {
             setEditingItemId(item.id);
             setEditingLabel(item.label);
           }}
         >
-          {item.label}
+          <span className="text-lg font-medium text-white">{item.label}</span>
+          <Pencil className="ml-2 hidden size-4 text-white/50 transition-all duration-200 group-hover/edit:block" />
         </div>
       }
 
       <button
-        className="invisible absolute top-0.5 right-0.5 cursor-pointer rounded-full bg-red-500 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 hover:bg-red-300"
+        className="absolute -top-2 -right-2 hidden rounded-full bg-error p-1.5 text-white opacity-0 shadow-lg transition-all duration-200 group-hover:block group-hover:opacity-100 hover:bg-error/80"
         onClick={() => removeItem(rowIndex, itemIndex)}
+        title="Remove Button"
       >
-        <X size={18} />
+        <X className="size-4" />
       </button>
-    </>
+    </div>
   );
 }
