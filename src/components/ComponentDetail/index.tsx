@@ -34,7 +34,6 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<GridItem[][]>([]);
   const [keyboardType, setKeyboardType] = useState<KeyboardType>("inline");
-  const [showPreview, setShowPreview] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const { contentTypes } = useContentTypes();
