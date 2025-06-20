@@ -1,0 +1,20 @@
+deploy:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_KEY")
+  script:
+    - |
+      ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+          set -e
+          set +x
+          cd /opt/nocodi_frontend
+          git pull
+          docker compose -f docker-compose.yaml up --build --detach
+        "
+  after_script:
+    - eval $(ssh-agent -ks)

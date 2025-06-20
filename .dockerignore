@@ -1,4 +1,5 @@
-node_modules
+### Temporary solution for offline situation
+# node_modules
 npm-debug.log
 Dockerfile
 .dockerignore
