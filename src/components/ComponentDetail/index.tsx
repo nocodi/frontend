@@ -42,7 +42,10 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     (i) => i.id === node.component_content_type,
   )!;
 
-  const componentPath = getPathOfContent(node.id, contentTypes!);
+  const componentPath = getPathOfContent(
+    node.component_content_type,
+    contentTypes!,
+  );
   const { details, isFetching } = useComponentDetails(componentPath!, node.id);
 
   const componentSchema = Object.fromEntries(
