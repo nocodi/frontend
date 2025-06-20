@@ -1,16 +1,25 @@
-import { ReactFlowInstance } from "reactflow";
+import { ReactFlowInstance, Node, Edge, EdgeProps } from "reactflow";
 import { ComponentType } from "../../types/Component";
 
 type populateFlowProps = {
   flowInstance: ReactFlowInstance;
+  setNodes: React.Dispatch<
+    React.SetStateAction<Node<ComponentType, string | undefined>[]>
+  >;
+  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeProps>[]>>;
   components: ComponentType[] | undefined;
 };
 
-export function populateFlow({ flowInstance, components }: populateFlowProps) {
+export function populateFlow({
+  flowInstance,
+  setNodes,
+  setEdges,
+  components,
+}: populateFlowProps) {
   if (components) {
     if (components.length > 0) {
       components.forEach((element: ComponentType) => {
-        flowInstance.setNodes((nds) =>
+        setNodes((nds) =>
           nds.concat({
             id: element.id.toString(),
             position: flowInstance.screenToFlowPosition({
@@ -33,7 +42,7 @@ export function populateFlow({ flowInstance, components }: populateFlowProps) {
 
         if (element.previous_component) {
           const previous_component: number = element.previous_component;
-          flowInstance.setEdges((edg) =>
+          setEdges((edg) =>
             edg.concat({
               id: `e${previous_component}-${element.id}`,
               source: previous_component.toString(),
