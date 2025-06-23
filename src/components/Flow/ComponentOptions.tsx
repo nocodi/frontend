@@ -61,41 +61,6 @@ export const ComponentHandles = ({
   component,
   isConnectable,
 }: ComponentHandlesProps) => {
-  const handles = [0, 1, 2, 3, 4, 5];
-  if (component.component_type == "CONDITIONAL") {
-    return (
-      <>
-        <div className="">
-          {handles.map((handleId, i) => (
-            <Handle
-              key={handleId}
-              type="source"
-              id={String(handleId)}
-              position={Position.Right}
-              isConnectable={isConnectable}
-              title={String(handleId)}
-              style={{
-                width: 7,
-                height: 7,
-                top: 10 * i,
-              }}
-            />
-          ))}
-        </div>
-        <Handle
-          type="target"
-          position={Position.Left}
-          isConnectable={isConnectable}
-          isConnectableStart={false}
-          style={{
-            width: 1,
-            height: 8,
-            borderRadius: 1,
-          }}
-        />
-      </>
-    );
-  }
   return (
     <div>
       {!component.reply_markup_supported && (
