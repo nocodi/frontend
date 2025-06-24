@@ -331,8 +331,8 @@ export default function TelegramPreview({
       .map(([key, schema]) => ({
         key,
         schema,
-        value: formValues[key],
-        label: schema.verbose_name || key,
+        val: formValues[key],
+        value: schema.verbose_name || key,
       }));
 
     return fields;
@@ -424,8 +424,8 @@ export default function TelegramPreview({
               {/* Component Fields */}
               {componentFields.length > 0 ?
                 <div className="space-y-4">
-                  {componentFields.map(({ key, schema, value }) => (
-                    <div key={key}>{renderFieldValue(key, value, schema)}</div>
+                  {componentFields.map(({ key, schema, val }) => (
+                    <div key={key}>{renderFieldValue(key, val, schema)}</div>
                   ))}
                 </div>
               : <div className="py-8 text-center">
@@ -439,7 +439,7 @@ export default function TelegramPreview({
               }
 
               {/* Inline Keyboard */}
-              {keyboardType === "inline" && hasButtons && (
+              {keyboardType === "InlineKeyboard" && hasButtons && (
                 <div className="mt-4 border-t border-gray-600 pt-3">
                   <div className="space-y-2">
                     {rows.map((row, rowIndex) => (
@@ -449,7 +449,7 @@ export default function TelegramPreview({
                             key={button.id}
                             className="flex-1 rounded-xl border border-blue-500/30 bg-gradient-to-b from-blue-600/20 to-blue-700/20 px-3 py-2.5 text-xs font-medium text-blue-300 shadow-sm transition-all duration-200 hover:from-blue-500/30 hover:to-blue-600/30 hover:shadow-md"
                           >
-                            {button.label}
+                            {button.value}
                           </button>
                         ))}
                       </div>
@@ -500,7 +500,7 @@ export default function TelegramPreview({
           </div>
 
           {/* Reply Keyboard */}
-          {keyboardType === "reply" && hasButtons && (
+          {keyboardType === "ReplyKeyboard" && hasButtons && (
             <div className="mt-3 rounded-2xl border border-gray-600/50 bg-gray-700/80 p-3 shadow-lg backdrop-blur-sm">
               <div className="space-y-2">
                 {rows.map((row, rowIndex) => (
@@ -510,7 +510,7 @@ export default function TelegramPreview({
                         key={button.id}
                         className="flex-1 rounded-xl border border-gray-500/50 bg-gradient-to-b from-gray-600 to-gray-700 px-4 py-3 text-sm font-medium text-gray-200 shadow-sm transition-all duration-200 hover:from-gray-500 hover:to-gray-600 hover:shadow-md"
                       >
-                        {button.label}
+                        {button.value}
                       </button>
                     ))}
                   </div>

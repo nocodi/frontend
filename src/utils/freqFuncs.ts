@@ -30,6 +30,7 @@ export function makeNode(
     position_x,
     position_y,
     reply_markup_supported,
+    reply_markup,
   } = data;
 
   const componentData: ComponentType = {
@@ -42,6 +43,7 @@ export function makeNode(
     position_y,
     hover_text: null,
     reply_markup_supported,
+    reply_markup,
   };
 
   const newNode: Node<ComponentType> = {
