@@ -1,10 +1,8 @@
-FROM docker.arvancloud.ir/node:23 AS build
+FROM docker.arvancloud.ir/node:22 AS build
 WORKDIR /app
 COPY package*.json ./
 
-### Temporary solution for offline situation
-# RUN npm install
-COPY ./node_modules ./node_modules
+RUN npm ci
 
 COPY . .
 RUN npm run build
