@@ -40,6 +40,7 @@ export const useComponentDetails = (pathOfComponent: string, id: number) => {
           bot,
           object_id,
           content_type,
+          reply_markup_supported,
           ...rest
         } = res.data;
         return rest;
