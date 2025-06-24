@@ -31,7 +31,10 @@ export default function ButtonGrid({
     setRows((prev) =>
       prev.map((row, idx) =>
         idx === rowIndex && row.length < MAX_COLS ?
-          [...row, { id: generateUUID(), label: "New Button" }]
+          [
+            ...row,
+            { id: generateUUID(), value: "New Button", next_component: null },
+          ]
         : row,
       ),
     );
@@ -40,7 +43,10 @@ export default function ButtonGrid({
   const addRow = () => {
     setRows((prev) => {
       if (prev.length >= MAX_ROWS) return prev;
-      return [...prev, [{ id: generateUUID(), label: "New Button" }]];
+      return [
+        ...prev,
+        [{ id: generateUUID(), value: "New Button", next_component: null }],
+      ];
     });
   };
 
@@ -76,9 +82,9 @@ export default function ButtonGrid({
               <div className="join">
                 <button
                   type="button"
-                  onClick={() => setKeyboardType("inline")}
+                  onClick={() => setKeyboardType("InlineKeyboard")}
                   className={`btn join-item btn-xs ${
-                    keyboardType === "inline" ? "btn-primary" : (
+                    keyboardType === "InlineKeyboard" ? "btn-primary" : (
                       "text-base-content/60 btn-ghost hover:text-base-content"
                     )
                   }`}
@@ -88,9 +94,9 @@ export default function ButtonGrid({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setKeyboardType("reply")}
+                  onClick={() => setKeyboardType("ReplyKeyboard")}
                   className={`btn join-item btn-xs ${
-                    keyboardType === "reply" ? "btn-primary" : (
+                    keyboardType === "ReplyKeyboard" ? "btn-primary" : (
                       "text-base-content/60 btn-ghost hover:text-base-content"
                     )
                   }`}
@@ -141,7 +147,9 @@ export default function ButtonGrid({
             {rows.length < MAX_ROWS && (
               <button
                 type="button"
-                onClick={addRow}
+                onClick={() => {
+                  addRow();
+                }}
                 className="btn mt-2 btn-block rounded-xl btn-soft btn-secondary"
               >
                 <Plus className="mr-2 size-5" />

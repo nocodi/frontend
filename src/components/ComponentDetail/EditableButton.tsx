@@ -22,7 +22,7 @@ export default function EditableButton({
     setRows((prev) => {
       const newRows = prev.map((row) =>
         row.map((item) =>
-          item.id === id ? { ...item, label: editingLabel } : item,
+          item.id === id ? { ...item, value: editingLabel } : item,
         ),
       );
       return newRows;
@@ -69,10 +69,10 @@ export default function EditableButton({
           className="group/edit flex h-full w-full cursor-pointer items-center justify-center rounded-lg transition-all duration-200 hover:bg-white/10"
           onClick={() => {
             setEditingItemId(item.id);
-            setEditingLabel(item.label);
+            setEditingLabel(item.value);
           }}
         >
-          <span className="text-lg font-medium text-white">{item.label}</span>
+          <span className="text-lg font-medium text-white">{item.value}</span>
           <Pencil className="ml-2 hidden size-4 text-white/50 transition-all duration-200 group-hover/edit:block" />
         </div>
       }

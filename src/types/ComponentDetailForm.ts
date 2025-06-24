@@ -1,6 +1,6 @@
 export type formValuesType = Record<string, string | boolean | null | File>;
 
-export type KeyboardType = "inline" | "reply";
+export type KeyboardType = "InlineKeyboard" | "ReplyKeyboard";
 
 export type GridItem = {
   id: string;
