@@ -1,3 +1,5 @@
+import { GridItem } from "./ComponentDetailForm";
+
 export type SchemaType = {
   type:
     | "BooleanField"
@@ -13,6 +15,11 @@ export type SchemaType = {
   max_length: number;
   verbose_name: string;
   choices: Record<string, string> | null;
+};
+
+export type ReplyMarkup = {
+  buttons: GridItem[][];
+  type: "InlineKeyboard" | "ReplyKeyboard";
 };
 
 export type ContentType = {
@@ -43,5 +50,6 @@ export type ComponentType = {
   hover_text: string | null;
   position_x: number;
   position_y: number;
+  reply_markup: ReplyMarkup | null;
   reply_markup_supported: boolean;
 };
