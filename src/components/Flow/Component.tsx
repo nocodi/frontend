@@ -21,7 +21,13 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
           className={typeOfComponent}
         >
           <ComponentHandles component={data} isConnectable={isConnectable} />
-          <div className="flex shrink grow items-center">
+          <div
+            className={
+              data.reply_markup_supported ?
+                "mt-1 flex shrink grow"
+              : "flex shrink grow items-center"
+            }
+          >
             <div className="shrink-0 grow-0">
               <span className="flex items-center justify-center">
                 {getComponentIcon(data.component_name, "small")}
