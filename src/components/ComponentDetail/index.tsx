@@ -24,6 +24,7 @@ import { getPathOfContent } from "../../utils/freqFuncs";
 import { WorkflowParams } from "../../pages/Workflow";
 import { useParams } from "react-router-dom";
 import { generateUUID } from "./generateUUID";
+import { postButtons } from "../../services/postButtons";
 
 type PropsType = {
   node: ComponentType;
@@ -37,6 +38,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [rows, setRows] = useState<GridItem[][]>([]);
+  const [isPatch, setIsPatch] = useState(false);
   const [keyboardType, setKeyboardType] =
     useState<KeyboardType>("InlineKeyboard");
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -60,6 +62,7 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   useEffect(() => {
     setFormValues(details ?? {});
     if (node.reply_markup != null) {
+      setIsPatch(true);
       const rws = node.reply_markup.buttons.map((row) =>
         row.map((item) => ({
           ...item,
@@ -93,24 +96,13 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     const formData = makeFormData(componentSchema, override, formValues);
 
     setLoading(true);
-    const buttons = rows.map((row) =>
-      row.map(({ next_component, value }) =>
-        next_component === null ? { value } : { value, next_component },
-      ),
-    );
-
-    const payload = {
-      parent_component: node.id,
+    postButtons({
+      botID: botId,
+      isPatch: isPatch,
+      rows: rows,
+      parentID: node.id,
       markup_type: keyboardType,
-      buttons: buttons,
-    };
-    console.log(payload);
-    api
-      .post(`component/${botId}/markup/`, payload)
-      .then()
-      .catch((err) => {
-        toast(err.message);
-      });
+    });
 
     api
       .patch(`${componentPath}${node.id}/`, formData)
