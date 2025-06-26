@@ -1,5 +1,7 @@
 import { ReactFlowInstance, Node, Edge, EdgeProps } from "reactflow";
 import { ComponentType } from "../../types/Component";
+import { GridItem } from "../../types/ComponentDetailForm";
+import { makeButton } from "../../utils/freqFuncs";
 
 type populateFlowProps = {
   flowInstance: ReactFlowInstance;
@@ -39,6 +41,22 @@ export function populateFlow({
             },
           }),
         );
+        if (element.reply_markup) {
+          let cnt = 0;
+          element.reply_markup.buttons.forEach((rows: GridItem[]) => {
+            rows.forEach((button: GridItem) => {
+              const node = makeButton({
+                cnt: cnt,
+                button: button,
+                parentID: element.id,
+                x: 30,
+                y: 30,
+              });
+              setNodes((nds) => nds.concat(node));
+              cnt++;
+            });
+          });
+        }
 
         if (element.previous_component) {
           const previous_component: number = element.previous_component;

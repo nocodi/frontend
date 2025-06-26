@@ -100,8 +100,10 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
       botID: botId,
       isPatch: isPatch,
       rows: rows,
+      markupID: node.reply_markup?.id,
       parentID: node.id,
       markup_type: keyboardType,
+      flowInstance: flowInstance,
     });
 
     api

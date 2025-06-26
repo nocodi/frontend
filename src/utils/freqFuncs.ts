@@ -1,5 +1,6 @@
 import { ContentType, ComponentType } from "../types/Component";
 import { Node, XYPosition } from "reactflow";
+import { GridItem } from "../types/ComponentDetailForm";
 
 export function getContent(
   contents: ContentType[],
@@ -16,6 +17,46 @@ export const getPathOfContent = (
   //console.log(content);
   return content?.path?.split(".195")[1];
 };
+
+type makeButtonProps = {
+  cnt: number;
+  button: GridItem;
+  parentID: number;
+  x: number;
+  y: number;
+};
+
+export function makeButton({
+  cnt,
+  button,
+  parentID,
+  x,
+  y,
+}: makeButtonProps): Node<ComponentType> {
+  const componentData: ComponentType = {
+    id: 0,
+    previous_component: null,
+    component_name: button.value,
+    component_type: "BUTTON",
+    component_content_type: 0,
+    position_x: x,
+    position_y: y,
+    reply_markup_supported: false,
+    reply_markup: null,
+    hover_text: null,
+  };
+  const newButton: Node<ComponentType> = {
+    id: `${parentID}${cnt}`,
+    type: "button",
+    position: { x: x, y: y },
+    selected: false,
+    draggable: false,
+    data: componentData,
+    parentId: parentID.toString(),
+  };
+
+  return newButton;
+}
 
 export function makeNode(
   data: ComponentType,

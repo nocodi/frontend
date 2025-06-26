@@ -18,6 +18,7 @@ export type SchemaType = {
 };
 
 export type ReplyMarkup = {
+  id: number;
   buttons: GridItem[][];
   type: "InlineKeyboard" | "ReplyKeyboard";
 };
