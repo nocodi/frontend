@@ -72,8 +72,9 @@ export default function EditableButton({
             setEditingLabel(item.value);
           }}
         >
-          <span className="text-lg font-medium text-white">{item.value}</span>
-          <Pencil className="ml-2 hidden size-4 text-white/50 transition-all duration-200 group-hover/edit:block" />
+          <span className="cursor-text text-lg font-medium text-base-content">
+            {item.value}
+          </span>
         </div>
       }
 

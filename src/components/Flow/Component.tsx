@@ -7,10 +7,13 @@ import getComponentIcon from "../ContentTypes/getComponentIcon";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const setUnattendedComponent = useUnattended()[1];
+  const baseClasses =
+    "group/component relative flex cursor-pointer rounded-lg border-2 border-base-content bg-primary px-1 text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content";
+
   const typeOfComponent =
     data.reply_markup_supported ?
-      "group/component text-top relative flex h-24 w-44 cursor-pointer justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content"
-    : "group/component relative flex h-12 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-base-content bg-primary px-1 text-center text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content";
+      `text-top justify-center h-24 w-44 ${baseClasses}`
+    : `items-center text-center h-12 w-24 ${baseClasses}`;
 
   return (
     <div className="flex flex-col">
