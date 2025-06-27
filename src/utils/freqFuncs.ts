@@ -91,8 +91,6 @@ export function makeNode(
     type: "customNode",
     position: position,
     selected: false,
-    width: reply_markup_supported ? 400 : 200,
-    height: reply_markup_supported ? 400 : 200,
     data: componentData,
   };
 
