@@ -3,10 +3,14 @@ import {
   useComponentDetails,
   useContentTypes,
 } from "../../services/getQueries";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loading from "../Loading";
 import api from "../../services/api";
-import { formValuesType } from "../../types/ComponentDetailForm";
+import {
+  formValuesType,
+  GridItem,
+  KeyboardType,
+} from "../../types/ComponentDetailForm";
 import { toast } from "react-toastify";
 import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";
@@ -14,7 +18,13 @@ import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
 import { useReactFlow } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
-import { Check, RefreshCcw, X } from "lucide-react";
+import { Check, RefreshCcw, X, Eye } from "lucide-react";
+import TelegramPreview from "./TelegramPreview";
+import { getPathOfContent } from "../../utils/freqFuncs";
+import { WorkflowParams } from "../../pages/Workflow";
+import { useParams } from "react-router-dom";
+import { generateUUID } from "./generateUUID";
+import { postButtons } from "../../services/postButtons";
 
 type PropsType = {
   node: ComponentType;
@@ -27,26 +37,75 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [rows, setRows] = useState<GridItem[][]>([]);
+  const [isPatch, setIsPatch] = useState(false);
+  const [keyboardType, setKeyboardType] =
+    useState<KeyboardType>("InlineKeyboard");
+  const modalRef = useRef<HTMLDialogElement>(null);
+  const { botId } = useParams<WorkflowParams>();
 
   const { contentTypes } = useContentTypes();
   const contentType = contentTypes!.find(
     (i) => i.id === node.component_content_type,
   )!;
 
-  const componentPath = contentType.path.split(".ir")[1];
-  const { details, isFetching } = useComponentDetails(componentPath, node.id);
+  const componentPath = getPathOfContent(
+    node.component_content_type,
+    contentTypes!,
+  );
+  const { details, isFetching } = useComponentDetails(componentPath!, node.id);
 
   const componentSchema = Object.fromEntries(
     Object.keys(details ?? {}).map((key) => [key, contentType.schema[key]]),
   );
+
   useEffect(() => {
     setFormValues(details ?? {});
+    if (node.reply_markup != null) {
+      setIsPatch(true);
+      const rws = node.reply_markup.buttons.map((row) =>
+        row.map((item) => ({
+          ...item,
+          id: generateUUID(),
+        })),
+      );
+      setRows([...rws]);
+    }
   }, [details]);
+
+  const canShowPreview = () => {
+    if (isFetching) return false;
+
+    const requiredFields = Object.entries(componentSchema)
+      .filter(([_, schema]) => schema.required)
+      .map(([key, _]) => key);
+
+    if (requiredFields.length === 0) return true;
+
+    const allRequiredFilled = requiredFields.every((field) => {
+      const value = formValues[field];
+      return (
+        value !== undefined && value !== null && value !== "" && value !== false
+      );
+    });
+
+    return allRequiredFilled;
+  };
 
   const handleSubmit = (override?: formValuesType) => {
     const formData = makeFormData(componentSchema, override, formValues);
 
     setLoading(true);
+    postButtons({
+      botID: botId,
+      isPatch: isPatch,
+      rows: rows,
+      markupID: node.reply_markup?.id,
+      parentID: node.id,
+      markup_type: keyboardType,
+      flowInstance: flowInstance,
+    });
+
     api
       .patch(`${componentPath}${node.id}/`, formData)
       .then(() => {
@@ -87,6 +146,19 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
               <div className="mr-auto badge badge-sm badge-primary">
                 {node.id}
               </div>
+
+              {/* Preview Button */}
+              {canShowPreview() && (
+                <button
+                  type="button"
+                  onClick={() => modalRef.current?.showModal()}
+                  className="btn text-lg font-bold btn-ghost btn-sm hover:btn-info"
+                  aria-label="Preview"
+                >
+                  <Eye />
+                </button>
+              )}
+
               <button
                 type="button"
                 disabled={loading}
@@ -130,12 +202,55 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
                   setFormErrors={setFormErrors}
                 />
 
-                <ButtonGrid />
+                <ButtonGrid
+                  rows={rows}
+                  setRows={setRows}
+                  keyboardType={keyboardType}
+                  setKeyboardType={setKeyboardType}
+                  formValues={formValues}
+                  componentSchema={componentSchema}
+                  componentName={contentType.name}
+                />
               </form>
             }
           </div>
         </div>
       }
+
+      {/* Telegram Preview Modal */}
+      <dialog ref={modalRef} className="modal">
+        <div className="modal-box max-w-md p-0">
+          <div className="border-b border-base-300 p-4">
+            <h3 className="text-lg font-bold">📱 Telegram Preview</h3>
+            <p className="text-sm text-base-content/70">
+              How your component will look in Telegram
+            </p>
+          </div>
+          <div className="p-4">
+            <TelegramPreview
+              rows={rows}
+              keyboardType={keyboardType}
+              formValues={formValues}
+              componentSchema={componentSchema}
+              componentName={contentType.name}
+            />
+          </div>
+          <div className="modal-action p-4">
+            <button
+              type="button"
+              onClick={() => modalRef.current?.close()}
+              className="btn btn-primary"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div
+          className="modal-backdrop"
+          onClick={() => modalRef.current?.close()}
+        ></div>
+      </dialog>
+
       <form method="dialog" className="modal-backdrop" onClick={handleCancel}>
         <button>close</button>
       </form>

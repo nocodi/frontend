@@ -1,13 +1,13 @@
 import { ComponentType, ContentType } from "../types/Component";
-import { Edge, Node, useReactFlow } from "reactflow";
+import { Node, Edge, EdgeProps, ReactFlowInstance } from "reactflow";
 
 import { BotData } from "../types/BotData";
-import React from "react";
 import { WorkflowParams } from "../pages/Workflow";
 import api from "./api";
 import { formValuesType } from "../types/ComponentDetailForm";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { populateFlow } from "../components/Flow/populateFlow";
 
 export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
@@ -40,6 +40,7 @@ export const useComponentDetails = (pathOfComponent: string, id: number) => {
           bot,
           object_id,
           content_type,
+          reply_markup_supported,
           ...rest
         } = res.data;
         return rest;
@@ -49,57 +50,36 @@ export const useComponentDetails = (pathOfComponent: string, id: number) => {
   return { details, isFetching };
 };
 
-export const useBotSchema = (
+type useBotSchemaProps = {
+  flowInstance: ReactFlowInstance;
   setNodes: React.Dispatch<
     React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >,
-  setEdges: React.Dispatch<React.SetStateAction<Edge<Edge>[]>>,
-) => {
+  >;
+  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeProps>[]>>;
+};
+
+export const useBotSchema = ({
+  flowInstance,
+  setNodes,
+  setEdges,
+}: useBotSchemaProps) => {
   const { botId } = useParams<WorkflowParams>();
-  const flowInstance = useReactFlow();
 
   useQuery({
     queryKey: ["botSchema"],
     queryFn: () =>
       api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
-        const components: ComponentType[] = res.data;
-        if (res.data.length > 0) {
-          components.forEach((element: ComponentType) => {
-            setNodes((nds) =>
-              nds.concat({
-                id: element.id.toString(),
-                position: flowInstance.screenToFlowPosition({
-                  x: element.position_x,
-                  y: element.position_y,
-                }),
-                type: "customNode",
-                selected: false,
-                data: {
-                  ...element,
-                  hover_text:
-                    element.hover_text != null && element.hover_text != "" ?
-                      element.hover_text
-                    : null,
-                },
-              }),
-            );
-
-            if (element.previous_component) {
-              const previous_component: number = element.previous_component;
-              setEdges((edg) =>
-                edg.concat({
-                  id: `e${previous_component}-${element.id}`,
-                  source: previous_component.toString(),
-                  target: element.id.toString(),
-                  type: "customEdge",
-                }),
-              );
-            }
-          });
-        }
+        populateFlow({
+          setNodes: setNodes,
+          setEdges: setEdges,
+          flowInstance: flowInstance,
+          components: res.data,
+        });
         return true;
       }),
   });
+
+  return false;
 };
 
 export const useBots = () => {

@@ -1,3 +1,5 @@
+import { GridItem } from "./ComponentDetailForm";
+
 export type SchemaType = {
   type:
     | "BooleanField"
@@ -15,6 +17,12 @@ export type SchemaType = {
   choices: Record<string, string> | null;
 };
 
+export type ReplyMarkup = {
+  id: number;
+  buttons: GridItem[][];
+  type: "InlineKeyboard" | "ReplyKeyboard";
+};
+
 export type ContentType = {
   id: number;
   name: string;
@@ -23,6 +31,8 @@ export type ContentType = {
   type: string;
   component_type: "TELEGRAM" | "TRIGGER" | "CONDITIONAL" | "CODE" | "STATE";
   schema: Record<string, SchemaType>;
+  reply_markup: null;
+  reply_markup_supported: boolean;
 };
 
 export type ComponentType = {
@@ -41,4 +51,6 @@ export type ComponentType = {
   hover_text: string | null;
   position_x: number;
   position_y: number;
+  reply_markup: ReplyMarkup | null;
+  reply_markup_supported: boolean;
 };

@@ -1,12 +1,13 @@
 import { ReactFlowInstance } from "reactflow";
 import { ComponentType, ContentType } from "../../types/Component";
 import api from "../../services/api";
-import { makeNode } from "../../utils/freqFuncs";
+import { getPathOfContent, makeNode } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
 
 export function MakeComponent(
   flowInstance: ReactFlowInstance,
   content: ContentType,
+  contents: ContentType[] | undefined,
   setUnattendedComponent: React.Dispatch<
     React.SetStateAction<ComponentType | undefined>
   >,
@@ -28,14 +29,16 @@ export function MakeComponent(
   if (content.schema && "chat_id" in content.schema) {
     dataPayload.chat_id = ".chat.id";
   }
-  api
-    .post(`${content.path.split(".ir")[1]}`, dataPayload)
-    .then((res) => {
-      const newNode = makeNode({ ...res.data } as ComponentType, position);
-      flowInstance.addNodes(newNode);
-      setUnattendedComponent(newNode.data);
-    })
-    .catch((err) => {
-      toast(err.message);
-    });
+  if (contents) {
+    api
+      .post(`${getPathOfContent(content.id, contents)}`, dataPayload)
+      .then((res) => {
+        const newNode = makeNode({ ...res.data } as ComponentType, position);
+        flowInstance.addNodes(newNode);
+        setUnattendedComponent(newNode.data);
+      })
+      .catch((err) => {
+        toast(err.message);
+      });
+  }
 }
