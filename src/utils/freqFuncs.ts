@@ -14,8 +14,7 @@ export const getPathOfContent = (
   contentTypes: ContentType[],
 ): string | undefined => {
   const content = getContent(contentTypes, id);
-  //console.log(content);
-  return content?.path?.split(".195")[1];
+  return content?.path;
 };
 
 type makeButtonProps = {

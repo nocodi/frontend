@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 const api = axios.create({
-  baseURL: "http://37.152.180.195:4001",
+  baseURL: "http://api.nocodi.ir",
 });
 
 api.interceptors.request.use((config) => {
