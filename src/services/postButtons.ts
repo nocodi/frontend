@@ -34,47 +34,34 @@ export function postButtons({
     markup_type: markup_type,
     buttons: buttons,
   };
-  if (isPatch) {
-    api
-      .patch<ReplyMarkup>(`component/${botID}/markup/${markupID}/`, payload)
-      .then((res) => {
-        flowInstance.setNodes((nds) =>
-          nds.map((item) =>
-            item.id === parentID.toString() ?
-              {
-                ...item,
-                data: {
-                  ...item.data,
-                  reply_markup: res.data,
-                },
-              }
-            : item,
-          ),
-        );
-      })
-      .catch((err) => {
-        toast(err.message);
-      });
-  } else {
-    api
-      .post<ReplyMarkup>(`component/${botID}/markup/`, payload)
-      .then((res) => {
-        flowInstance.setNodes((nds) =>
-          nds.map((item) =>
-            item.id === parentID.toString() ?
-              {
-                ...item,
-                data: {
-                  ...item.data,
-                  reply_markup: res.data,
-                },
-              }
-            : item,
-          ),
-        );
-      })
-      .catch((err) => {
-        toast(err.message);
-      });
-  }
+
+  const method = isPatch ? "patch" : "post";
+  const url =
+    isPatch ?
+      `component/${botID}/markup/${markupID}/`
+    : `component/${botID}/markup/`;
+  api
+    .request<ReplyMarkup>({
+      method,
+      url,
+      data: payload,
+    })
+    .then((res) => {
+      flowInstance.setNodes((nds) =>
+        nds.map((item) =>
+          item.id === parentID.toString() ?
+            {
+              ...item,
+              data: {
+                ...item.data,
+                reply_markup: res.data,
+              },
+            }
+          : item,
+        ),
+      );
+    })
+    .catch((err) => {
+      toast(err.message);
+    });
 }
