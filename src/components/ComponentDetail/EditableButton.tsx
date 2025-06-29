@@ -1,4 +1,4 @@
-import { X, Pencil } from "lucide-react";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { GridItem } from "../../types/ComponentDetailForm";
 
