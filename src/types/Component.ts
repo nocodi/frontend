@@ -54,3 +54,12 @@ export type ComponentType = {
   reply_markup: ReplyMarkup | null;
   reply_markup_supported: boolean;
 };
+
+export type EdgeType = {
+  loc: null | Location;
+};
+
+export type Location = {
+  row: number;
+  col: number;
+};

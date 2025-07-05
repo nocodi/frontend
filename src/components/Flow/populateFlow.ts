@@ -1,5 +1,5 @@
-import { ReactFlowInstance, Node, Edge, EdgeProps } from "reactflow";
-import { ComponentType } from "../../types/Component";
+import { ReactFlowInstance, Node, Edge } from "reactflow";
+import { ComponentType, EdgeType } from "../../types/Component";
 import { GridItem } from "../../types/ComponentDetailForm";
 import { makeButton } from "../../utils/freqFuncs";
 
@@ -8,7 +8,7 @@ type populateFlowProps = {
   setNodes: React.Dispatch<
     React.SetStateAction<Node<ComponentType, string | undefined>[]>
   >;
-  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeProps>[]>>;
+  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeType>[]>>;
   components: ComponentType[] | undefined;
 };
 
@@ -21,6 +21,7 @@ export function populateFlow({
   if (components) {
     if (components.length > 0) {
       components.forEach((element: ComponentType) => {
+        // add components
         setNodes((nds) =>
           nds.concat({
             id: element.id.toString(),
@@ -39,6 +40,8 @@ export function populateFlow({
             },
           }),
         );
+
+        // add reply markup
         if (element.reply_markup) {
           let cnt = 0;
           element.reply_markup.buttons.forEach((rows: GridItem[]) => {
@@ -47,8 +50,8 @@ export function populateFlow({
                 cnt: cnt,
                 button: button,
                 parentID: element.id,
-                x: 30,
-                y: 30,
+                x: 180,
+                y: 40,
               });
               setNodes((nds) => nds.concat(node));
               cnt++;
@@ -56,6 +59,7 @@ export function populateFlow({
           });
         }
 
+        // add edges
         if (element.previous_component) {
           const previous_component: number = element.previous_component;
           setEdges((edg) =>

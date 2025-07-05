@@ -1,6 +1,6 @@
 import "reactflow/dist/style.css";
 
-import { ComponentType, ContentType } from "../../types/Component";
+import { ComponentType, ContentType, EdgeType } from "../../types/Component";
 import ReactFlow, {
   Background,
   Connection,
@@ -48,7 +48,7 @@ export default function Flow() {
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
   const [showTutorial, setShowTutorial] = useState(false);

@@ -1,11 +1,5 @@
-import {
-  Connection,
-  DefaultEdgeOptions,
-  Edge,
-  Node,
-  ReactFlowInstance,
-} from "reactflow";
-import { ComponentType, ContentType } from "../../types/Component";
+import { Connection, Edge, Node, ReactFlowInstance } from "reactflow";
+import { ComponentType, ContentType, EdgeType } from "../../types/Component";
 import api from "../../services/api";
 import { getPathOfContent } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
@@ -37,7 +31,7 @@ export function HandleConn(
           )
           .then(() => {
             if (connection.source && connection.target) {
-              const newEdge: Edge<DefaultEdgeOptions> = {
+              const newEdge: Edge<EdgeType> = {
                 id: newEdgeId,
                 source: connection.source,
                 target: connection.target,
@@ -46,7 +40,6 @@ export function HandleConn(
 
               const prevEdgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
               // update previous_component of targetNode
-
               flowInstance.setNodes((nds) =>
                 nds.map((item) =>
                   item.id === targetNode.id ?
