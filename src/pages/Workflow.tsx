@@ -1,6 +1,6 @@
 import { CloudCheck, Undo2, X, HelpCircle } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { createContext, JSX, useContext, useState } from "react";
+import { createContext, JSX, useContext, useState, useEffect } from "react";
 import LogContainer from "../components/logContainerButton";
 import CodeGeneration from "../components/CodeGeneration";
 import DeployCode from "../components/DeployCode";
@@ -10,10 +10,7 @@ import { useIsFetching } from "@tanstack/react-query";
 
 export type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
 const loadingContext = createContext<loadingContextType>(() => {});
-
-export const useLoading = () => {
-  return useContext(loadingContext);
-};
+export const useLoading = () => useContext(loadingContext);
 
 export type WorkflowParams = {
   botId: string;
@@ -21,22 +18,21 @@ export type WorkflowParams = {
 
 type WorkflowTutorialSteps = "CODEGEN" | "DEPLOY" | "LOG" | "NONE";
 
-// Tutorial content for each step
 const tutorialContent = {
   LOG: {
     step: 1,
     title: "View Logs 📊",
-    desc: "Monitor your bot's activity in real-time. See what's happening behind the scenes.",
+    desc: "Monitor your bot's activity in real-time.",
   },
   DEPLOY: {
     step: 2,
     title: "Deploy Bot 🚀",
-    desc: "Ready to go live? Deploy your bot and make it available to users worldwide.",
+    desc: "Ready to go live? Deploy your bot and make it available.",
   },
   CODEGEN: {
     step: 3,
     title: "Download Code 💾",
-    desc: "Get the complete source code for your bot. Perfect for customization or deployment elsewhere.",
+    desc: "Download your bot's source code for customization.",
   },
   NONE: {
     step: 0,
@@ -45,29 +41,31 @@ const tutorialContent = {
   },
 };
 
-const WORKFLOW_TUTORIAL_KEY = "hasSeenWorkflowTutorial";
-
 function Workflow() {
   const { botId } = useParams<WorkflowParams>();
   const [loading, setLoading] = useState(false);
   const isFetching = useIsFetching();
-
   const [tutorialStep, setTutorialStep] =
     useState<WorkflowTutorialSteps>("NONE");
 
-  const handleStartTutorial = () => {
-    setTutorialStep("LOG");
-  };
+  useEffect(() => {
+    const isFirstLogin = localStorage.getItem("is_first_login") === "false";
+    if (isFirstLogin) {
+      setTutorialStep("LOG");
+    }
+  }, []);
+
+  const handleStartTutorial = () => setTutorialStep("LOG");
 
   const handleAdvanceTutorial = () => {
-    if (tutorialStep == "LOG") setTutorialStep("DEPLOY");
-    if (tutorialStep == "DEPLOY") setTutorialStep("CODEGEN");
-    if (tutorialStep == "CODEGEN") handleFinishTutorial();
+    if (tutorialStep === "LOG") setTutorialStep("DEPLOY");
+    else if (tutorialStep === "DEPLOY") setTutorialStep("CODEGEN");
+    else if (tutorialStep === "CODEGEN") handleFinishTutorial();
   };
 
   const handleFinishTutorial = () => {
     setTutorialStep("NONE");
-    localStorage.setItem(WORKFLOW_TUTORIAL_KEY, "true");
+    localStorage.setItem("is_first_login", "false");
   };
 
   const wrapWithTutorial = (
@@ -89,7 +87,6 @@ function Workflow() {
             <button
               onClick={handleFinishTutorial}
               className="btn btn-ghost btn-xs"
-              aria-label="Skip tutorial"
             >
               <X size={16} />
             </button>
@@ -97,7 +94,7 @@ function Workflow() {
           <h3 className="mb-2 text-lg font-bold">
             {tutorialContent[step].title}
           </h3>
-          <p className="mb-4 text-sm leading-relaxed text-base-content/80">
+          <p className="mb-4 text-sm text-base-content/80">
             {tutorialContent[step].desc}
           </p>
           <div className="flex gap-2">
@@ -119,10 +116,10 @@ function Workflow() {
     );
   };
 
-  // Validate botId
   const isValidBotId = botId && !isNaN(Number(botId));
 
-  return !isValidBotId ?
+  if (!isValidBotId) {
+    return (
       <div className="flex min-h-screen items-center justify-center bg-base-200">
         <div className="mx-auto max-w-md p-8 text-center">
           <div className="mb-4 text-6xl">🤖</div>
@@ -136,74 +133,67 @@ function Workflow() {
           </Link>
         </div>
       </div>
-    : <div className="h-screen overflow-hidden">
-        {tutorialStep !== "NONE" && (
-          <div
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-            onClick={handleFinishTutorial}
-            aria-label="Click to skip tutorial"
-          />
-        )}
-        <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
-          <div className="h-16 shrink-0 border-b border-base-300 bg-base-200 px-5">
-            <div className="flex h-full items-center justify-between gap-3 text-primary">
-              <Link
-                to="/dashboard"
-                className="btn transition-transform btn-outline hover:scale-105"
-                aria-label="Back to dashboard"
+    );
+  }
+
+  return (
+    <div className="h-screen overflow-hidden">
+      {tutorialStep !== "NONE" && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          onClick={handleFinishTutorial}
+        />
+      )}
+      <div className="flex h-full w-full flex-col divide-y divide-white text-gray-800">
+        <div className="h-16 shrink-0 border-b border-base-300 bg-base-200 px-5">
+          <div className="flex h-full items-center justify-between gap-3 text-primary">
+            <Link to="/dashboard" className="btn btn-outline">
+              <Undo2 />
+            </Link>
+            <div
+              className="flex items-center gap-3"
+              onClickCapture={(e) => {
+                if (
+                  tutorialStep === "NONE" &&
+                  localStorage.getItem("is_first_login") === "true"
+                ) {
+                  e.stopPropagation();
+                  handleStartTutorial();
+                }
+              }}
+            >
+              {wrapWithTutorial(<LogContainer botId={Number(botId)} />, "LOG")}
+              {wrapWithTutorial(<DeployCode botId={Number(botId)} />, "DEPLOY")}
+              {wrapWithTutorial(
+                <CodeGeneration botId={Number(botId)} />,
+                "CODEGEN",
+              )}
+              <button
+                onClick={handleStartTutorial}
+                className="tooltip btn tooltip-bottom btn-ghost btn-sm"
+                data-tip="Restart tutorial"
               >
-                <Undo2 />
-              </Link>
+                <HelpCircle size={20} />
+              </button>
               <div
-                className="flex items-center gap-3"
-                onClickCapture={(e) => {
-                  if (
-                    tutorialStep == "NONE" &&
-                    !localStorage.getItem(WORKFLOW_TUTORIAL_KEY)
-                  ) {
-                    e.stopPropagation();
-                    handleStartTutorial();
-                  }
-                }}
+                className="tooltip tooltip-left"
+                data-tip={
+                  loading || isFetching ? "Syncing..." : "Everything Synced"
+                }
               >
-                {wrapWithTutorial(
-                  <LogContainer botId={Number(botId)} />,
-                  "LOG",
-                )}
-                {wrapWithTutorial(
-                  <DeployCode botId={Number(botId)} />,
-                  "DEPLOY",
-                )}
-                {wrapWithTutorial(
-                  <CodeGeneration botId={Number(botId)} />,
-                  "CODEGEN",
-                )}
-                <button
-                  onClick={handleStartTutorial}
-                  className="tooltip btn tooltip-bottom btn-ghost btn-sm"
-                  data-tip="Restart tutorial"
-                  aria-label="Restart tutorial"
-                >
-                  <HelpCircle size={20} />
-                </button>
-                <div
-                  className="tooltip tooltip-left"
-                  data-tip={
-                    loading || isFetching ? "Syncing..." : "Everything Synced"
-                  }
-                >
-                  {loading || isFetching ?
-                    <Loading size={24} />
-                  : <CloudCheck size={24} className="text-success" />}
-                </div>
+                {loading || isFetching ?
+                  <Loading size={24} />
+                : <CloudCheck size={24} className="text-success" />}
               </div>
             </div>
           </div>
-          <loadingContext.Provider value={setLoading}>
-            <DnDFlow />
-          </loadingContext.Provider>
         </div>
-      </div>;
+        <loadingContext.Provider value={setLoading}>
+          <DnDFlow />
+        </loadingContext.Provider>
+      </div>
+    </div>
+  );
 }
 
 export default Workflow;

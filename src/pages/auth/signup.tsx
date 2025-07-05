@@ -52,6 +52,7 @@ export default function Signup() {
       const response = await api.post("iam/signup/", { email, password });
       localStorage.setItem("request_id", response.data.request_id);
       localStorage.setItem("request_type", "signup");
+      localStorage.setItem("is_first_login", "true");
       toast.success("Verification code sent to your email");
       await navigate("/verification");
     } catch (err) {

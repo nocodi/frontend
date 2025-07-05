@@ -6,6 +6,11 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../services/Auth";
 
+interface LoginResponse {
+  access_token: string;
+  is_first_login: boolean;
+}
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,12 +55,13 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const response = await api.post("iam/login/password/", {
+      const response = await api.post<LoginResponse>("iam/login/password/", {
         email,
         password,
       });
 
       login(response.data.access_token);
+      localStorage.setItem("isFirst", response.data.is_first_login.toString());
       toast.success("You are successfully logged in");
       await navigate("/");
     } catch (err) {
