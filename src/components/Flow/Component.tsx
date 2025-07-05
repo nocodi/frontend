@@ -8,12 +8,12 @@ import getComponentIcon from "../ContentTypes/getComponentIcon";
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
   const setUnattendedComponent = useUnattended()[1];
   const baseClasses =
-    "group/component relative flex cursor-pointer rounded-lg border-2 border-base-content bg-primary px-1 text-primary-content shadow-lg hover:bg-base-100 hover:text-base-content";
+    "group/component relative flex cursor-pointer rounded-lg border-2 border-base-content px-1 text-primary-content shadow-lg hover:text-base-content";
 
   const typeOfComponent =
     data.reply_markup_supported ?
-      `text-top justify-center h-24 w-44 ${baseClasses}`
-    : `items-center text-center h-12 w-24 ${baseClasses}`;
+      `text-top justify-center h-28 w-44 bg-primary/40 hover:bg-base-100/40 ${baseClasses}`
+    : `items-center text-center h-12 w-24 bg-primary hover:bg-base-100 ${baseClasses}`;
 
   return (
     <div className="flex flex-col">
