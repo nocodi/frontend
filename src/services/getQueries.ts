@@ -8,6 +8,7 @@ import { formValuesType } from "../types/ComponentDetailForm";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { populateFlow } from "../components/Flow/populateFlow";
+import { useBtnCounter } from "../components/Context/BtnCounterCtx";
 
 export const useContentTypes = (fetchTime: number = Infinity) => {
   const { botId } = useParams<WorkflowParams>();
@@ -64,12 +65,14 @@ export const useBotSchema = ({
   setEdges,
 }: useBotSchemaProps) => {
   const { botId } = useParams<WorkflowParams>();
+  const [_btnCnt, setBtnCnt] = useBtnCounter();
 
   useQuery({
     queryKey: ["botSchema"],
     queryFn: () =>
       api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
         populateFlow({
+          setBtnCnt: setBtnCnt,
           setNodes: setNodes,
           setEdges: setEdges,
           flowInstance: flowInstance,

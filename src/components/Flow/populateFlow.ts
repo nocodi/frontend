@@ -4,6 +4,7 @@ import { GridItem } from "../../types/ComponentDetailForm";
 import { makeButton } from "../../utils/freqFuncs";
 
 type populateFlowProps = {
+  setBtnCnt: React.Dispatch<React.SetStateAction<number>>;
   flowInstance: ReactFlowInstance;
   setNodes: React.Dispatch<
     React.SetStateAction<Node<ComponentType, string | undefined>[]>
@@ -13,6 +14,7 @@ type populateFlowProps = {
 };
 
 export function populateFlow({
+  setBtnCnt,
   flowInstance,
   setNodes,
   setEdges,
@@ -20,6 +22,7 @@ export function populateFlow({
 }: populateFlowProps) {
   if (components) {
     if (components.length > 0) {
+      let cnt = 0;
       components.forEach((element: ComponentType) => {
         // add components
         setNodes((nds) =>
@@ -43,11 +46,10 @@ export function populateFlow({
 
         // add reply markup
         if (element.reply_markup) {
-          let cnt = 0;
           element.reply_markup.buttons.forEach((rows: GridItem[]) => {
             rows.forEach((button: GridItem) => {
               const node = makeButton({
-                cnt: cnt,
+                id: cnt,
                 button: button,
                 parentID: element.id,
                 x: 180,
@@ -72,6 +74,7 @@ export function populateFlow({
           );
         }
       });
+      setBtnCnt(cnt);
     }
   }
 }
