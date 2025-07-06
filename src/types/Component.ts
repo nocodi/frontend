@@ -56,10 +56,5 @@ export type ComponentType = {
 };
 
 export type EdgeType = {
-  loc: null | Location;
-};
-
-export type Location = {
-  row: number;
-  col: number;
+  btnID: null | number;
 };

@@ -36,6 +36,9 @@ export function HandleConn(
                 source: connection.source,
                 target: connection.target,
                 type: "customEdge",
+                data: {
+                  btnID: null,
+                },
               };
 
               const prevEdgeId: string = `e${targetNode.data.previous_component}-${newEdge.target}`;
