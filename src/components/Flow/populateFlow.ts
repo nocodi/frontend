@@ -53,7 +53,7 @@ export function populateFlow({
                 button: button,
                 parentID: element.id,
                 x: 180,
-                y: 40,
+                y: 40 * cnt,
               });
               setNodes((nds) => nds.concat(node));
               cnt++;
