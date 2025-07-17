@@ -20,7 +20,7 @@ export const getPathOfContent = (
 type makeButtonProps = {
   id: number;
   button: GridItem;
-  parentID: number;
+  parentID: string;
   x: number;
   y: number;
 };
@@ -53,7 +53,7 @@ export function makeButton({
     selected: false,
     draggable: false,
     data: componentData,
-    parentId: parentID.toString(),
+    parentId: parentID,
   };
 
   return newButton;

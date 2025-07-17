@@ -49,7 +49,7 @@ export function populateFlow({
               const node = makeButton({
                 id: cnt,
                 button: button,
-                parentID: Number(element.id),
+                parentID: String(element.id),
                 x: 180,
                 y: 40 * cnt,
               });
