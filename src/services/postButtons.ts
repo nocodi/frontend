@@ -3,13 +3,14 @@ import { GridItem } from "../types/ComponentDetailForm";
 import api from "./api";
 import { ReplyMarkup } from "../types/Component";
 import { ReactFlowInstance } from "reactflow";
+import { makeButton } from "../utils/freqFuncs";
 
 type postButtonProps = {
   botID: string | undefined;
   isPatch: boolean;
   rows: GridItem[][];
   markupID: number | undefined;
-  parentID: number;
+  parentID: number | string;
   markup_type: "InlineKeyboard" | "ReplyKeyboard";
   flowInstance: ReactFlowInstance;
 };
@@ -47,19 +48,43 @@ export function postButtons({
       data: payload,
     })
     .then((res) => {
-      flowInstance.setNodes((nds) =>
-        nds.map((item) =>
-          item.id === parentID.toString() ?
-            {
+      flowInstance.setNodes((nds) => {
+        // update parent
+        const updatedNodes = nds.map((item) => {
+          if (item.id === parentID.toString()) {
+            return {
               ...item,
               data: {
                 ...item.data,
-                reply_markup: res.data,
+                reply_markup: { ...res.data },
               },
-            }
-          : item,
-        ),
-      );
+            };
+          }
+          return item;
+        });
+
+        // Filter out all old child button nodes of parent
+        const cleanedNodes = updatedNodes.filter(
+          (item) => !item.id.startsWith(`${parentID}-`), // child nodes start with parentID-
+        );
+
+        // Generate new buttons
+        let cnt = 0;
+        const newButtonNodes = rows.flatMap((row, _rowIndex) =>
+          row.map((button, _colIndex) => {
+            return makeButton({
+              id: cnt, // unique ID for each button
+              button: button,
+              parentID: String(parentID),
+              x: 180,
+              y: 40 * cnt++,
+            });
+          }),
+        );
+
+        // Return the new full nodes
+        return [...cleanedNodes, ...newButtonNodes];
+      });
     })
     .catch((err) => {
       toast(err.message);
