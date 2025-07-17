@@ -312,10 +312,10 @@ export default function TelegramPreview({
         if (internalFields.includes(key.toLowerCase())) return false;
 
         // Include file fields
-        if (schema.type === "FileField") return true;
+        if (schema?.type === "FileField") return true;
 
         // Include boolean fields that are user-facing
-        if (schema.type === "BooleanField") return true;
+        if (schema?.type === "BooleanField") return true;
 
         // Include displayable text fields
         if (
