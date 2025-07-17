@@ -23,7 +23,6 @@ import TelegramPreview from "./TelegramPreview";
 import { getPathOfContent } from "../../utils/freqFuncs";
 import { WorkflowParams } from "../../pages/Workflow";
 import { useParams } from "react-router-dom";
-import { generateUUID } from "./generateUUID";
 import { postButtons } from "../../services/postButtons";
 
 type PropsType = {
@@ -66,10 +65,11 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
       const rws = node.reply_markup.buttons.map((row) =>
         row.map((item) => ({
           ...item,
-          id: generateUUID(),
+          id: item.id,
         })),
       );
       setRows([...rws]);
+      setKeyboardType(node.reply_markup.type);
     }
   }, [details]);
 
