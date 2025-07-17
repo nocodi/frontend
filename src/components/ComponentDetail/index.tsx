@@ -62,10 +62,11 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     setFormValues(details ?? {});
     if (node.reply_markup != null) {
       setIsPatch(true);
+      let cnt = 0;
       const rws = node.reply_markup.buttons.map((row) =>
         row.map((item) => ({
           ...item,
-          id: item.id,
+          id: String(cnt++),
         })),
       );
       setRows([...rws]);

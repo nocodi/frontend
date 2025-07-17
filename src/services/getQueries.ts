@@ -25,7 +25,10 @@ export const useContentTypes = (fetchTime: number = Infinity) => {
   return { contentTypes };
 };
 
-export const useComponentDetails = (pathOfComponent: string, id: number) => {
+export const useComponentDetails = (
+  pathOfComponent: string,
+  id: number | string,
+) => {
   const { data: details, isFetching } = useQuery<formValuesType>({
     queryKey: ["componentDetails"],
     queryFn: () =>

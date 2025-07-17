@@ -32,8 +32,10 @@ export function makeButton({
   x,
   y,
 }: makeButtonProps): Node<ComponentType> {
+  const finalID = `${parentID}-${id}`;
+
   const componentData: ComponentType = {
-    id: Number(`${parentID}${id}b`),
+    id: finalID,
     previous_component: null,
     component_name: button.value,
     component_type: "BUTTON",
@@ -45,7 +47,7 @@ export function makeButton({
     hover_text: null,
   };
   const newButton: Node<ComponentType> = {
-    id: `${parentID}${id}b`,
+    id: finalID,
     type: "button",
     position: { x: x, y: y },
     selected: false,

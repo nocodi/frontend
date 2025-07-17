@@ -3,7 +3,7 @@ import { ReactFlowInstance } from "reactflow";
 export function updateNodeHoverText(
   flowInstance: ReactFlowInstance,
   formData: FormData,
-  nodeID: number,
+  nodeID: number | string,
 ) {
   let hover_text: string | null = null;
 
