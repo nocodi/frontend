@@ -15,6 +15,23 @@ type postButtonProps = {
   flowInstance: ReactFlowInstance;
 };
 
+export function findPosition(rowLength: number): number[] {
+  // let adder: number = 120 / (rowLength + 1);
+  // let arr: number[] = [];
+  // for (let index = 0; index < rowLength; index++) {
+  //   arr = [...arr, adder];
+  //   adder += 40;
+  // }
+  // return arr;
+  if (rowLength === 1) {
+    return [60];
+  }
+  if (rowLength === 2) {
+    return [40, 80];
+  }
+  return [15, 60, 105];
+}
+
 export function postButtons({
   botID,
   isPatch,
@@ -67,20 +84,20 @@ export function postButtons({
         const cleanedNodes = updatedNodes.filter(
           (item) => !item.id.startsWith(`${parentID}-`), // child nodes start with parentID-
         );
-
         // Generate new buttons
         let cnt = 0;
-        const newButtonNodes = rows.flatMap((row, _rowIndex) =>
-          row.map((button, _colIndex) => {
+        const newButtonNodes = rows.flatMap((row, rowIndex) => {
+          const arr = findPosition(row.length);
+          return row.map((button, colIndex) => {
             return makeButton({
-              id: cnt, // unique ID for each button
+              id: ++cnt, // unique ID for each button
               button: button,
               parentID: String(parentID),
-              x: 180,
-              y: 40 * cnt++,
+              x: arr[colIndex],
+              y: 40 * rowIndex + 100,
             });
-          }),
-        );
+          });
+        });
 
         // Return the new full nodes
         return [...cleanedNodes, ...newButtonNodes];

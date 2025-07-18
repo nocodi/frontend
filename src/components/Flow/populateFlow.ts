@@ -2,6 +2,7 @@ import { ReactFlowInstance, Node, Edge } from "reactflow";
 import { ComponentType, EdgeType } from "../../types/Component";
 import { GridItem } from "../../types/ComponentDetailForm";
 import { makeButton } from "../../utils/freqFuncs";
+import { findPosition } from "../../services/postButtons";
 
 type populateFlowProps = {
   flowInstance: ReactFlowInstance;
@@ -44,19 +45,21 @@ export function populateFlow({
         // add reply markup
         if (element.reply_markup) {
           let cnt = 0;
-          element.reply_markup.buttons.forEach((rows: GridItem[]) => {
-            rows.forEach((button: GridItem) => {
-              const node = makeButton({
-                id: cnt,
-                button: button,
-                parentID: String(element.id),
-                x: 180,
-                y: 40 * cnt,
+          const newButtonNodes = element.reply_markup.buttons.flatMap(
+            (row: GridItem[], rowIndex) => {
+              const arr = findPosition(row.length);
+              return row.map((button: GridItem, colIndex) => {
+                return makeButton({
+                  id: ++cnt,
+                  button: button,
+                  parentID: String(element.id),
+                  x: arr[colIndex],
+                  y: 40 * rowIndex + 100,
+                });
               });
-              setNodes((nds) => nds.concat(node));
-              cnt++;
-            });
-          });
+            },
+          );
+          setNodes((nds) => nds.concat(newButtonNodes));
         }
 
         // add edges
