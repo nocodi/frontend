@@ -1,8 +1,8 @@
 import { ReactFlowInstance, Node, Edge } from "reactflow";
-import { ComponentType, EdgeType } from "../../types/Component";
+import { ComponentType, EdgeType, ReplyMarkup } from "../../types/Component";
 import { GridItem } from "../../types/ComponentDetailForm";
 import { makeButton } from "../../utils/freqFuncs";
-import { findPosition } from "../../services/postButtons";
+import { findPosition } from "../ComponentDetail/handleButtons";
 
 type populateFlowProps = {
   flowInstance: ReactFlowInstance;
@@ -22,6 +22,21 @@ export function populateFlow({
   if (components) {
     if (components.length > 0) {
       components.forEach((element: ComponentType) => {
+        let cnt = 0;
+
+        const buttons: GridItem[][] | undefined =
+          element.reply_markup?.buttons.map((row: GridItem[]) =>
+            row.map((item: GridItem) => ({
+              ...item,
+              id: String(++cnt),
+            })),
+          );
+
+        const reply_markup: ReplyMarkup | null =
+          element.reply_markup && buttons ?
+            { ...element.reply_markup, buttons: buttons }
+          : null;
+
         // add components
         setNodes((nds) =>
           nds.concat({
@@ -34,6 +49,7 @@ export function populateFlow({
             selected: false,
             data: {
               ...element,
+              reply_markup: reply_markup,
               hover_text:
                 element.hover_text != null && element.hover_text != "" ?
                   element.hover_text
@@ -42,20 +58,36 @@ export function populateFlow({
           }),
         );
 
+        element.reply_markup = reply_markup;
+
         // add reply markup
         if (element.reply_markup) {
-          let cnt = 0;
           const newButtonNodes = element.reply_markup.buttons.flatMap(
             (row: GridItem[], rowIndex) => {
               const arr = findPosition(row.length);
               return row.map((button: GridItem, colIndex) => {
-                return makeButton({
-                  id: ++cnt,
+                const newButton: Node<ComponentType> = makeButton({
+                  id: Number(button.id),
                   button: button,
                   parentID: String(element.id),
                   x: arr[colIndex],
                   y: 40 * rowIndex + 100,
                 });
+                if (button.next_component) {
+                  setEdges((edg) =>
+                    edg.concat({
+                      id: `e${newButton.id}-${button.next_component}`,
+                      source: newButton.id,
+                      target: button.next_component!.toString(),
+                      type: "customEdge",
+                      data: {
+                        btnID: null,
+                      },
+                    }),
+                  );
+                }
+
+                return newButton;
               });
             },
           );
