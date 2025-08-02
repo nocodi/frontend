@@ -4,6 +4,7 @@ import api from "../../services/api";
 import { ComponentType, EdgeType, ReplyMarkup } from "../../types/Component";
 import { Node, Edge } from "reactflow";
 import { makeButton } from "../../utils/freqFuncs";
+import { makePayload, makeReplyMarkup } from "../../utils/buttonHelper";
 
 type handleButtonProps = {
   botID: string | undefined;
@@ -38,17 +39,11 @@ export function handleButtons({
   setNodes,
   setEdges,
 }: handleButtonProps) {
-  const buttons = rows.map((row) =>
-    row.map(({ next_component, value }) =>
-      next_component ? { value, next_component } : { value },
-    ),
-  );
-
-  const payload = {
+  const payload = makePayload({
     parent_component: parentID,
     markup_type: markup_type,
-    buttons: buttons,
-  };
+    rows: rows,
+  });
 
   const method = isPatch ? "patch" : "post";
   const url =
@@ -62,18 +57,10 @@ export function handleButtons({
       data: payload,
     })
     .then((res) => {
-      let cnt = 0;
-      const buttons: GridItem[][] | undefined = res.data.buttons.map(
-        (row: GridItem[]) =>
-          row.map((item: GridItem) => ({
-            ...item,
-            id: String(++cnt),
-          })),
-      );
-
-      const reply_markup: ReplyMarkup | null =
-        res.data && buttons ? { ...res.data, buttons: buttons } : null;
-
+      const { buttons, reply_markup } = makeReplyMarkup({
+        rows: res.data.buttons,
+        data: res.data,
+      });
       setNodes((nds) => {
         // update parent
         const updatedNodes = nds.map((item) => {
@@ -104,7 +91,7 @@ export function handleButtons({
         );
 
         // Generate new buttons
-        const newButtonNodes = buttons.flatMap((row, rowIndex) => {
+        const newButtonNodes = buttons!.flatMap((row, rowIndex) => {
           const arr = findPosition(row.length);
           return row.map((button, colIndex) => {
             const newButton = makeButton({
