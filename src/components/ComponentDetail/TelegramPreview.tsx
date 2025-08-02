@@ -332,7 +332,7 @@ export default function TelegramPreview({
         key,
         schema,
         val: formValues[key],
-        value: schema.verbose_name || key,
+        value: schema?.verbose_name || key,
       }));
 
     return fields;
