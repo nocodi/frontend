@@ -78,7 +78,7 @@ export function handleButtons({
 
         // Filter out all old child button nodes of parent
         const cleanedNodes = updatedNodes.filter(
-          (item) => !item.id.startsWith(`${parentID}-`), // child nodes start with parentID-
+          (item) => !item.id.startsWith(`${parentID}c`), // child nodes start with parentID-
         );
 
         // edges to delete
@@ -119,6 +119,8 @@ export function handleButtons({
         });
 
         // Return the new full nodes
+        console.log("clean:", [cleanedNodes]);
+        console.log("newButton:", [newButtonNodes]);
         return [...cleanedNodes, ...newButtonNodes];
       });
     })
