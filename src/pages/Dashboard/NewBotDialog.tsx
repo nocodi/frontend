@@ -10,8 +10,6 @@ type NewBotDialogProps = {
   }) => Promise<void>;
 };
 
-const TUTORIAL_STORAGE_KEY = "hasSeenNewBotButtonTutorial";
-
 export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   const [name, setName] = useState("");
   const [token, setToken] = useState("");
@@ -23,8 +21,9 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   const newBotButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem(TUTORIAL_STORAGE_KEY);
-    if (!hasSeenTutorial) {
+    const isFirstLogin = localStorage.getItem("is_first_login") !== "false";
+    const isFirst = localStorage.getItem("isFirst") !== "false";
+    if (isFirstLogin && isFirst) {
       setShowTutorial(true);
     }
   }, []);
@@ -36,9 +35,9 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   };
 
   const handleDismissTutorial = () => {
-    localStorage.setItem(TUTORIAL_STORAGE_KEY, "true");
+    localStorage.setItem("is_first_login", "false");
     setShowTutorial(false);
-    modalRef.current?.show();
+    modalRef.current?.showModal();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,7 +47,7 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
       await onCreate({ name, token, description });
       resetForm();
       modalRef.current?.close();
-    } catch (error) {
+    } catch {
       toast.error("Failed to create bot. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -100,7 +99,6 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
               <label className="label mt-4 sm:mt-0">Bot Name</label>
               <input
                 type="text"
-                placeholder="Enter bot name"
                 className="input-bordered input w-full input-primary sm:col-span-2"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -109,7 +107,6 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
               <label className="label mt-4 sm:mt-0">Bot Token</label>
               <input
                 type="text"
-                placeholder="Enter bot token"
                 className="input-bordered input w-full input-primary sm:col-span-2"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
@@ -118,7 +115,6 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
               <label className="label mt-4 sm:mt-0">Bot Description</label>
               <input
                 type="text"
-                placeholder="Enter bot description"
                 className="input-bordered input w-full input-primary sm:col-span-2"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
