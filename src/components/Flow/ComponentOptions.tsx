@@ -69,7 +69,7 @@ export const ComponentHandles = ({
         type="source"
         position={Position.Right}
         className={rlSupported ? "!hidden" : ""}
-        isConnectable={rlSupported ? false : true}
+        isConnectable={!rlSupported}
         style={{
           width: 7,
           height: 7,
