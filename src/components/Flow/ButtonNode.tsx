@@ -1,18 +1,18 @@
 import { Handle, NodeProps, Position } from "reactflow";
 import { ComponentType } from "../../types/Component";
 
-function ButtonNode({ isConnectable }: NodeProps<ComponentType>) {
+function ButtonNode({ data, isConnectable }: NodeProps<ComponentType>) {
   return (
     <div className="tooltip">
       <div className="tooltip-content bg-base-content text-base-300">
-        <div className="text-xs">salam</div>
+        <div className="text-xs">{data.component_name}</div>
       </div>
-      <div className="bg-parent h-1 w-1">
+      <div className="group/component relative flex h-5 w-5 cursor-pointer items-center rounded-lg border-2 border-base-content bg-base-100 px-1 text-center shadow-lg">
         <Handle
           type="source"
-          position={Position.Top}
+          position={Position.Right}
           isConnectable={isConnectable}
-          className="!h-2 !w-2 !bg-base-content"
+          className="!bg-base-content"
         ></Handle>
       </div>
     </div>

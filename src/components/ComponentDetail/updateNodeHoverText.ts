@@ -1,9 +1,12 @@
-import { ReactFlowInstance } from "reactflow";
+import { Node } from "reactflow";
+import { ComponentType } from "../../types/Component";
 
 export function updateNodeHoverText(
-  flowInstance: ReactFlowInstance,
+  setNodes: React.Dispatch<
+    React.SetStateAction<Node<ComponentType, string | undefined>[]>
+  >,
   formData: FormData,
-  nodeID: number,
+  nodeID: number | string,
 ) {
   let hover_text: string | null = null;
 
@@ -12,7 +15,7 @@ export function updateNodeHoverText(
   } else if (formData.get("caption")) {
     hover_text = formData.get("caption") as string;
   }
-  flowInstance.setNodes((nds) =>
+  setNodes((nds) =>
     nds.map((item) =>
       item.id === nodeID.toString() ?
         {

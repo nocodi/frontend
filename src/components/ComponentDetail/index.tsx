@@ -1,4 +1,4 @@
-import { ComponentType } from "../../types/Component";
+import { ComponentType, EdgeType } from "../../types/Component";
 import {
   useComponentDetails,
   useContentTypes,
@@ -16,24 +16,25 @@ import CodeEditor from "./CodeEditor";
 import ButtonGrid from "./ButtonGrid";
 import { makeFormData } from "./makeFormData";
 import FormFields from "./FormFields";
-import { useReactFlow } from "reactflow";
+import { Node, Edge } from "reactflow";
 import { updateNodeHoverText } from "./updateNodeHoverText";
 import { Check, RefreshCcw, X, Eye } from "lucide-react";
 import TelegramPreview from "./TelegramPreview";
 import { getPathOfContent } from "../../utils/freqFuncs";
 import { WorkflowParams } from "../../pages/Workflow";
 import { useParams } from "react-router-dom";
-import { generateUUID } from "./generateUUID";
-import { postButtons } from "../../services/postButtons";
+import { handleButtons } from "./handleButtons";
 
 type PropsType = {
+  setNodes: React.Dispatch<
+    React.SetStateAction<Node<ComponentType, string | undefined>[]>
+  >;
+  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeType>[]>>;
   node: ComponentType;
   onClose: () => unknown;
 };
 
-const ComponentDetail = ({ node, onClose }: PropsType) => {
-  const flowInstance = useReactFlow();
-
+const ComponentDetail = ({ setNodes, setEdges, node, onClose }: PropsType) => {
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState<formValuesType>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -63,13 +64,15 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     setFormValues(details ?? {});
     if (node.reply_markup != null) {
       setIsPatch(true);
+      let cnt = 0;
       const rws = node.reply_markup.buttons.map((row) =>
         row.map((item) => ({
           ...item,
-          id: generateUUID(),
+          id: String(cnt++),
         })),
       );
       setRows([...rws]);
+      setKeyboardType(node.reply_markup.type);
     }
   }, [details]);
 
@@ -96,20 +99,21 @@ const ComponentDetail = ({ node, onClose }: PropsType) => {
     const formData = makeFormData(componentSchema, override, formValues);
 
     setLoading(true);
-    postButtons({
+    handleButtons({
       botID: botId,
       isPatch: isPatch,
       rows: rows,
       markupID: node.reply_markup?.id,
       parentID: node.id,
       markup_type: keyboardType,
-      flowInstance: flowInstance,
+      setNodes: setNodes,
+      setEdges: setEdges,
     });
 
     api
       .patch(`${componentPath}${node.id}/`, formData)
       .then(() => {
-        updateNodeHoverText(flowInstance, formData, node.id);
+        updateNodeHoverText(setNodes, formData, node.id);
         onClose();
       })
       .catch((err) => {

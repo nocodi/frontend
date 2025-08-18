@@ -21,6 +21,7 @@ export type ReplyMarkup = {
   id: number;
   buttons: GridItem[][];
   type: "InlineKeyboard" | "ReplyKeyboard";
+  parent_component: number | null;
 };
 
 export type ContentType = {
@@ -36,7 +37,7 @@ export type ContentType = {
 };
 
 export type ComponentType = {
-  id: number;
+  id: number | string;
   previous_component: number | null;
   component_name: string;
   component_type:
@@ -53,4 +54,8 @@ export type ComponentType = {
   position_y: number;
   reply_markup: ReplyMarkup | null;
   reply_markup_supported: boolean;
+};
+
+export type EdgeType = {
+  btnID: null | string;
 };

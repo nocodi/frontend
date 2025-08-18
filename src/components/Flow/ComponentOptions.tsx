@@ -61,19 +61,21 @@ export const ComponentHandles = ({
   component,
   isConnectable,
 }: ComponentHandlesProps) => {
+  const rlSupported: boolean = component.reply_markup_supported;
+
   return (
     <div>
-      {!component.reply_markup_supported && (
-        <Handle
-          type="source"
-          position={Position.Right}
-          isConnectable={isConnectable}
-          style={{
-            width: 7,
-            height: 7,
-          }}
-        ></Handle>
-      )}
+      <Handle
+        type="source"
+        position={Position.Right}
+        className={rlSupported ? "!hidden" : ""}
+        isConnectable={!rlSupported}
+        style={{
+          width: 7,
+          height: 7,
+        }}
+      ></Handle>
+
       {!["TRIGGER", "BUTTON"].includes(component.component_type) && (
         <Handle
           type="target"

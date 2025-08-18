@@ -1,6 +1,6 @@
 import "reactflow/dist/style.css";
 
-import { ComponentType, ContentType } from "../../types/Component";
+import { ComponentType, ContentType, EdgeType } from "../../types/Component";
 import ReactFlow, {
   Background,
   Connection,
@@ -28,6 +28,7 @@ import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
 import Tutorial from "./Tutorial";
+import { useParams } from "react-router-dom";
 
 const nodeTypes = {
   customNode: Component,
@@ -45,10 +46,11 @@ export default function Flow() {
   }>({ x: -1, y: -1 });
   const reactFlowWrapper = useRef(null);
   const flowInstance = useReactFlow();
+  const { botId: botID } = useParams<{ botId: string }>();
   const [content] = useDnD();
   const [unattendedComponent, setUnattendedComponent] = useUnattended();
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>([]);
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes(0);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -61,9 +63,15 @@ export default function Flow() {
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
-      HandleConn(flowInstance, connection, contentTypes, setLoading);
+      HandleConn({
+        botID,
+        flowInstance,
+        connection,
+        contentTypes,
+        setLoading,
+      });
     },
-    [flowInstance, contentTypes, setLoading],
+    [setNodes, setEdges, flowInstance, contentTypes, setLoading, botID],
   );
 
   const makeNewComponent = useCallback(
@@ -175,6 +183,8 @@ export default function Flow() {
       {unattendedComponent && (
         <div className="absolute z-50 flex h-screen w-screen items-center justify-center">
           <ComponentDetail
+            setNodes={setNodes}
+            setEdges={setEdges}
             node={unattendedComponent}
             onClose={() => setUnattendedComponent(undefined)}
           />

@@ -1,5 +1,5 @@
-import { ComponentType, ContentType } from "../types/Component";
-import { Node, Edge, EdgeProps, ReactFlowInstance } from "reactflow";
+import { ComponentType, ContentType, EdgeType } from "../types/Component";
+import { Node, Edge, ReactFlowInstance } from "reactflow";
 
 import { BotData } from "../types/BotData";
 import { WorkflowParams } from "../pages/Workflow";
@@ -24,7 +24,10 @@ export const useContentTypes = (fetchTime: number = Infinity) => {
   return { contentTypes };
 };
 
-export const useComponentDetails = (pathOfComponent: string, id: number) => {
+export const useComponentDetails = (
+  pathOfComponent: string,
+  id: number | string,
+) => {
   const { data: details, isFetching } = useQuery<formValuesType>({
     queryKey: ["componentDetails"],
     queryFn: () =>
@@ -55,7 +58,7 @@ type useBotSchemaProps = {
   setNodes: React.Dispatch<
     React.SetStateAction<Node<ComponentType, string | undefined>[]>
   >;
-  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeProps>[]>>;
+  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeType>[]>>;
 };
 
 export const useBotSchema = ({

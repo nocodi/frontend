@@ -18,22 +18,24 @@ export const getPathOfContent = (
 };
 
 type makeButtonProps = {
-  cnt: number;
+  id: string | number;
   button: GridItem;
-  parentID: number;
+  parentID: string;
   x: number;
   y: number;
 };
 
 export function makeButton({
-  cnt,
+  id,
   button,
   parentID,
   x,
   y,
 }: makeButtonProps): Node<ComponentType> {
+  const finalID = `${parentID}c${id}`;
+
   const componentData: ComponentType = {
-    id: 0,
+    id: finalID,
     previous_component: null,
     component_name: button.value,
     component_type: "BUTTON",
@@ -45,13 +47,13 @@ export function makeButton({
     hover_text: null,
   };
   const newButton: Node<ComponentType> = {
-    id: `${parentID}${cnt}`,
+    id: finalID,
     type: "button",
     position: { x: x, y: y },
     selected: false,
     draggable: false,
     data: componentData,
-    parentId: parentID.toString(),
+    parentId: parentID,
   };
 
   return newButton;
