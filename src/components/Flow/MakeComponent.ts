@@ -1,13 +1,12 @@
 import { ReactFlowInstance } from "reactflow";
 import { ComponentType, ContentType } from "../../types/Component";
 import api from "../../services/api";
-import { getPathOfContent, makeNode } from "../../utils/freqFuncs";
+import { makeNode } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
 
 export function MakeComponent(
   flowInstance: ReactFlowInstance,
   content: ContentType,
-  contents: ContentType[] | undefined,
   setOpenComponent: React.Dispatch<
     React.SetStateAction<ComponentType | undefined>
   >,
@@ -29,16 +28,14 @@ export function MakeComponent(
   if (content.schema && "chat_id" in content.schema) {
     dataPayload.chat_id = "$.chat.id";
   }
-  if (contents) {
-    api
-      .post(`${getPathOfContent(content.id, contents)}`, dataPayload)
-      .then((res) => {
-        const newNode = makeNode({ ...res.data } as ComponentType, position);
-        flowInstance.addNodes(newNode);
-        setOpenComponent(newNode.data);
-      })
-      .catch((err) => {
-        toast(err.message);
-      });
-  }
+  api
+    .post(content.path, dataPayload)
+    .then((res) => {
+      const newNode = makeNode({ ...res.data } as ComponentType, position);
+      flowInstance.addNodes(newNode);
+      setOpenComponent(newNode.data);
+    })
+    .catch((err) => {
+      toast(err.message);
+    });
 }

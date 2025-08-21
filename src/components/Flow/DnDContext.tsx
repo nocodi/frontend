@@ -7,7 +7,7 @@ import {
   SetStateAction,
 } from "react";
 
-import { ContentType } from "../../../types/Component";
+import { ContentType } from "../../types/Component";
 
 type DnDContextType = [
   ContentType | null,

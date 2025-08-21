@@ -26,7 +26,7 @@ export default function Tutorial({
     if (!hasSeenPlusSign) {
       setShowTutorial(true);
     }
-  }, []);
+  }, [setShowTutorial]);
 
   useEffect(() => {
     if (showTutorial && plusButtonRef.current) {
@@ -36,7 +36,7 @@ export default function Tutorial({
         right: rect.right + 15,
       });
     }
-  }, [showTutorial]);
+  }, [showTutorial, plusButtonRef]);
 
   const handleDismissTutorial = () => {
     localStorage.setItem(TUTORIAL_STORAGE_KEY, "true");

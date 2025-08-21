@@ -1,4 +1,4 @@
-import landing from "../../assets/landing.png";
+import landing from "../../../assets/landing.png";
 
 export default function HeroSectionAbout() {
   const heroData = {

@@ -20,71 +20,62 @@ import ComponentDetail from "../ComponentDetail";
 import ContentTypesList from "../ContentTypes/ContentTypesList";
 import CustomEdge from "./EdgeComponent";
 import { Plus } from "lucide-react";
-import { useDnD } from "./context/DnDContext";
+import { useDnD } from "./DnDContext";
 import { useLoading } from "../../pages/Workflow/LoadingContext";
-import { useOpenComponent } from "./context/OpenComponentContext";
-import { HandleConn } from "./HandleConn";
+import { useOpenComponent } from "./OpenComponentContext";
+import { handleConn } from "./HandleConn";
 import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
 import ButtonNode from "./ButtonNode";
 import Tutorial from "./Tutorial";
 import { useParams } from "react-router-dom";
+import { WorkflowParams } from "../../pages/Workflow";
 
 const nodeTypes = {
-  customNode: Component,
-  button: ButtonNode,
+  component: Component,
+  replyButton: ButtonNode,
 };
 const edgeTypes = { customEdge: CustomEdge };
 
 export default function Flow() {
+  const { botId } = useParams<WorkflowParams>();
+
   const plusButtonRef = useRef<HTMLDivElement>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [draggingNodeXY, setDraggingNodeXY] = useState<{
     x: number;
     y: number;
   }>({ x: -1, y: -1 });
-  const reactFlowWrapper = useRef(null);
-  const flowInstance = useReactFlow();
-  const { botId: botID } = useParams<{ botId: string }>();
-  const [content] = useDnD();
+  const [DraggingContentType] = useDnD();
   const [openComponent, setOpenComponent] = useOpenComponent();
+
+  const flowInstance = useReactFlow();
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>([]);
   const setLoading = useLoading();
-  const { contentTypes } = useContentTypes(0);
-  const [showTutorial, setShowTutorial] = useState(false);
 
-  useBotSchema({
-    flowInstance: flowInstance,
-    setEdges: setEdges,
-    setNodes: setNodes,
-  });
+  const { contentTypes } = useContentTypes(0);
+  useBotSchema(flowInstance);
 
   const onConnect = useCallback(
     (connection: Edge | Connection) => {
-      HandleConn({
-        botID,
+      handleConn({
+        botId,
         flowInstance,
         connection,
         contentTypes,
         setLoading,
       });
     },
-    [setNodes, setEdges, flowInstance, contentTypes, setLoading, botID],
+    [flowInstance, contentTypes, setLoading, botId],
   );
 
   const makeNewComponent = useCallback(
     (content: ContentType, x?: number, y?: number) =>
-      MakeComponent(
-        flowInstance,
-        content,
-        contentTypes,
-        setOpenComponent,
-        x,
-        y,
-      ),
-    [flowInstance, setOpenComponent, contentTypes],
+      MakeComponent(flowInstance, content, setOpenComponent, x, y),
+    [flowInstance, setOpenComponent],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -95,15 +86,11 @@ export default function Flow() {
   const onDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      if (!content) return;
-      makeNewComponent(content, event.clientX, event.clientY);
+      if (!DraggingContentType) return;
+      makeNewComponent(DraggingContentType, event.clientX, event.clientY);
     },
-    [content, makeNewComponent],
+    [DraggingContentType, makeNewComponent],
   );
-
-  const addSelectedComponent = (content: ContentType) => {
-    makeNewComponent(content);
-  };
 
   const nodeDragEnter: NodeDragHandler = (
     _event: React.MouseEvent,
@@ -154,11 +141,11 @@ export default function Flow() {
           >
             <ContentTypesList
               onClose={() => setIsPanelOpen(false)}
-              onSelect={addSelectedComponent}
+              onSelect={makeNewComponent}
             />
           </div>
 
-          <div className="h-full w-full" ref={reactFlowWrapper}>
+          <div className="h-full w-full">
             <ReactFlow
               nodes={nodes}
               edges={edges}

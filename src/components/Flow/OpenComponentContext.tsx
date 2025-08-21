@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState, useContext } from "react";
-import { ComponentType } from "../../../types/Component";
+import { ComponentType } from "../../types/Component";
 
 type OpenComponentContextType = [
   ComponentType | undefined,

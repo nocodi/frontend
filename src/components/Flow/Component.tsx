@@ -2,7 +2,7 @@ import { NodeProps } from "reactflow";
 import { ComponentType } from "../../types/Component";
 import { ComponentHeader, ComponentHandles } from "./ComponentOptions";
 import { sliceString } from "../../utils/freqFuncs";
-import { useOpenComponent } from "./context/OpenComponentContext";
+import { useOpenComponent } from "./OpenComponentContext";
 import getComponentIcon from "../ContentTypes/getComponentIcon";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {

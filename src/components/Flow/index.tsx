@@ -1,7 +1,7 @@
-import { DnDProvider } from "./context/DnDContext";
+import { DnDProvider } from "./DnDContext";
 import { ReactFlowProvider } from "reactflow";
 import Flow from "./Flow";
-import { OpenComponentProvider } from "./context/OpenComponentContext";
+import { OpenComponentProvider } from "./OpenComponentContext";
 
 function FlowWrapper() {
   return (

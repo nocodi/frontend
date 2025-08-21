@@ -1,5 +1,5 @@
-import { ComponentType, ContentType, EdgeType } from "../types/Component";
-import { Node, Edge, ReactFlowInstance } from "reactflow";
+import { ComponentType, ContentType } from "../types/Component";
+import { ReactFlowInstance } from "reactflow";
 
 import { BotData } from "../types/BotData";
 import { WorkflowParams } from "../pages/Workflow";
@@ -53,31 +53,14 @@ export const useComponentDetails = (
   return { details, isFetching };
 };
 
-type useBotSchemaProps = {
-  flowInstance: ReactFlowInstance;
-  setNodes: React.Dispatch<
-    React.SetStateAction<Node<ComponentType, string | undefined>[]>
-  >;
-  setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeType>[]>>;
-};
-
-export const useBotSchema = ({
-  flowInstance,
-  setNodes,
-  setEdges,
-}: useBotSchemaProps) => {
+export const useBotSchema = (flowInstance: ReactFlowInstance) => {
   const { botId } = useParams<WorkflowParams>();
 
   useQuery({
     queryKey: ["botSchema"],
     queryFn: () =>
       api.get<ComponentType[]>(`/component/${botId}/schema/`).then((res) => {
-        populateFlow({
-          setNodes: setNodes,
-          setEdges: setEdges,
-          flowInstance: flowInstance,
-          components: res.data,
-        });
+        populateFlow(flowInstance, res.data);
         return true;
       }),
   });

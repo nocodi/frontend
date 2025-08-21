@@ -6,10 +6,10 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../services/Auth";
 
-interface LoginResponse {
+type LoginResponse = {
   access_token: string;
   is_first_login: boolean;
-}
+};
 
 export default function Login() {
   const [email, setEmail] = useState("");

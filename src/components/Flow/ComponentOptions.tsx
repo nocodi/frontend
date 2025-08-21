@@ -1,6 +1,6 @@
 import { Cog, Trash2 } from "lucide-react";
 import { ComponentType } from "../../types/Component";
-import { useOpenComponent } from "./context/OpenComponentContext";
+import { useOpenComponent } from "./OpenComponentContext";
 import { Handle, Position, useReactFlow } from "reactflow";
 import { useLoading } from "../../pages/Workflow/LoadingContext";
 import { useContentTypes } from "../../services/getQueries";
