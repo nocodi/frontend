@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { memo, useState } from "react";
 import { ContentType } from "../../types/Component";
 import SearchBar from "../searchBar";
 import { X, Bot, Zap, BrainCircuit } from "lucide-react";
@@ -114,5 +114,5 @@ function ContentTypesList({
   );
 }
 
-export default ContentTypesList;
+export default memo(ContentTypesList, () => true);
 export { getComponentIcon };

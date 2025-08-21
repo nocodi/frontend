@@ -44,16 +44,13 @@ export default function Flow() {
   const [showTutorial, setShowTutorial] = useState(false);
 
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [draggingNodeXY, setDraggingNodeXY] = useState<{
-    x: number;
-    y: number;
-  }>({ x: -1, y: -1 });
-  const [DraggingContentType] = useDnD();
   const [openComponent, setOpenComponent] = useOpenComponent();
+  const [draggingContentType] = useDnD();
 
   const flowInstance = useReactFlow();
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>([]);
+  const draggingNodeXY = useRef({ x: 0, y: 0 });
   const setLoading = useLoading();
 
   const { contentTypes } = useContentTypes(0);
@@ -86,17 +83,17 @@ export default function Flow() {
   const onDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      if (!DraggingContentType) return;
-      makeNewComponent(DraggingContentType, event.clientX, event.clientY);
+      if (!draggingContentType) return;
+      makeNewComponent(draggingContentType, event.clientX, event.clientY);
     },
-    [DraggingContentType, makeNewComponent],
+    [draggingContentType, makeNewComponent],
   );
 
   const nodeDragEnter: NodeDragHandler = (
     _event: React.MouseEvent,
     node: Node,
   ) => {
-    setDraggingNodeXY({ x: node.position.x, y: node.position.y });
+    draggingNodeXY.current = { x: node.position.x, y: node.position.y };
   };
 
   const nodeDragExit: NodeDragHandler = (
@@ -105,7 +102,7 @@ export default function Flow() {
   ) => {
     HandleNodeDragExit(
       flowInstance,
-      draggingNodeXY,
+      draggingNodeXY.current,
       node,
       contentTypes,
       setLoading,
