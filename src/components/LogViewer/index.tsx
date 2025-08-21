@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Loading from "./Loading";
-import LogViewer from "./LogViewer/LogViewer";
-import { useBotLogs } from "../hooks/useBotLogs";
+import Loading from "../Loading";
+import LogViewer from "./LogViewer";
+import { useBotLogs } from "./useBotLogs";
 
-export default function LogContainer({ botId }: { botId: number }) {
+export default function LogContainerBtn({ botId }: { botId: number }) {
   const [isLogViewerOpen, setLogViewerOpen] = useState(false);
 
   const { logs, loading, setLoading, refreshLogs, clearLogs } = useBotLogs(

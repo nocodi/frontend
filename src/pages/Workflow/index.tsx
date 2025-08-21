@@ -1,7 +1,7 @@
 import { CloudCheck, Undo2, HelpCircle } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
-import LogContainer from "../../components/logContainerButton";
+import LogContainerBtn from "../../components/LogViewer";
 import CodeGeneration from "../../components/CodeGeneration";
 import DeployCode from "../../components/DeployCode";
 import Flow from "../../components/Flow";
@@ -71,7 +71,10 @@ function Workflow() {
                 }
               }}
             >
-              {wrapWithTutorial(<LogContainer botId={Number(botId)} />, "LOG")}
+              {wrapWithTutorial(
+                <LogContainerBtn botId={Number(botId)} />,
+                "LOG",
+              )}
               {wrapWithTutorial(<DeployCode botId={Number(botId)} />, "DEPLOY")}
               {wrapWithTutorial(
                 <CodeGeneration botId={Number(botId)} />,

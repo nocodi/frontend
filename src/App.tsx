@@ -14,9 +14,9 @@ import Dashboard from "./pages/Dashboard";
 import CheckAuthWrapper from "./utils/CheckAuthWrapper";
 import CheckNoAuthWrapper from "./utils/CheckNoAuthWrapper";
 import { AuthProvider } from "./services/Auth";
-import Landing from "./pages/public/landing";
-import AboutContact from "./pages/public/AboutPage";
-import TutorialPage from "./pages/public/TutorialPage";
+import Landing from "./pages/public/Landing";
+import AboutContact from "./pages/public/About";
+import TutorialPage from "./pages/public/Tutorial";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
