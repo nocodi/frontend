@@ -1,8 +1,8 @@
 import { Cog, Trash2 } from "lucide-react";
 import { ComponentType } from "../../types/Component";
-import { useUnattended } from "../Context/UnattendedComponentContext";
+import { useOpenComponent } from "./context/OpenComponentContext";
 import { Handle, Position, useReactFlow } from "reactflow";
-import { useLoading } from "../../pages/Workflow";
+import { useLoading } from "../../pages/Workflow/LoadingContext";
 import { useContentTypes } from "../../services/getQueries";
 import api from "../../services/api";
 import { getPathOfContent } from "../../utils/freqFuncs";
@@ -17,7 +17,7 @@ export const ComponentHeader = ({ id, data }: ComponentHeaderProps) => {
   const flowInstance = useReactFlow();
   const setLoading = useLoading();
   const { contentTypes } = useContentTypes();
-  const setUnattendedComponent = useUnattended()[1];
+  const setOpenComponent = useOpenComponent()[1];
 
   function deleteComponent() {
     setLoading(true);
@@ -45,7 +45,7 @@ export const ComponentHeader = ({ id, data }: ComponentHeaderProps) => {
         className="size-3 cursor-pointer hover:text-patina-400"
       />
       <Cog
-        onClick={() => setUnattendedComponent(data)}
+        onClick={() => setOpenComponent(data)}
         className="size-3 cursor-pointer hover:text-patina-400"
       />
     </div>

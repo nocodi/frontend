@@ -1,18 +1,18 @@
-import { DnDProvider } from "../Context/DnDContext";
+import { DnDProvider } from "./context/DnDContext";
 import { ReactFlowProvider } from "reactflow";
 import Flow from "./Flow";
-import { UnattendedComponentProvider } from "../Context/UnattendedComponentContext";
+import { OpenComponentProvider } from "./context/OpenComponentContext";
 
-function DnDFlow() {
+function FlowWrapper() {
   return (
     <ReactFlowProvider>
-      <UnattendedComponentProvider>
+      <OpenComponentProvider>
         <DnDProvider>
           <Flow />
         </DnDProvider>
-      </UnattendedComponentProvider>
+      </OpenComponentProvider>
     </ReactFlowProvider>
   );
 }
 
-export default DnDFlow;
+export default FlowWrapper;

@@ -8,7 +8,7 @@ export function MakeComponent(
   flowInstance: ReactFlowInstance,
   content: ContentType,
   contents: ContentType[] | undefined,
-  setUnattendedComponent: React.Dispatch<
+  setOpenComponent: React.Dispatch<
     React.SetStateAction<ComponentType | undefined>
   >,
   x?: number,
@@ -35,7 +35,7 @@ export function MakeComponent(
       .then((res) => {
         const newNode = makeNode({ ...res.data } as ComponentType, position);
         flowInstance.addNodes(newNode);
-        setUnattendedComponent(newNode.data);
+        setOpenComponent(newNode.data);
       })
       .catch((err) => {
         toast(err.message);

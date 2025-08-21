@@ -2,11 +2,11 @@ import { NodeProps } from "reactflow";
 import { ComponentType } from "../../types/Component";
 import { ComponentHeader, ComponentHandles } from "./ComponentOptions";
 import { sliceString } from "../../utils/freqFuncs";
-import { useUnattended } from "../Context/UnattendedComponentContext";
+import { useOpenComponent } from "./context/OpenComponentContext";
 import getComponentIcon from "../ContentTypes/getComponentIcon";
 
 function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
-  const setUnattendedComponent = useUnattended()[1];
+  const setOpenComponent = useOpenComponent()[1];
   const baseClasses =
     "group/component relative flex cursor-pointer text-center items-center rounded-lg border-2 border-base-content px-1 text-primary-content shadow-lg hover:text-base-content";
 
@@ -20,7 +20,7 @@ function Component({ id, data, isConnectable }: NodeProps<ComponentType>) {
       <div className="group flex flex-col items-center gap-1">
         <ComponentHeader id={id} data={data} />
         <div
-          onDoubleClick={() => setUnattendedComponent(data)}
+          onDoubleClick={() => setOpenComponent(data)}
           className={typeOfComponent}
         >
           <ComponentHandles component={data} isConnectable={isConnectable} />

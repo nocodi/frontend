@@ -20,9 +20,9 @@ import ComponentDetail from "../ComponentDetail";
 import ContentTypesList from "../ContentTypes/ContentTypesList";
 import CustomEdge from "./EdgeComponent";
 import { Plus } from "lucide-react";
-import { useDnD } from "../Context/DnDContext";
-import { useLoading } from "../../pages/Workflow";
-import { useUnattended } from "../Context/UnattendedComponentContext";
+import { useDnD } from "./context/DnDContext";
+import { useLoading } from "../../pages/Workflow/LoadingContext";
+import { useOpenComponent } from "./context/OpenComponentContext";
 import { HandleConn } from "./HandleConn";
 import { MakeComponent } from "./MakeComponent";
 import { HandleNodeDragExit } from "./HandleNodeDragExit";
@@ -48,7 +48,7 @@ export default function Flow() {
   const flowInstance = useReactFlow();
   const { botId: botID } = useParams<{ botId: string }>();
   const [content] = useDnD();
-  const [unattendedComponent, setUnattendedComponent] = useUnattended();
+  const [openComponent, setOpenComponent] = useOpenComponent();
   const [nodes, setNodes, onNodeChange] = useNodesState<ComponentType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeType>([]);
   const setLoading = useLoading();
@@ -80,11 +80,11 @@ export default function Flow() {
         flowInstance,
         content,
         contentTypes,
-        setUnattendedComponent,
+        setOpenComponent,
         x,
         y,
       ),
-    [flowInstance, setUnattendedComponent, contentTypes],
+    [flowInstance, setOpenComponent, contentTypes],
   );
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -180,13 +180,13 @@ export default function Flow() {
           </div>
         </div>
       </div>
-      {unattendedComponent && (
+      {openComponent && (
         <div className="absolute z-50 flex h-screen w-screen items-center justify-center">
           <ComponentDetail
             setNodes={setNodes}
             setEdges={setEdges}
-            node={unattendedComponent}
-            onClose={() => setUnattendedComponent(undefined)}
+            node={openComponent}
+            onClose={() => setOpenComponent(undefined)}
           />
         </div>
       )}

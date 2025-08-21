@@ -1,17 +1,14 @@
-import { CloudCheck, Undo2, X, HelpCircle } from "lucide-react";
+import { CloudCheck, Undo2, HelpCircle } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { createContext, JSX, useContext, useState, useEffect } from "react";
+import { useState } from "react";
 import LogContainer from "../../components/logContainerButton";
 import CodeGeneration from "../../components/CodeGeneration";
 import DeployCode from "../../components/DeployCode";
-import DnDFlow from "../../components/Flow";
+import Flow from "../../components/Flow";
 import Loading from "../../components/Loading";
 import { useIsFetching } from "@tanstack/react-query";
 import useTutorial from "./useTutorial";
-
-export type loadingContextType = React.Dispatch<React.SetStateAction<boolean>>;
-const loadingContext = createContext<loadingContextType>(() => {});
-export const useLoading = () => useContext(loadingContext);
+import { LoadingContext } from "./LoadingContext";
 
 export type WorkflowParams = {
   botId: string;
@@ -100,9 +97,9 @@ function Workflow() {
             </div>
           </div>
         </div>
-        <loadingContext.Provider value={setLoading}>
-          <DnDFlow />
-        </loadingContext.Provider>
+        <LoadingContext.Provider value={setLoading}>
+          <Flow />
+        </LoadingContext.Provider>
       </div>
     </div>
   );
