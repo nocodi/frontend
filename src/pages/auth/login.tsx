@@ -61,7 +61,6 @@ export default function Login() {
       });
 
       login(response.data.access_token);
-      console.log(response.data);
       localStorage.setItem(
         "is_first_login",
         response.data.is_first_login.toString(),
