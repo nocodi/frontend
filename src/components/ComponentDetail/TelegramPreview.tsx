@@ -271,7 +271,7 @@ export default function TelegramPreview({
 
       default:
         return (
-          <div className="text-sm leading-relaxed font-normal text-gray-200">
+          <div className="text-sm leading-relaxed font-normal whitespace-pre-line text-gray-200">
             {typeof value === "string" ?
               value
             : typeof value === "number" ?
