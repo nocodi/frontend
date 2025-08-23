@@ -47,14 +47,12 @@ function Workflow() {
   const isFetching = useIsFetching();
   const [tutorialStep, setTutorialStep] =
     useState<WorkflowTutorialSteps>("NONE");
-
+  const isFirst = localStorage.getItem("is_first_login");
   useEffect(() => {
-    const isTutorialInProgress =
-      localStorage.getItem("is_first_login") === "in_progress";
-    if (isTutorialInProgress) {
+    if (isFirst === "true") {
       setTutorialStep("LOG");
     }
-  }, []);
+  }, [isFirst]);
 
   const handleStartTutorial = () => setTutorialStep("LOG");
 
@@ -65,8 +63,9 @@ function Workflow() {
   };
 
   const handleFinishTutorial = () => {
-    setTutorialStep("NONE");
-    localStorage.setItem("is_first_login", "false");
+    if (isFirst === "false") {
+      setTutorialStep("NONE");
+    }
   };
 
   const wrapWithTutorial = (
