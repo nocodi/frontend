@@ -49,8 +49,9 @@ function Workflow() {
     useState<WorkflowTutorialSteps>("NONE");
 
   useEffect(() => {
-    const isFirstLogin = localStorage.getItem("is_first_login") === "false";
-    if (isFirstLogin) {
+    const isTutorialInProgress =
+      localStorage.getItem("is_first_login") === "in_progress";
+    if (isTutorialInProgress) {
       setTutorialStep("LOG");
     }
   }, []);
