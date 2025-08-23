@@ -18,9 +18,9 @@ export function validateField(
   if (type === "BooleanField" && !/^(true|false)$/i.test(value)) {
     return "Please select 'true' or 'false'.";
   }
-  if (type === "CharField" && !/^[\w\s./]+$/.test(value)) {
-    return "Only letters and numbers are allowed.";
-  }
+  // if (type === "CharField" && !/^[\w\s./]+$/.test(value)) {
+  //   return "Only letters and numbers are allowed.";
+  // }
   if (type === "IntegerField" && !/^-?\d+$/.test(value)) {
     return "Please enter a valid integer.";
   }
