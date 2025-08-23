@@ -205,16 +205,17 @@ const ComponentDetail = ({ setNodes, setEdges, node, onClose }: PropsType) => {
                   setFormValues={setFormValues}
                   setFormErrors={setFormErrors}
                 />
-
-                <ButtonGrid
-                  rows={rows}
-                  setRows={setRows}
-                  keyboardType={keyboardType}
-                  setKeyboardType={setKeyboardType}
-                  formValues={formValues}
-                  componentSchema={componentSchema}
-                  componentName={contentType.name}
-                />
+                {node.reply_markup_supported && (
+                  <ButtonGrid
+                    rows={rows}
+                    setRows={setRows}
+                    keyboardType={keyboardType}
+                    setKeyboardType={setKeyboardType}
+                    formValues={formValues}
+                    componentSchema={componentSchema}
+                    componentName={contentType.name}
+                  />
+                )}
               </form>
             }
           </div>
