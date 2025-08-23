@@ -19,13 +19,13 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
 
   const modalRef = useRef<HTMLDialogElement>(null);
   const newBotButtonRef = useRef<HTMLButtonElement>(null);
+  const isFirstLogin = localStorage.getItem("is_first_login");
 
   useEffect(() => {
-    const isFirstLogin = localStorage.getItem("is_first_login") === "true";
-    if (isFirstLogin) {
+    if (isFirstLogin === "true") {
       setShowTutorial(true);
     }
-  }, []);
+  }, [isFirstLogin]);
 
   const resetForm = () => {
     setName("");
@@ -34,9 +34,7 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   };
 
   const handleDismissTutorial = () => {
-    localStorage.setItem("is_first_login", "in_progress");
     setShowTutorial(false);
-    modalRef.current?.showModal();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
