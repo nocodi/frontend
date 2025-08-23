@@ -61,7 +61,10 @@ export default function Login() {
       });
 
       login(response.data.access_token);
-      localStorage.setItem("isFirst", response.data.is_first_login.toString());
+      localStorage.setItem(
+        "is_first_login",
+        response.data.is_first_login.toString(),
+      );
       toast.success("You are successfully logged in");
       await navigate("/");
     } catch (err) {

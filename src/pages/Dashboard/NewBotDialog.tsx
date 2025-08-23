@@ -21,9 +21,8 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   const newBotButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const isFirstLogin = localStorage.getItem("is_first_login") !== "false";
-    const isFirst = localStorage.getItem("isFirst") !== "false";
-    if (isFirstLogin && isFirst) {
+    const isFirstLogin = localStorage.getItem("is_first_login") === "true";
+    if (isFirstLogin) {
       setShowTutorial(true);
     }
   }, []);
@@ -35,7 +34,7 @@ export default function NewBotDialog({ onCreate }: NewBotDialogProps) {
   };
 
   const handleDismissTutorial = () => {
-    localStorage.setItem("is_first_login", "false");
+    localStorage.setItem("is_first_login", "in_progress");
     setShowTutorial(false);
     modalRef.current?.showModal();
   };
