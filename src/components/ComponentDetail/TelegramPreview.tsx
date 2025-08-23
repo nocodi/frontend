@@ -119,7 +119,7 @@ export default function TelegramPreview({
           const fileInfo = getFileTypeInfo(fileName);
           const IconComponent = fileInfo.icon;
 
-          if (fileInfo.type === "image") {
+          if (fileInfo?.type === "image") {
             return (
               <div className="max-w-xs">
                 <img
@@ -130,7 +130,7 @@ export default function TelegramPreview({
                 />
               </div>
             );
-          } else if (fileInfo.type === "video") {
+          } else if (fileInfo?.type === "video") {
             return (
               <div className="max-w-xs">
                 <video
@@ -143,7 +143,7 @@ export default function TelegramPreview({
                 </video>
               </div>
             );
-          } else if (fileInfo.type === "audio") {
+          } else if (fileInfo?.type === "audio") {
             return (
               <div className="max-w-xs">
                 <div className="flex items-center gap-3 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-900/30 to-indigo-900/30 p-3">
@@ -180,7 +180,7 @@ export default function TelegramPreview({
                     {fileName}
                   </p>
                   <p className="text-xs font-medium text-gray-400">
-                    Click to download • {fileInfo.type}
+                    Click to download • {fileInfo?.type}
                   </p>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function TelegramPreview({
           const fileInfo = getFileTypeInfo(fileName);
           const IconComponent = fileInfo.icon;
 
-          if (fileInfo.type === "image" && value instanceof File) {
+          if (fileInfo?.type === "image" && value instanceof File) {
             const imageUrl = URL.createObjectURL(value);
             return (
               <div className="max-w-xs">
@@ -208,7 +208,7 @@ export default function TelegramPreview({
                 />
               </div>
             );
-          } else if (fileInfo.type === "video" && value instanceof File) {
+          } else if (fileInfo?.type === "video" && value instanceof File) {
             const videoUrl = URL.createObjectURL(value);
             return (
               <div className="max-w-xs">
@@ -222,7 +222,7 @@ export default function TelegramPreview({
                 </video>
               </div>
             );
-          } else if (fileInfo.type === "audio" && value instanceof File) {
+          } else if (fileInfo?.type === "audio" && value instanceof File) {
             const audioUrl = URL.createObjectURL(value);
             return (
               <div className="max-w-xs">
@@ -260,7 +260,7 @@ export default function TelegramPreview({
                     {fileName}
                   </p>
                   <p className="text-xs font-medium text-emerald-400">
-                    Ready to upload • {fileInfo.type}
+                    Ready to upload • {fileInfo?.type}
                   </p>
                 </div>
               </div>
