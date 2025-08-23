@@ -27,7 +27,7 @@ export function MakeComponent(
   };
 
   if (content.schema && "chat_id" in content.schema) {
-    dataPayload.chat_id = ".chat.id";
+    dataPayload.chat_id = "$.chat.id";
   }
   if (contents) {
     api
