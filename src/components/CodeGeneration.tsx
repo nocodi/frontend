@@ -22,8 +22,8 @@ export default function CodeGeneration({ botId }: { botId: number }) {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       })
-      .catch((error) => {
-        toast(error);
+      .catch(() => {
+        toast("Download Code failed, please check your components!!!");
       })
       .finally(() => {
         setLoading(false);
