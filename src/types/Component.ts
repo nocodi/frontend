@@ -21,6 +21,7 @@ export type ReplyMarkup = {
   id: number;
   buttons: GridItem[][];
   type: "InlineKeyboard" | "ReplyKeyboard";
+  markup_type: "InlineKeyboard" | "ReplyKeyboard";
   parent_component: number | null;
 };
 

@@ -119,8 +119,6 @@ export function handleButtons({
         });
 
         // Return the new full nodes
-        console.log("clean:", [cleanedNodes]);
-        console.log("newButton:", [newButtonNodes]);
         return [...cleanedNodes, ...newButtonNodes];
       });
     })
