@@ -232,13 +232,15 @@ const ComponentDetail = ({ setNodes, setEdges, node, onClose }: PropsType) => {
             </p>
           </div>
           <div className="p-4">
-            <TelegramPreview
-              rows={rows}
-              keyboardType={keyboardType}
-              formValues={formValues}
-              componentSchema={componentSchema}
-              componentName={contentType.name}
-            />
+            {node.reply_markup_supported && (
+              <TelegramPreview
+                rows={rows}
+                keyboardType={keyboardType}
+                formValues={formValues}
+                componentSchema={componentSchema}
+                componentName={contentType.name}
+              />
+            )}
           </div>
           <div className="modal-action p-4">
             <button
