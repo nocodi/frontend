@@ -168,7 +168,6 @@ const ComponentDetail = ({ setNodes, setEdges, node, onClose }: PropsType) => {
                 disabled={loading}
                 onClick={() => handleSubmit()}
                 className="btn text-xl font-bold btn-ghost btn-sm hover:btn-success"
-                aria-label="Submit"
               >
                 {loading ?
                   <RefreshCcw />
@@ -195,7 +194,6 @@ const ComponentDetail = ({ setNodes, setEdges, node, onClose }: PropsType) => {
             : <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  handleSubmit();
                 }}
               >
                 <FormFields

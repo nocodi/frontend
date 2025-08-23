@@ -79,6 +79,7 @@ export default function EditableButton({
       }
 
       <button
+        type="button"
         className="absolute -top-2 -right-2 hidden rounded-full bg-error p-1.5 text-white opacity-0 shadow-lg transition-all duration-200 group-hover:block group-hover:opacity-100 hover:bg-error/80"
         onClick={() => removeItem(rowIndex, itemIndex)}
         title="Remove Button"
