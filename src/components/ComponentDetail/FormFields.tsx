@@ -150,6 +150,23 @@ export default function FormFields({
             </button>
           )}
         </div>
+      : value.type == "TextField" ?
+        <div>
+          <textarea
+            id={key}
+            value={(formValues[key] as string) || ""}
+            onChange={(e) => handleChange(key, e.target.value)}
+            onBlur={() => handleBlur(key, value)}
+            required={value?.required}
+            placeholder={`Enter ${value?.verbose_name?.toLowerCase()}`}
+            className={`textarea w-full text-base-content transition-all duration-200 textarea-primary hover:bg-base-200/50 focus:bg-base-100 sm:col-span-2 ${
+              formErrors[key] ?
+                "border-error focus:border-error focus:ring-error"
+              : "focus:ring-2 focus:ring-primary/20"
+            }`}
+            rows={5}
+          />
+        </div>
       : <div>
           <input
             id={key}
