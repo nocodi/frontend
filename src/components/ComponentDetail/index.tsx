@@ -72,7 +72,7 @@ const ComponentDetail = ({ setNodes, setEdges, node, onClose }: PropsType) => {
         })),
       );
       setRows([...rws]);
-      setKeyboardType(node.reply_markup.type);
+      setKeyboardType(node.reply_markup.type || node.reply_markup.markup_type);
     }
   }, [details]);
 
