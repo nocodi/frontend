@@ -15,8 +15,8 @@ export default function DeployCode({ botId }: { botId: number }) {
           toast(response.data.message);
         }
       })
-      .catch((error) => {
-        toast(error);
+      .catch(() => {
+        toast("Deploy Failed, please check your components!");
       })
       .finally(() => {
         setLoading(false);
