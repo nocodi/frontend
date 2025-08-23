@@ -96,7 +96,7 @@ export default function TelegramPreview({
   ) => {
     if (!value && value !== false) return null;
 
-    switch (schema.type) {
+    switch (schema?.type) {
       case "BooleanField":
         return (
           <div className="flex items-center gap-2 text-sm">
