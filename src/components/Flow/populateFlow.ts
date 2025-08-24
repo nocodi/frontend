@@ -52,14 +52,12 @@ export function populateFlow(
       if (element.reply_markup) {
         const newButtonNodes = element.reply_markup.buttons.flatMap(
           (row: GridItem[], rowIndex) => {
-            const arr = findPosition(row.length);
             return row.map((button: GridItem, colIndex) => {
               const newButton: Node<ComponentType> = makeButton({
                 id: Number(button.id),
                 button: button,
                 parentID: String(element.id),
-                x: arr[colIndex],
-                y: 40 * rowIndex + 100,
+                ...findPosition(row.length, colIndex, rowIndex),
               });
               if (button.next_component) {
                 edges.push({

@@ -64,7 +64,7 @@ export const ComponentHandles = ({
   const rlSupported: boolean = component.reply_markup_supported;
 
   return (
-    <div>
+    <>
       <Handle
         type="source"
         position={Position.Right}
@@ -89,6 +89,6 @@ export const ComponentHandles = ({
           }}
         />
       )}
-    </div>
+    </>
   );
 };

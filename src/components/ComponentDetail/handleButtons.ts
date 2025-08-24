@@ -19,14 +19,11 @@ type handleButtonProps = {
   setEdges: React.Dispatch<React.SetStateAction<Edge<EdgeType>[]>>;
 };
 
-export function findPosition(rowLength: number): number[] {
-  if (rowLength === 1) {
-    return [60];
-  }
-  if (rowLength === 2) {
-    return [40, 80];
-  }
-  return [15, 60, 105];
+export function findPosition(len: number, x: number, y: number) {
+  return {
+    x: 120 * ((x + 0.5) / len),
+    y: 75 + 15 * y,
+  };
 }
 
 export function handleButtons({
@@ -92,14 +89,12 @@ export function handleButtons({
 
         // Generate new buttons
         const newButtonNodes = buttons!.flatMap((row, rowIndex) => {
-          const arr = findPosition(row.length);
           return row.map((button, colIndex) => {
             const newButton = makeButton({
               id: button.id, // unique ID for each button
               button: button,
               parentID: String(parentID),
-              x: arr[colIndex],
-              y: 40 * rowIndex + 100,
+              ...findPosition(row.length, colIndex, rowIndex),
             });
             if (button.next_component) {
               setEdges((edg) =>
