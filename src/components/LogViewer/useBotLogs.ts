@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { isAxiosError } from "axios";
-import api from "../services/api";
+import api from "../../services/api";
 
 export function useBotLogs(botId: number, isOpen: boolean) {
   const [loading, setLoading] = useState(false);

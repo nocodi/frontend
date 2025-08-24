@@ -3,7 +3,7 @@ import api from "../../services/api";
 import { ContentType } from "../../types/Component";
 import { getPathOfContent } from "../../utils/freqFuncs";
 import { Node, ReactFlowInstance } from "reactflow";
-import { loadingContextType } from "../../pages/Workflow";
+import { LoadingContextType } from "../../pages/Workflow/LoadingContext";
 
 export type DraggingNodeXY = {
   x: number;
@@ -15,7 +15,7 @@ export function HandleNodeDragExit(
   draggingNodeXY: DraggingNodeXY,
   node: Node,
   contentTypes: ContentType[] | undefined,
-  setLoading: loadingContextType,
+  setLoading: LoadingContextType,
 ) {
   if (
     draggingNodeXY.x !== node.position.x &&

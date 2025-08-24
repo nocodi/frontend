@@ -3,21 +3,21 @@ import { ComponentType, ContentType, EdgeType } from "../../types/Component";
 import api from "../../services/api";
 import { getPathOfContent } from "../../utils/freqFuncs";
 import { toast } from "react-toastify";
-import { loadingContextType } from "../../pages/Workflow";
+import { LoadingContextType } from "../../pages/Workflow/LoadingContext";
 import { handleButtonConn } from "./handleButtonConn";
 
 type HandleConnProps = {
-  botID: string | undefined;
+  botId: string | undefined;
   flowInstance: ReactFlowInstance;
   connection: Edge | Connection;
   contentTypes: ContentType[] | undefined;
-  setLoading: loadingContextType;
+  setLoading: LoadingContextType;
 };
 
 type nodeType = undefined | Node<ComponentType>;
 
-export function HandleConn({
-  botID,
+export function handleConn({
+  botId: botID,
   flowInstance,
   connection,
   contentTypes,
@@ -35,7 +35,7 @@ export function HandleConn({
       const exists = flowInstance.getEdge(newEdgeId);
       if (!exists) {
         setLoading(true);
-        if (sourceNode.type == "button" && sourceParent) {
+        if (sourceNode.type == "replyButton" && sourceParent) {
           const targetNodeID = connection.target;
           handleButtonConn({
             flowInstance,

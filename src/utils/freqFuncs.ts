@@ -48,7 +48,7 @@ export function makeButton({
   };
   const newButton: Node<ComponentType> = {
     id: finalID,
-    type: "button",
+    type: "replyButton",
     position: { x: x, y: y },
     selected: false,
     draggable: false,
@@ -90,7 +90,7 @@ export function makeNode(
 
   const newNode: Node<ComponentType> = {
     id: `${componentData.id}`,
-    type: "customNode",
+    type: "component",
     position: position,
     selected: false,
     data: componentData,

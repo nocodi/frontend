@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { memo, useState } from "react";
 import { ContentType } from "../../types/Component";
 import SearchBar from "../searchBar";
 import { X, Bot, Zap, BrainCircuit } from "lucide-react";
 import { useContentTypes } from "../../services/getQueries";
-import { useDnD } from "../Context/DnDContext";
+import { useDnD } from "../Flow/DnDContext";
 import getComponentIcon from "./getComponentIcon";
 
 const CATEGORIES = {
@@ -114,5 +114,5 @@ function ContentTypesList({
   );
 }
 
-export default ContentTypesList;
+export default memo(ContentTypesList, () => true);
 export { getComponentIcon };
